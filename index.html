@@ -955,97 +955,79 @@
   <!-- DESKTOP SIDEBAR -->
   <aside class="sidebar" id="desktopSidebar">
     <div>
-      <div class="sidebar-section-title">統計</div>
+      <div class="sidebar-section-title" data-i18n="sidebar_stats">統計</div>
       <a href="#statsSection" class="sidebar-link">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        權益總覽
+        <span data-i18n="sidebar_overview">權益總覽</span>
       </a>
     </div>
 
     <div>
-      <div class="sidebar-section-title">我的卡片</div>
+      <div class="sidebar-section-title" data-i18n="sidebar_cards">我的卡片</div>
       <div id="sidebarBankGroups"></div>
     </div>
 
     <div id="sidebar524Block"></div>
 
     <div>
-      <div class="sidebar-section-title">資料管理</div>
+      <div class="sidebar-section-title" data-i18n="sidebar_data">資料管理</div>
       <button class="sidebar-link" onclick="openStorageModal()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        儲存 / 還原資料
+        <span data-i18n="sidebar_save">儲存 / 還原資料</span>
       </button>
       <button class="sidebar-link" onclick="exportData()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        快速備份 (.json)
+        <span data-i18n="sidebar_backup">快速備份 (.json)</span>
       </button>
       <button class="sidebar-link" onclick="triggerImport()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        還原資料
+        <span data-i18n="sidebar_restore">還原資料</span>
       </button>
       <button class="sidebar-link" onclick="openManualResetModal()" style="color:var(--red);">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        年度重置
+        <span data-i18n="sidebar_reset">年度重置</span>
       </button>
     </div>
 
     <div>
-      <div class="sidebar-section-title">更新日誌</div>
-      <div style="padding:0 4px;display:flex;flex-direction:column;gap:2px;">
+      <div class="sidebar-section-title" data-i18n="sidebar_changelog">更新日誌</div>
+      <div style="padding:0 4px;display:flex;flex-direction:column;gap:12px;">
 
-        <details class="cl-item">
-          <summary class="cl-summary">
-            <span class="cl-badge cl-badge-new">v2.1.0</span>
+        <div class="cl-item" style="padding:10px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+            <span class="cl-badge cl-badge-new">v2.2.0</span>
+            <span class="cl-date">2026-05-29</span>
+          </div>
+          <ul class="cl-list" style="margin:0;">
+            <li><span class="cl-dot">·</span>中 / 英文雙語切換（Topbar 一鍵切換，偏好記憶）</li>
+            <li><span class="cl-dot">·</span>144 個權益名稱完整英文翻譯</li>
+            <li><span class="cl-dot">·</span>側邊欄全區域英文翻譯（統計 / 資料管理 / 5/24）</li>
+            <li><span class="cl-dot">·</span>新增卡片 Modal 完整翻譯（批次 / 單張 / 表單）</li>
+            <li><span class="cl-dot">·</span>記錄使用 / 升降級 / 儲存 Modal 翻譯</li>
+            <li><span class="cl-dot">·</span>週期標籤英文翻譯</li>
+            <li><span class="cl-dot">·</span>手機版 Topbar 配置調整</li>
+            <li><span class="cl-dot">·</span>iPhone 狀態欄重疊修正</li>
+            <li><span class="cl-dot">·</span>隱私聲明連結導向專屬頁面</li>
+          </ul>
+        </div>
+
+        <div class="cl-item" style="padding:10px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+            <span class="cl-badge cl-badge-old">v2.1.0</span>
             <span class="cl-date">2026-05-28</span>
-            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </summary>
-          <ul class="cl-list">
-            <li><span class="cl-dot">·</span>卡片資料庫擴充至 107 張（Amex / Chase / BoA / Wells Fargo / Citi / Capital One）</li>
-            <li><span class="cl-dot">·</span>批次快速新增 — 銀行篩選 pill + 勾選多張一鍵加入，已新增卡片標記鎖定</li>
-            <li><span class="cl-dot">·</span>52 張卡片獨立視覺設計（專屬漸層 / 材質紋理 / 幾何裝飾圖形）</li>
-            <li><span class="cl-dot">·</span>可使用額度欄位 — 新增時填寫或卡面點擊隨時編輯，顯示於卡面右下角</li>
-            <li><span class="cl-dot">·</span>年度重置系統 — 每年自動偵測提醒 + 手動重置，歷史記錄完整封存保留</li>
-            <li><span class="cl-dot">·</span>Amex Platinum / Business Platinum 補上 FHR 每半年 $300 飯店折抵</li>
-            <li><span class="cl-dot">·</span>Amex Business Gold / Business Platinum 補上 $300 ChatGPT Business 折抵</li>
-            <li><span class="cl-dot">·</span>旅遊分類頁籤修正 — 補入「旅行」關鍵字，CSR 等卡片正確歸類</li>
-            <li><span class="cl-dot">·</span>5/24 側邊欄重設計 — 計入卡片時間軸 + 所有卡片時間軸，依日期排列</li>
-            <li><span class="cl-dot">·</span>卡片升級 / 降級功能 — 同銀行切換，預覽新卡權益，可選保留歷史記錄</li>
-            <li><span class="cl-dot">·</span>淺色 / 深色主題切換 — Topbar 一鍵切換，自動偵測系統偏好，記憶選擇</li>
-            <li><span class="cl-dot">·</span>更新日誌改為 accordion 點擊展開</li>
-            <li><span class="cl-dot">·</span>側邊欄新增「年度重置」快捷按鈕</li>
+          </div>
+          <ul class="cl-list cl-list-old" style="margin:0;">
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片資料庫擴充至 107 張（6 家銀行）</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>批次快速新增、52 張獨立視覺設計</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>年費顯示 + 可使用額度欄位</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>年度重置系統（自動 + 手動）</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>Amex FHR / ChatGPT 權益補充</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片升級 / 降級功能</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>淺色 / 深色主題切換</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>5/24 側邊欄雙時間軸</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>Visa / Mastercard / Amex 網路 Logo</li>
           </ul>
-        </details>
-
-        <details class="cl-item">
-          <summary class="cl-summary">
-            <span class="cl-badge cl-badge-old">v2.0.0</span>
-            <span class="cl-date">2026-05-27</span>
-            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </summary>
-          <ul class="cl-list">
-            <li><span class="cl-dot">·</span>全新深色主題 UI</li>
-            <li><span class="cl-dot">·</span>金色系配色全面更新</li>
-            <li><span class="cl-dot">·</span>字體換用 Inter + JetBrains Mono</li>
-            <li><span class="cl-dot">·</span>iCloud Drive 同步功能</li>
-            <li><span class="cl-dot">·</span>HTML 含資料下載功能</li>
-            <li><span class="cl-dot">·</span>上架 GitHub Pages</li>
-            <li><span class="cl-dot">·</span>手機版 topbar 按鈕修正</li>
-          </ul>
-        </details>
-
-        <details class="cl-item">
-          <summary class="cl-summary">
-            <span class="cl-badge cl-badge-old">v1.0.0</span>
-            <span class="cl-date">2026-04-12</span>
-            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </summary>
-          <ul class="cl-list cl-list-old">
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>初始版本發佈</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>七家銀行卡片資料庫</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>JSON 備份 / 還原</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>Chase 5/24 追蹤</li>
-          </ul>
-        </details>
+        </div>
 
       </div>
     </div>
@@ -1067,10 +1049,10 @@
     <footer>
       <div>
         <strong style="color:var(--text-2)">US Card Credits Pro</strong> · by Randy Tsai
-        · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.0.0</span>
+        · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.2.0</span>
         · <a href="mailto:creditsprofeedback@gmail.com" data-i18n="feedback">意見回饋</a>
       </div>
-      <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私、聲明與推薦 →</a>
+      <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私、聲明、回饋作者 →</a>
     </footer>
   </main>
 
@@ -1085,86 +1067,64 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-  <div class="sidebar-section-title">統計</div>
+  <div class="sidebar-section-title" data-i18n="sidebar_stats">統計</div>
   <a href="#statsSection" class="sidebar-link" onclick="toggleSidebar(false)">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    權益總覽
+    <span data-i18n="sidebar_overview">權益總覽</span>
   </a>
-  <div style="margin-top:16px" class="sidebar-section-title">我的卡片</div>
+  <div style="margin-top:16px" class="sidebar-section-title" data-i18n="sidebar_cards">我的卡片</div>
   <div id="mobileSidebarGroups"></div>
   <div id="mobile524Block" style="margin-top:16px"></div>
-  <div style="margin-top:16px" class="sidebar-section-title">資料管理</div>
+  <div style="margin-top:16px" class="sidebar-section-title" data-i18n="sidebar_data">資料管理</div>
   <button class="sidebar-link" onclick="toggleSidebar(false);openStorageModal()">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    儲存 / 還原資料
+    <span data-i18n="sidebar_save">儲存 / 還原資料</span>
   </button>
   <button class="sidebar-link" onclick="toggleSidebar(false);exportData()">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    快速備份 (.json)
+    <span data-i18n="sidebar_backup">快速備份 (.json)</span>
   </button>
   <button class="sidebar-link" onclick="toggleSidebar(false);triggerImport()">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    還原資料
+    <span data-i18n="sidebar_restore">還原資料</span>
   </button>
   <button class="sidebar-link" onclick="toggleSidebar(false);openManualResetModal()" style="color:var(--red);">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-    年度重置
+    <span data-i18n="sidebar_reset">年度重置</span>
   </button>
-  <div style="margin-top:16px" class="sidebar-section-title">更新日誌</div>
-  <div style="padding:0 4px;margin-top:4px;display:flex;flex-direction:column;gap:2px;">
+  <div style="margin-top:16px" class="sidebar-section-title" data-i18n="sidebar_changelog">更新日誌</div>
+  <div style="padding:0 4px;margin-top:4px;display:flex;flex-direction:column;gap:10px;">
 
-    <details class="cl-item">
-      <summary class="cl-summary">
-        <span class="cl-badge cl-badge-new">v2.1.0</span>
+    <div class="cl-item" style="padding:10px;">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+        <span class="cl-badge cl-badge-new">v2.2.0</span>
+        <span class="cl-date">2026-05-29</span>
+      </div>
+      <ul class="cl-list" style="margin:0;">
+        <li><span class="cl-dot">·</span>中 / 英文雙語切換，偏好記憶</li>
+        <li><span class="cl-dot">·</span>144 個權益名稱英文翻譯</li>
+        <li><span class="cl-dot">·</span>側邊欄 / Modal 全面翻譯</li>
+        <li><span class="cl-dot">·</span>週期標籤英文化</li>
+        <li><span class="cl-dot">·</span>手機版 Topbar 配置調整</li>
+        <li><span class="cl-dot">·</span>iPhone 狀態欄重疊修正</li>
+        <li><span class="cl-dot">·</span>隱私聲明連結導向專屬頁面</li>
+      </ul>
+    </div>
+
+    <div class="cl-item" style="padding:10px;">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+        <span class="cl-badge cl-badge-old">v2.1.0</span>
         <span class="cl-date">2026-05-28</span>
-        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <ul class="cl-list">
-        <li><span class="cl-dot">·</span>卡片資料庫擴充至 107 張（6 家銀行）</li>
-        <li><span class="cl-dot">·</span>批次快速新增 — 銀行篩選 + 勾選多張一鍵加入</li>
-        <li><span class="cl-dot">·</span>52 張卡片獨立視覺設計（漸層 / 材質 / 裝飾）</li>
-        <li><span class="cl-dot">·</span>可使用額度欄位，顯示於卡面，可隨時編輯</li>
-        <li><span class="cl-dot">·</span>年度重置系統，歷史記錄完整封存保留</li>
-        <li><span class="cl-dot">·</span>Amex Platinum / Biz Plat 補上 FHR $300 飯店折抵</li>
-        <li><span class="cl-dot">·</span>Amex Biz Gold / Biz Plat 補上 $300 ChatGPT 折抵</li>
-        <li><span class="cl-dot">·</span>旅遊分類頁籤修正（CSR 等卡片正確歸類）</li>
-        <li><span class="cl-dot">·</span>5/24 側邊欄重設計 — 雙時間軸分類顯示</li>
-        <li><span class="cl-dot">·</span>卡片升級 / 降級功能，可預覽新卡權益</li>
-        <li><span class="cl-dot">·</span>淺色 / 深色主題切換，記憶使用者選擇</li>
-        <li><span class="cl-dot">·</span>更新日誌 accordion 展開 + 側邊欄重置按鈕</li>
+      </div>
+      <ul class="cl-list cl-list-old" style="margin:0;">
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片資料庫擴充至 107 張</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>批次快速新增、52 張獨立視覺</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>年費顯示 + 可使用額度欄位</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>年度重置系統</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片升降級 / 主題切換</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>Visa / MC / Amex 網路 Logo</li>
       </ul>
-    </details>
-
-    <details class="cl-item">
-      <summary class="cl-summary">
-        <span class="cl-badge cl-badge-old">v2.0.0</span>
-        <span class="cl-date">2026-05-27</span>
-        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <ul class="cl-list cl-list-old">
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>全新深色主題 UI</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>金色系配色全面更新</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>字體換用 Inter + JetBrains Mono</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>iCloud Drive 同步功能</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>HTML 含資料下載功能</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>上架 GitHub Pages</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>手機版 topbar 修正</li>
-      </ul>
-    </details>
-
-    <details class="cl-item">
-      <summary class="cl-summary">
-        <span class="cl-badge cl-badge-old">v1.0.0</span>
-        <span class="cl-date">2026-04-12</span>
-        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <ul class="cl-list cl-list-old">
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>初始版本發佈</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>七家銀行卡片資料庫</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>JSON 備份 / 還原</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>Chase 5/24 追蹤</li>
-      </ul>
-    </details>
+    </div>
 
   </div>
   <div style="flex:1"></div>
@@ -1175,7 +1135,7 @@
 <div class="overlay" id="storageOverlay">
   <div class="modal storage-modal">
     <div class="modal-header">
-      <span class="modal-title">儲存 / 還原資料</span>
+      <span class="modal-title" data-i18n="storage_title">儲存 / 還原資料</span>
       <button class="modal-close" onclick="closeStorageModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -1243,7 +1203,7 @@
 <div class="overlay" id="cardModalOverlay">
   <div class="modal" style="max-width:560px;">
     <div class="modal-header">
-      <span class="modal-title">新增信用卡</span>
+      <span class="modal-title" data-i18n="modal_add_title">新增信用卡</span>
       <button class="modal-close" onclick="closeCardModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -1253,11 +1213,11 @@
     <div style="display:flex;border-bottom:1px solid var(--border);">
       <button id="modeTabBatch" onclick="switchAddMode('batch')"
         style="flex:1;padding:11px;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--accent);border-bottom:2px solid var(--accent);transition:all .15s;">
-        ⚡ 批次快速新增
+        <span data-i18n="batch_mode">⚡ 批次快速新增</span>
       </button>
       <button id="modeTabSingle" onclick="switchAddMode('single')"
         style="flex:1;padding:11px;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--text-3);border-bottom:2px solid transparent;transition:all .15s;">
-        + 單張新增
+        <span data-i18n="single_mode">+ 單張新增</span>
       </button>
     </div>
 
@@ -1269,15 +1229,15 @@
       <div id="batchCardList" style="display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;padding-right:4px;"></div>
       <!-- Selected count bar -->
       <div id="batchCountBar" style="margin-top:14px;padding:10px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text-2);display:flex;justify-content:space-between;align-items:center;">
-        <span>已選擇 <strong id="batchCount" style="color:var(--accent)">0</strong> 張卡片</span>
-        <button onclick="batchSelectAll()" style="font-size:11px;font-weight:600;color:var(--accent-2);background:none;border:none;cursor:pointer;text-decoration:underline;">全選目前頁</button>
+        <span id="batchCountLabel"></span>
+        <button onclick="batchSelectAll()" id="batchSelectAllBtn" style="font-size:11px;font-weight:600;color:var(--accent-2);background:none;border:none;cursor:pointer;text-decoration:underline;">${t('select_all')}</button>
       </div>
     </div>
 
     <!-- SINGLE MODE -->
     <div id="singleMode" class="modal-body" style="display:none;">
       <div class="form-group">
-        <label class="form-label">發卡銀行</label>
+        <label class="form-label" data-i18n="bank_label">發卡銀行</label>
         <select id="bankSelect" class="form-input" onchange="updateCardTypeOptions()">
           <option value="Amex">American Express</option>
           <option value="Chase">Chase</option>
@@ -1288,38 +1248,38 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">卡片名稱</label>
+        <label class="form-label" data-i18n="card_label">卡片名稱</label>
         <select id="cardTypeSelect" class="form-input"></select>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">核卡日期（選填）</label>
+          <label class="form-label" data-i18n="approval_date">核卡日期（選填）</label>
           <input type="date" id="approvalDateInput" class="form-input">
         </div>
         <div class="form-group">
-          <label class="form-label">末四 / 五碼（選填）</label>
+          <label class="form-label" data-i18n="last_digits">末四 / 五碼（選填）</label>
           <input type="text" id="cardDigitsInput" class="form-input" placeholder="1234" maxlength="5">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">可使用額度 $ （選填）</label>
+          <label class="form-label" data-i18n="credit_limit_label">可使用額度 $（選填）</label>
           <input type="number" id="creditLimitInput" class="form-input" placeholder="例：10000" min="0" step="100">
         </div>
         <div class="form-group" style="display:flex;align-items:flex-end;">
           <div class="form-check" style="width:100%;">
             <input type="checkbox" id="is524Checkbox">
-            <label for="is524Checkbox">計入 Chase 5/24 規則</label>
+            <label for="is524Checkbox" data-i18n="chase_524">計入 Chase 5/24 規則</label>
           </div>
         </div>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeCardModal()">取消</button>
+      <button class="btn btn-ghost" onclick="closeCardModal()" data-i18n="cancel">取消</button>
       <button class="btn btn-primary" id="addCardBtn" onclick="handleAddCard()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span id="addCardBtnLabel">批次新增</span>
+        <span id="addCardBtnLabel" data-i18n="batch_add_btn">批次新增</span>
       </button>
     </div>
   </div>
@@ -1329,7 +1289,7 @@
 <div class="overlay" id="txOverlay">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">記錄使用</span>
+      <span class="modal-title" data-i18n="tx_title">記錄使用</span>
       <button class="modal-close" onclick="closeTxModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -1339,23 +1299,23 @@
       <input type="hidden" id="txCardId">
       <input type="hidden" id="txCreditIdx">
       <div class="form-group">
-        <label class="form-label" id="txAmountLabel">金額 / 折抵 ($)</label>
+        <label class="form-label" id="txAmountLabel" data-i18n="tx_amount">金額 / 折抵 ($)</label>
         <input type="number" id="txAmount" class="form-input" step="0.01" min="0" placeholder="0.00">
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">日期（選填）</label>
+          <label class="form-label" data-i18n="tx_date">日期（選填）</label>
           <input type="date" id="txDate" class="form-input">
         </div>
         <div class="form-group">
-          <label class="form-label">備註（選填）</label>
+          <label class="form-label" data-i18n="tx_note">備註（選填）</label>
           <input type="text" id="txNote" class="form-input" placeholder="使用說明">
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeTxModal()">取消</button>
-      <button class="btn btn-primary" onclick="submitTransaction()">確認記錄</button>
+      <button class="btn btn-ghost" onclick="closeTxModal()" data-i18n="cancel">取消</button>
+      <button class="btn btn-primary" onclick="submitTransaction()" data-i18n="tx_confirm">確認記錄</button>
     </div>
   </div>
 </div>
@@ -1398,7 +1358,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeManualResetModal()">取消</button>
+      <button class="btn btn-ghost" onclick="closeManualResetModal()" data-i18n="cancel">取消</button>
       <button class="btn btn-primary" onclick="confirmManualReset()" style="background:var(--red);box-shadow:none;">
         確認重置
       </button>
@@ -1410,7 +1370,7 @@
 <div class="overlay" id="upgradeOverlay">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
-      <span class="modal-title">升級 / 降級卡片</span>
+      <span class="modal-title" data-i18n="upgrade_title">升級 / 降級卡片</span>
       <button class="modal-close" onclick="closeUpgradeModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -1441,15 +1401,15 @@
       <div style="display:flex;flex-direction:column;gap:8px;">
         <div class="form-check">
           <input type="checkbox" id="upgradeKeepDate" checked>
-          <label for="upgradeKeepDate">保留原核卡日期（升降級不算新開卡，不影響 5/24）</label>
+          <label for="upgradeKeepDate" data-i18n="upgrade_keep_date">保留原核卡日期（升降級不算新開卡，不影響 5/24）</label>
         </div>
         <div class="form-check">
           <input type="checkbox" id="upgradeKeepLimit" checked>
-          <label for="upgradeKeepLimit">保留原可使用額度</label>
+          <label for="upgradeKeepLimit" data-i18n="upgrade_keep_limit">保留原可使用額度</label>
         </div>
         <div class="form-check">
           <input type="checkbox" id="upgradeKeepDigits" checked>
-          <label for="upgradeKeepDigits">保留原末四碼</label>
+          <label for="upgradeKeepDigits" data-i18n="upgrade_keep_digits">保留原末四碼</label>
         </div>
         <div class="form-check">
           <input type="checkbox" id="upgradeKeepHistory">
@@ -1462,7 +1422,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeUpgradeModal()">取消</button>
+      <button class="btn btn-ghost" onclick="closeUpgradeModal()" data-i18n="cancel">取消</button>
       <button class="btn btn-primary" onclick="confirmUpgrade()">確認切換</button>
     </div>
   </div>
@@ -2677,12 +2637,12 @@ function render524() {
 
   function section(title, datedCards, undatedCards, showBadge) {
     if (datedCards.length === 0 && undatedCards.length === 0) {
-      return `<div style="font-size:11px;color:var(--text-3);padding:8px 0;">尚無資料</div>`;
+      return `<div style="font-size:11px;color:var(--text-3);padding:8px 0;">${currentLang==='en'?'No data yet':'尚無資料'}</div>`;
     }
     return `
       ${datedCards.map(c => cardRow(c, showBadge)).join('')}
       ${undatedCards.length > 0 ? `
-        <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);padding:6px 0 2px;">未填日期</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);padding:6px 0 2px;">${t('sidebar_undated')}</div>
         ${undatedCards.map(c => cardRow(c, showBadge)).join('')}
       ` : ''}
     `;
@@ -2690,20 +2650,20 @@ function render524() {
 
   const html = `
     <div>
-      <div class="sidebar-section-title">5/24 統計</div>
+      <div class="sidebar-section-title">${t('sidebar_524')}</div>
 
       <!-- 計入張數 -->
       <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:4px;margin-bottom:12px;">
-        <div style="font-size:10px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">計入張數</div>
+        <div style="font-size:10px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">${t('sidebar_524_count')}</div>
         <div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:${count>=5?'var(--red)':'var(--accent-2)'};">${count} <span style="font-size:13px;opacity:0.45;">/ 5</span></div>
-        ${count >= 5 ? '<div style="font-size:10px;color:var(--red);margin-top:4px;font-weight:600;">⚠ 已達 5/24 上限</div>' : count >= 4 ? '<div style="font-size:10px;color:var(--yellow);margin-top:4px;font-weight:600;">⚡ 剩餘 1 張</div>' : ''}
+        ${count >= 5 ? `<div style="font-size:10px;color:var(--red);margin-top:4px;font-weight:600;">${t('sidebar_524_limit')}</div>` : count >= 4 ? `<div style="font-size:10px;color:var(--yellow);margin-top:4px;font-weight:600;">${t('sidebar_524_warn')}</div>` : ''}
       </div>
 
       <!-- 1. 計入5/24 的卡片 -->
       <details class="cl-item" style="margin-bottom:8px;" ${dated524.length > 0 ? 'open' : ''}>
         <summary class="cl-summary">
-          <span style="flex:1;font-size:11px;font-weight:700;color:var(--text);">計入 5/24 的卡片</span>
-          <span style="font-size:10px;font-weight:700;color:${count>=5?'var(--red)':'var(--accent)'};margin-right:4px;">${count} 張</span>
+          <span style="flex:1;font-size:11px;font-weight:700;color:var(--text);">${t('sidebar_524_cards')}</span>
+          <span style="font-size:10px;font-weight:700;color:${count>=5?'var(--red)':'var(--accent)'};margin-right:4px;">${count} ${currentLang==='en'?'cards':'張'}</span>
           <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </summary>
         <div style="padding:4px 10px 8px;">
@@ -2714,8 +2674,8 @@ function render524() {
       <!-- 2. 所有卡片辦理時間軸 -->
       <details class="cl-item">
         <summary class="cl-summary">
-          <span style="flex:1;font-size:11px;font-weight:700;color:var(--text);">所有卡片辦理時間軸</span>
-          <span style="font-size:10px;font-weight:700;color:var(--text-3);margin-right:4px;">${myCards.length} 張</span>
+          <span style="flex:1;font-size:11px;font-weight:700;color:var(--text);">${t('sidebar_all_timeline')}</span>
+          <span style="font-size:10px;font-weight:700;color:var(--text-3);margin-right:4px;">${myCards.length} ${currentLang==='en'?'cards':'張'}</span>
           <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </summary>
         <div style="padding:4px 10px 8px;">
@@ -3031,12 +2991,12 @@ function switchAddMode(mode) {
   tabBatch.style.borderBottomColor = isBatch ? 'var(--accent)' : 'transparent';
   tabSingle.style.color = !isBatch ? 'var(--accent)' : 'var(--text-3)';
   tabSingle.style.borderBottomColor = !isBatch ? 'var(--accent)' : 'transparent';
-  document.getElementById('addCardBtnLabel').textContent = isBatch ? '批次新增' : '新增卡片';
+  document.getElementById('addCardBtnLabel').textContent = isBatch ? t('batch_add_btn') : t('single_add_btn');
 }
 
 function renderBatchUI() {
   const banks = ['all', ...Object.keys(cardDatabase)];
-  const bankLabels = { all: '全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo' };
+  const bankLabels = { all: currentLang==='en'?'All':'全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo' };
 
   // Bank pills
   document.getElementById('bankPills').innerHTML = banks.map(b => `
@@ -3071,9 +3031,9 @@ function renderBatchUI() {
             ${card.name}
             <span style="opacity:0.7;flex-shrink:0;">${getNetworkLogo(card.network || '', false)}</span>
           </div>
-          <div class="batch-card-meta">${bank} · ${creditCount} 項權益 · ${card.annualFee === 0 ? '免年費' : '年費 $' + card.annualFee.toLocaleString()}</div>
+          <div class="batch-card-meta">${bank} · ${creditCount} ${currentLang==='en'?'benefits':'項權益'} · ${card.annualFee === 0 ? t('no_fee_label') : (currentLang==='en'?'Annual Fee':'年費') + ' $' + card.annualFee.toLocaleString()}</div>
         </div>
-        ${isAdded ? '<span class="batch-already-tag">已新增</span>' : ''}
+        ${isAdded ? `<span class="batch-already-tag">${t('already_added')}</span>` : ''}
       </div>
     `;
   }).join('');
@@ -3107,7 +3067,11 @@ function batchSelectAll() {
 }
 
 function updateBatchCount() {
-  document.getElementById('batchCount').textContent = batchSelected.size;
+  const countEl = document.getElementById('batchCountLabel');
+  const allBtn = document.getElementById('batchSelectAllBtn');
+  const n = batchSelected.size;
+  if (countEl) countEl.innerHTML = `${t('selected_count')} <strong style="color:var(--accent)">${n}</strong> ${t('cards_count')}`;
+  if (allBtn) allBtn.textContent = t('select_all');
 }
 
 function handleAddCard() {
@@ -3490,7 +3454,7 @@ const translations = {
     empty_sub: '點擊右上角「新增卡片」開始記錄您的美國信用卡權益',
     // Footer
     feedback: '意見回饋',
-    legal: '隱私、聲明與推薦 →',
+    legal: '隱私、聲明、回饋作者 →',
     // Cancel / Close
     cancel: '取消',
     close: '關閉',
@@ -3611,7 +3575,7 @@ const translations = {
     empty_sub: 'Tap "Add Card" in the top right to start tracking your US credit card benefits',
     // Footer
     feedback: 'Feedback',
-    legal: 'Privacy, Disclaimer & Referrals →',
+    legal: 'Privacy, Disclaimer & Support →',
     // Cancel / Close
     cancel: 'Cancel',
     close: 'Close',
@@ -3641,9 +3605,13 @@ function applyLang() {
     el.textContent = t(key);
   });
 
-  // Sidebar section titles
-  const sidebarSections = document.querySelectorAll('.sidebar-section-title');
-  // handled individually in renderSidebar/render524
+  // Update form placeholders
+  const creditLimitInput = document.getElementById('creditLimitInput');
+  if (creditLimitInput) creditLimitInput.placeholder = currentLang==='en'?'e.g. 10000':'例：10000';
+  const cardDigitsInput = document.getElementById('cardDigitsInput');
+  if (cardDigitsInput) cardDigitsInput.placeholder = currentLang==='en'?'e.g. 1234':'1234';
+  const txNoteInput = document.getElementById('txNote');
+  if (txNoteInput) txNoteInput.placeholder = t('tx_note_ph');
 
   // Empty state
   const emptyTitle = document.querySelector('.empty-title');
