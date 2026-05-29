@@ -915,6 +915,9 @@
       US Card Credits <span>Pro</span>
     </div>
     <div class="topbar-actions">
+      <button class="theme-toggle" id="langToggleBtn" onclick="toggleLang()" title="切換語言 / Switch Language" style="font-size:11px;font-weight:800;letter-spacing:0.04em;font-family:'Inter',sans-serif;width:auto;padding:0 10px;">
+        EN
+      </button>
       <button class="theme-toggle" onclick="toggleTheme()" title="切換主題">
         <!-- 深色模式顯示：月亮（點了切換到淺色） -->
         <svg class="icon-dark" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -923,11 +926,11 @@
       </button>
       <button class="btn btn-ghost" onclick="openStorageModal()" title="資料儲存選項">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span class="btn-label">儲存 / 還原</span>
+        <span class="btn-label" data-i18n="save_restore">儲存 / 還原</span>
       </button>
       <button class="btn btn-primary" onclick="openCardModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span class="btn-label">新增卡片</span>
+        <span class="btn-label" data-i18n="add_card">新增卡片</span>
       </button>
     </div>
   </div>
@@ -936,13 +939,13 @@
 <!-- TAB BAR -->
 <nav class="tabbar">
   <div class="tabbar-inner" id="tabContainer">
-    <button class="tab-btn active" onclick="switchTab('all','全部卡片')" id="tab-all">全部卡片</button>
-    <button class="tab-btn" onclick="switchTab('uber','Uber 系列')" id="tab-uber">Uber 系列</button>
-    <button class="tab-btn" onclick="switchTab('airline','航空相關')" id="tab-airline">航空相關</button>
-    <button class="tab-btn" onclick="switchTab('dining','餐飲 / 外送')" id="tab-dining">餐飲 / 外送</button>
-    <button class="tab-btn" onclick="switchTab('travel','飯店 / 旅遊')" id="tab-travel">飯店 / 旅遊</button>
-    <button class="tab-btn" onclick="switchTab('lifestyle','生活 / 休閒')" id="tab-lifestyle">生活 / 休閒</button>
-    <button class="tab-btn" onclick="switchTab('status','機場 / 會籍')" id="tab-status">機場 / 會籍</button>
+    <button class="tab-btn active" onclick="switchTab('all')" id="tab-all" data-i18n="tab_all">全部卡片</button>
+    <button class="tab-btn" onclick="switchTab('uber')" id="tab-uber" data-i18n="tab_uber">Uber 系列</button>
+    <button class="tab-btn" onclick="switchTab('airline')" id="tab-airline" data-i18n="tab_airline">航空相關</button>
+    <button class="tab-btn" onclick="switchTab('dining')" id="tab-dining" data-i18n="tab_dining">餐飲 / 外送</button>
+    <button class="tab-btn" onclick="switchTab('travel')" id="tab-travel" data-i18n="tab_travel">飯店 / 旅遊</button>
+    <button class="tab-btn" onclick="switchTab('lifestyle')" id="tab-lifestyle" data-i18n="tab_lifestyle">生活 / 休閒</button>
+    <button class="tab-btn" onclick="switchTab('status')" id="tab-status" data-i18n="tab_status">機場 / 會籍</button>
   </div>
 </nav>
 
@@ -1065,9 +1068,9 @@
       <div>
         <strong style="color:var(--text-2)">US Card Credits Pro</strong> · by Randy Tsai
         · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.0.0</span>
-        · <a href="mailto:creditsprofeedback@gmail.com">意見回饋</a>
+        · <a href="mailto:creditsprofeedback@gmail.com" data-i18n="feedback">意見回饋</a>
       </div>
-      <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'">隱私、聲明與推薦 →</a>
+      <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私、聲明與推薦 →</a>
     </footer>
   </main>
 
@@ -2557,6 +2560,9 @@ function render() {
   const empty = document.getElementById('emptyState');
   const heading = document.getElementById('tabHeading');
 
+  // Apply language to static elements
+  applyLang();
+
   if (myCards.length === 0) {
     list.innerHTML = '';
     statsEl.innerHTML = '';
@@ -2579,7 +2585,7 @@ function render() {
     list.innerHTML = `<div class="card-grid">${myCards.map(c => renderCard(c)).join('')}</div>`;
   } else {
     const items = getCategoryItems(currentTab);
-    const tabNames = { uber:'Uber 系列', airline:'航空相關', dining:'餐飲 / 外送', travel:'飯店 / 旅遊', lifestyle:'生活 / 休閒', status:'機場 / 會籍' };
+    const tabNames = { uber:t('tab_uber'), airline:t('tab_airline'), dining:t('tab_dining'), travel:t('tab_travel'), lifestyle:t('tab_lifestyle'), status:t('tab_status') };
     heading.style.display = 'block';
     heading.textContent = tabNames[currentTab] || currentTab;
     if (items.length === 0) {
@@ -2602,19 +2608,19 @@ function renderStats(el) {
 
   el.innerHTML = `
     <div class="stat-card">
-      <div class="stat-label">年度總權益估算</div>
+      <div class="stat-label">${t('stat_total')}</div>
       <div class="stat-value default">$${totalPos.toLocaleString()}</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">已省下 / 折抵</div>
+      <div class="stat-label">${t('stat_saved')}</div>
       <div class="stat-value green">$${totalUsed.toLocaleString()}</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">權益達成率</div>
+      <div class="stat-label">${t('stat_rate')}</div>
       <div class="stat-value accent">${pct}%</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">5/24 進度</div>
+      <div class="stat-label">${t('stat_524')}</div>
       <div class="stat-value ${cards524 >= 5 ? 'red' : 'default'}">${cards524} <span style="font-size:16px;opacity:0.4">/ 5</span></div>
     </div>
   `;
@@ -2781,8 +2787,8 @@ function renderCard(card) {
               <div class="cc-digits" style="color:${subColor}">${card.lastDigits ? '•••• •••• •••• '+card.lastDigits : '•••• •••• •••• ••••'}</div>
               ${card.approvalDate ? `<div class="cc-date" style="color:${subColor}">Approved: ${card.approvalDate}</div>` : ''}
               <div style="margin-top:4px;display:flex;align-items:center;gap:5px;">
-                <span style="font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:${subColor};opacity:0.65;">Annual Fee</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${subColor};opacity:0.85;">${annualFee === 0 ? 'No Fee' : '$'+annualFee.toLocaleString()}</span>
+                <span style="font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:${subColor};opacity:0.65;">${t('annual_fee')}</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${subColor};opacity:0.85;">${annualFee === 0 ? t('no_fee') : '$'+annualFee.toLocaleString()}</span>
               </div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
@@ -2792,9 +2798,9 @@ function renderCard(card) {
               ${card.creditLimit
                 ? `<div style="text-align:right;">
                      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${subColor};opacity:0.85;">$${Number(card.creditLimit).toLocaleString()}</div>
-                     <div style="font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:${subColor};opacity:0.55;">Limit</div>
+                     <div style="font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:${subColor};opacity:0.55;">${t('credit_limit')}</div>
                    </div>`
-                : `<button onclick="event.stopPropagation();editCreditLimit('${card.id}')" style="font-size:8px;color:${subColor};opacity:0.45;background:rgba(0,0,0,0.12);border:1px dashed rgba(255,255,255,0.18);padding:2px 7px;border-radius:5px;cursor:pointer;letter-spacing:0.03em;">+ 額度</button>`
+                : `<button onclick="event.stopPropagation();editCreditLimit('${card.id}')" style="font-size:8px;color:${subColor};opacity:0.45;background:rgba(0,0,0,0.12);border:1px dashed rgba(255,255,255,0.18);padding:2px 7px;border-radius:5px;cursor:pointer;letter-spacing:0.03em;">${t('add_limit')}</button>`
               }
             </div>
           </div>
@@ -2804,20 +2810,20 @@ function renderCard(card) {
         <div class="credits-panel">
           <div class="credits-panel-header" style="padding:12px 16px;display:flex;flex-direction:column;gap:8px;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span>權益詳細 · ${card.credits.length} 項</span>
-              <span style="font-size:9px;color:var(--text-3);">折抵類合計</span>
+              <span>${t('credits_detail')} · ${card.credits.length} ${currentLang==='en'?'items':'項'}</span>
+              <span style="font-size:9px;color:var(--text-3);">${currentLang==='en'?'Cash credits only':'折抵類合計'}</span>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
               <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
-                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">年費</div>
-                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--red);">${annualFee === 0 ? 'Free' : '-$'+annualFee.toLocaleString()}</div>
+                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">${t('credits_annual_fee')}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--red);">${annualFee === 0 ? t('no_fee') : '-$'+annualFee.toLocaleString()}</div>
               </div>
               <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
-                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">總權益值</div>
+                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">${t('credits_total')}</div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--green);">$${totalValue.toLocaleString()}</div>
               </div>
               <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
-                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">淨值</div>
+                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">${t('credits_net')}</div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${netValue >= 0 ? 'var(--accent)' : 'var(--red)'};">${netValue >= 0 ? '+' : ''}$${netValue.toLocaleString()}</div>
               </div>
             </div>
@@ -2835,24 +2841,25 @@ function renderCreditItem(card, cr, idx) {
   const isPoints = cr.period.includes('點');
   const remain = cr.total - cr.used;
   const pct = cr.total > 0 ? Math.min(100, (cr.used/cr.total)*100) : (cr.used>0?100:0);
-  const fmtRemain = isCount ? `${remain} 張` : isPoints ? `${remain.toLocaleString()} 點` : `$${remain.toFixed(2)}`;
-  const fmtTotal = isCount ? `${cr.total} 張` : isPoints ? `${cr.total.toLocaleString()} 點` : `$${cr.total.toFixed(2)}`;
+  const fmtRemain = isCount ? `${remain} ${currentLang==='en'?'cert(s)':'張'}` : isPoints ? `${remain.toLocaleString()} ${currentLang==='en'?'pts':'點'}` : `$${remain.toFixed(2)}`;
+  const fmtTotal  = isCount ? `${cr.total} ${currentLang==='en'?'cert(s)':'張'}` : isPoints ? `${cr.total.toLocaleString()} ${currentLang==='en'?'pts':'點'}` : `$${cr.total.toFixed(2)}`;
+  const periodDisplay = currentLang === 'en' ? (creditNameTranslations[cr.period] || cr.period) : cr.period;
 
   return `
     <div class="credit-item">
       <div class="credit-row-top">
-        <div class="credit-name">${cr.name}</div>
-        <span class="period-badge">${cr.period}</span>
+        <div class="credit-name">${tCredit(cr.name)}</div>
+        <span class="period-badge">${periodDisplay}</span>
       </div>
       ${isStatus ? `
         <div class="status-chip ${cr.used>0?'on':'off'}">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${cr.used>0?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/>'}</svg>
-          ${cr.used>0 ? '已啟用權益' : '尚未標記啟用'}
+          ${cr.used>0 ? t('enabled') : t('not_enabled')}
         </div>
       ` : `
         <div class="credit-amounts">
           <span class="amount-remain">${fmtRemain}</span>
-          <span class="amount-total">剩餘 / ${fmtTotal}</span>
+          <span class="amount-total">${currentLang==='en'?'left':'剩餘'} / ${fmtTotal}</span>
         </div>
         <div class="progress-track">
           <div class="progress-fill ${pct>=100?'full':''}" style="width:${pct}%"></div>
@@ -2863,11 +2870,11 @@ function renderCreditItem(card, cr, idx) {
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           ${cr.expiry}
         </span>
-        <button class="log-btn" onclick="openTxModal('${card.id}',${idx},'${cr.name.replace(/'/g,"\\'")}')">${isStatus ? '切換狀態' : '記錄使用'}</button>
+        <button class="log-btn" onclick="openTxModal('${card.id}',${idx},'${cr.name.replace(/'/g,"\\'")}')">${isStatus ? t('toggle_status') : t('log_use')}</button>
       </div>
       ${cr.logs && cr.logs.length > 0 ? `
         <div class="logs-mini">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;">${new Date().getFullYear()} 年記錄</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;">${new Date().getFullYear()} ${t('credits_this_year')}</div>
           ${cr.logs.slice().reverse().slice(0,5).map(log => `
             <div class="log-entry">
               <span>${log.date}${log.note?' · '+log.note:''}</span>
@@ -2878,7 +2885,7 @@ function renderCreditItem(card, cr, idx) {
       ` : ''}
       ${cr.history && cr.history.length > 0 ? `
         <div class="logs-mini" style="margin-top:4px;">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;">歷史記錄</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;">${t('credits_history')}</div>
           ${cr.history.slice().reverse().map(h => `
             <details style="margin-bottom:2px;">
               <summary style="font-size:10px;color:var(--text-3);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:2px 0;">
@@ -2892,7 +2899,7 @@ function renderCreditItem(card, cr, idx) {
                     <span>${isStatus ? '' : `${isCount?'-'+log.amount+'張':isPoints?'-'+log.amount+'點':'-$'+log.amount}`}</span>
                   </div>
                 `).join('')}
-                ${(!h.logs||h.logs.length===0)?'<div style="font-size:10px;color:var(--text-3);padding:2px 0;">無詳細記錄</div>':''}
+                ${(!h.logs||h.logs.length===0)?`<div style="font-size:10px;color:var(--text-3);padding:2px 0;">${t('no_records')}</div>`:''}
               </div>
             </details>
           `).join('')}
@@ -3301,7 +3308,7 @@ function previewUpgradeTarget() {
     const isStatus = cr.period === '會籍狀態';
     const val = isStatus ? '會籍' : cr.period.includes('張') ? `${cr.total} 張` : cr.period.includes('點') ? `${cr.total.toLocaleString()} 點` : `$${cr.total}`;
     return `<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:3px 0;border-bottom:1px solid var(--border);">
-      <span style="color:var(--text-2);flex:1;margin-right:8px;">${cr.name}</span>
+      <span style="color:var(--text-2);flex:1;margin-right:8px;">${tCredit(cr.name)}</span>
       <span style="color:var(--accent);font-weight:600;flex-shrink:0;">${val}</span>
     </div>`;
   }).join('');
@@ -3360,6 +3367,474 @@ function confirmUpgrade() {
   toast(`✅ 已從「${oldName}」切換為「${targetName}」`, 'var(--green)');
 }
 
+
+// ──────────────────────────────────────────────────────────────
+//  i18n — LANGUAGE SYSTEM
+// ──────────────────────────────────────────────────────────────
+let currentLang = localStorage.getItem('uccp_lang') || 'zh';
+
+const translations = {
+  zh: {
+    // Topbar
+    save_restore: '儲存 / 還原',
+    add_card: '新增卡片',
+    // Tabs
+    tab_all: '全部卡片',
+    tab_uber: 'Uber 系列',
+    tab_airline: '航空相關',
+    tab_dining: '餐飲 / 外送',
+    tab_travel: '飯店 / 旅遊',
+    tab_lifestyle: '生活 / 休閒',
+    tab_status: '機場 / 會籍',
+    // Stats
+    stat_total: '年度總權益估算',
+    stat_saved: '已省下 / 折抵',
+    stat_rate: '權益達成率',
+    stat_524: '5/24 進度',
+    // Card face
+    annual_fee: 'Annual Fee',
+    no_fee: 'No Fee',
+    credit_limit: 'Limit',
+    add_limit: '+ 額度',
+    approved: 'Approved',
+    // Credits panel
+    credits_detail: '權益詳細',
+    credits_annual_fee: '年費',
+    credits_total: '總權益值',
+    credits_net: '淨值',
+    credits_this_year: '年記錄',
+    credits_history: '歷史記錄',
+    // Credit item
+    log_use: '記錄使用',
+    toggle_status: '切換狀態',
+    remain: '剩餘',
+    enabled: '已啟用權益',
+    not_enabled: '尚未標記啟用',
+    no_records: '無詳細記錄',
+    // Add card modal
+    modal_add_title: '新增信用卡',
+    batch_mode: '⚡ 批次快速新增',
+    single_mode: '+ 單張新增',
+    batch_add_btn: '批次新增',
+    single_add_btn: '新增卡片',
+    bank_label: '發卡銀行',
+    card_label: '卡片名稱',
+    approval_date: '核卡日期（選填）',
+    last_digits: '末四 / 五碼（選填）',
+    credit_limit_label: '可使用額度 $（選填）',
+    chase_524: '計入 Chase 5/24 規則',
+    select_all: '全選目前頁',
+    selected_count: '已選擇',
+    cards_count: '張卡片',
+    already_added: '已新增',
+    no_fee_label: '免年費',
+    // Transaction modal
+    tx_title: '記錄使用',
+    tx_amount: '金額 / 折抵 ($)',
+    tx_date: '日期（選填）',
+    tx_note: '備註（選填）',
+    tx_note_ph: '使用說明',
+    tx_confirm: '確認記錄',
+    // Storage modal
+    storage_title: '儲存 / 還原資料',
+    storage_icloud: 'iCloud Drive 同步',
+    storage_icloud_desc: '將此 HTML 檔案儲存至 iCloud Drive，即可在所有 Apple 裝置上同步使用。',
+    storage_json: '離線備份 JSON',
+    storage_json_desc: '將您的卡片紀錄下載為 JSON 備份檔，可跨裝置還原。',
+    storage_restore: '還原備份資料',
+    storage_restore_desc: '選取先前備份的 JSON 檔案來還原所有卡片資料。',
+    storage_status: '目前儲存狀態',
+    storage_local: '資料已儲存於本地瀏覽器 (localStorage)',
+    storage_warning: '⚠️ 清除瀏覽器快取將導致資料遺失。請定期下載 JSON 備份。',
+    download_html: '下載 HTML 檔案（含所有資料）',
+    quick_backup: '快速備份 (.json)',
+    // Reset
+    reset_banner_title: '新年快樂！年度權益重置提醒',
+    reset_banner_desc: '偵測到',
+    reset_banner_desc2: '年的權益記錄尚未封存。封存後將保留所有歷史記錄，並將退額歸零。',
+    reset_later: '稍後再說',
+    reset_confirm: '✅ 封存並重置',
+    manual_reset_title: '手動年度重置',
+    reset_year_label: '封存為哪一年的記錄？',
+    reset_confirm_btn: '確認重置',
+    // Upgrade modal
+    upgrade_title: '升級 / 降級卡片',
+    upgrade_from: '目前卡片',
+    upgrade_to: '切換至',
+    upgrade_preview_title: '新卡片權益預覽',
+    upgrade_keep_date: '保留原核卡日期（升降級不算新開卡，不影響 5/24）',
+    upgrade_keep_limit: '保留原可使用額度',
+    upgrade_keep_digits: '保留原末四碼',
+    upgrade_keep_history: '保留原卡片的使用記錄與歷史',
+    upgrade_warning: '⚠️ 切換後，新卡片的所有權益將重置為 0，原卡片的記錄可選擇保留於歷史。',
+    upgrade_confirm: '確認切換',
+    // Sidebar
+    sidebar_stats: '統計',
+    sidebar_overview: '權益總覽',
+    sidebar_cards: '我的卡片',
+    sidebar_data: '資料管理',
+    sidebar_save: '儲存 / 還原資料',
+    sidebar_backup: '快速備份 (.json)',
+    sidebar_restore: '還原資料',
+    sidebar_reset: '年度重置',
+    sidebar_changelog: '更新日誌',
+    sidebar_524: '5/24 統計',
+    sidebar_524_count: '計入張數',
+    sidebar_524_limit: '⚠ 已達 5/24 上限',
+    sidebar_524_warn: '⚡ 剩餘 1 張',
+    sidebar_524_cards: '計入 5/24 的卡片',
+    sidebar_all_timeline: '所有卡片辦理時間軸',
+    sidebar_undated: '未填日期',
+    // Empty state
+    empty_title: '尚未新增任何卡片',
+    empty_sub: '點擊右上角「新增卡片」開始記錄您的美國信用卡權益',
+    // Footer
+    feedback: '意見回饋',
+    legal: '隱私、聲明與推薦 →',
+    // Cancel / Close
+    cancel: '取消',
+    close: '關閉',
+  },
+  en: {
+    // Topbar
+    save_restore: 'Save / Restore',
+    add_card: 'Add Card',
+    // Tabs
+    tab_all: 'All Cards',
+    tab_uber: 'Uber',
+    tab_airline: 'Airlines',
+    tab_dining: 'Dining',
+    tab_travel: 'Hotels / Travel',
+    tab_lifestyle: 'Lifestyle',
+    tab_status: 'Lounge / Status',
+    // Stats
+    stat_total: 'Total Annual Value',
+    stat_saved: 'Redeemed',
+    stat_rate: 'Redemption Rate',
+    stat_524: '5/24 Progress',
+    // Card face
+    annual_fee: 'Annual Fee',
+    no_fee: 'No Fee',
+    credit_limit: 'Limit',
+    add_limit: '+ Limit',
+    approved: 'Approved',
+    // Credits panel
+    credits_detail: 'Benefits',
+    credits_annual_fee: 'Annual Fee',
+    credits_total: 'Total Value',
+    credits_net: 'Net Value',
+    credits_this_year: 'This Year',
+    credits_history: 'History',
+    // Credit item
+    log_use: 'Log Use',
+    toggle_status: 'Toggle',
+    remain: 'Remaining',
+    enabled: 'Active',
+    not_enabled: 'Not Activated',
+    no_records: 'No records',
+    // Add card modal
+    modal_add_title: 'Add Credit Card',
+    batch_mode: '⚡ Quick Batch Add',
+    single_mode: '+ Single Card',
+    batch_add_btn: 'Add Selected',
+    single_add_btn: 'Add Card',
+    bank_label: 'Issuing Bank',
+    card_label: 'Card Name',
+    approval_date: 'Approval Date (optional)',
+    last_digits: 'Last 4/5 Digits (optional)',
+    credit_limit_label: 'Credit Limit $ (optional)',
+    chase_524: 'Count toward Chase 5/24',
+    select_all: 'Select All',
+    selected_count: 'Selected',
+    cards_count: 'card(s)',
+    already_added: 'Added',
+    no_fee_label: 'No Annual Fee',
+    // Transaction modal
+    tx_title: 'Log Credit Use',
+    tx_amount: 'Amount ($)',
+    tx_date: 'Date (optional)',
+    tx_note: 'Note (optional)',
+    tx_note_ph: 'Description',
+    tx_confirm: 'Confirm',
+    // Storage modal
+    storage_title: 'Save / Restore Data',
+    storage_icloud: 'iCloud Drive Sync',
+    storage_icloud_desc: 'Save this HTML file to iCloud Drive to sync across all Apple devices.',
+    storage_json: 'Offline JSON Backup',
+    storage_json_desc: 'Download your card records as a JSON backup file.',
+    storage_restore: 'Restore Backup',
+    storage_restore_desc: 'Select a previously saved JSON file to restore all card data.',
+    storage_status: 'Current Storage Status',
+    storage_local: 'Data saved in browser localStorage',
+    storage_warning: '⚠️ Clearing browser cache will delete all data. Back up regularly.',
+    download_html: 'Download HTML (with data)',
+    quick_backup: 'Quick Backup (.json)',
+    // Reset
+    reset_banner_title: 'Happy New Year! Annual Reset Reminder',
+    reset_banner_desc: 'Records from',
+    reset_banner_desc2: 'have not been archived. Archive to preserve history and reset credits.',
+    reset_later: 'Later',
+    reset_confirm: '✅ Archive & Reset',
+    manual_reset_title: 'Manual Annual Reset',
+    reset_year_label: 'Archive records for which year?',
+    reset_confirm_btn: 'Confirm Reset',
+    // Upgrade modal
+    upgrade_title: 'Upgrade / Downgrade Card',
+    upgrade_from: 'Current Card',
+    upgrade_to: 'Switch To',
+    upgrade_preview_title: 'New Card Benefits Preview',
+    upgrade_keep_date: 'Keep original approval date (upgrade/downgrade does not count as new card)',
+    upgrade_keep_limit: 'Keep original credit limit',
+    upgrade_keep_digits: 'Keep original last digits',
+    upgrade_keep_history: 'Keep usage history from original card',
+    upgrade_warning: '⚠️ After switching, all benefits on the new card will reset to 0.',
+    upgrade_confirm: 'Confirm Switch',
+    // Sidebar
+    sidebar_stats: 'Stats',
+    sidebar_overview: 'Benefits Overview',
+    sidebar_cards: 'My Cards',
+    sidebar_data: 'Data Management',
+    sidebar_save: 'Save / Restore Data',
+    sidebar_backup: 'Quick Backup (.json)',
+    sidebar_restore: 'Restore Data',
+    sidebar_reset: 'Annual Reset',
+    sidebar_changelog: 'Changelog',
+    sidebar_524: '5/24 Stats',
+    sidebar_524_count: 'Cards Counted',
+    sidebar_524_limit: '⚠ 5/24 Limit Reached',
+    sidebar_524_warn: '⚡ 1 Slot Remaining',
+    sidebar_524_cards: 'Cards in 5/24',
+    sidebar_all_timeline: 'All Cards Timeline',
+    sidebar_undated: 'No Date',
+    // Empty state
+    empty_title: 'No cards added yet',
+    empty_sub: 'Tap "Add Card" in the top right to start tracking your US credit card benefits',
+    // Footer
+    feedback: 'Feedback',
+    legal: 'Privacy, Disclaimer & Referrals →',
+    // Cancel / Close
+    cancel: 'Cancel',
+    close: 'Close',
+  }
+};
+
+function t(key) {
+  return (translations[currentLang] || translations.zh)[key] || key;
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  localStorage.setItem('uccp_lang', currentLang);
+  applyLang();
+  render();
+  toast(currentLang === 'en' ? '🌐 English' : '🌐 中文', 'var(--accent)');
+}
+
+function applyLang() {
+  // Update lang toggle button label
+  const btn = document.getElementById('langToggleBtn');
+  if (btn) btn.textContent = currentLang === 'zh' ? 'EN' : '中';
+
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+
+  // Sidebar section titles
+  const sidebarSections = document.querySelectorAll('.sidebar-section-title');
+  // handled individually in renderSidebar/render524
+
+  // Empty state
+  const emptyTitle = document.querySelector('.empty-title');
+  const emptySub = document.querySelector('.empty-sub');
+  if (emptyTitle) emptyTitle.textContent = t('empty_title');
+  if (emptySub) emptySub.textContent = t('empty_sub');
+
+  // Footer feedback link
+  document.querySelectorAll('[data-i18n-feedback]').forEach(el => {
+    el.textContent = t('feedback');
+  });
+  document.querySelectorAll('[data-i18n-legal]').forEach(el => {
+    el.textContent = t('legal');
+  });
+}
+
+// Init lang on load
+(function() {
+  const saved = localStorage.getItem('uccp_lang');
+  if (saved) currentLang = saved;
+})();
+
+const creditNameTranslations = {
+  '$150 Amazon 禮品卡 (新卡)': '$150 Amazon Gift Card (Welcome Bonus)',
+  '$300 Disney 消費折抵 (新卡)': '$300 Disney Spending Credit (Welcome Bonus)',
+  '10% 點數回饋 (前 100K 兌換)': '10% Points Rebate (first 100K redeemed)',
+  '2% 無限現金回饋 (買+還款各1%)': '2% Unlimited Cash Back (1% earn + 1% pay)',
+  '21 個月 0% APR 優惠': '21-Month 0% Intro APR Offer',
+  '4 次 Wi-Fi 憑證': '4 In-Flight Wi-Fi Credits',
+  '4 次登機升等優先': '4 Upgraded Boardings',
+  'Admirals Club 貴賓室無限使用': 'Admirals Club Lounge Unlimited Access',
+  'Adobe Creative 折抵': 'Adobe Creative Cloud Credit',
+  'Amazon / Whole Foods 5% 回饋': 'Amazon & Whole Foods 5% Cash Back',
+  'Apple TV+ & Music': 'Apple TV+ & Apple Music Complimentary',
+  'Avis / Budget 租車折抵': 'Avis / Budget Rental Car Credit',
+  'CLEAR Plus 折抵': 'CLEAR Plus Membership Credit',
+  'Capital One Lounge 貴賓室': 'Capital One Lounge Access',
+  'Capital One Travel 旅遊折抵': 'Capital One Travel Credit',
+  'Cell phone 手機保險': 'Cell Phone Protection',
+  'Centurion Lounge (Delta 航班)': 'Centurion Lounge (on Delta flights)',
+  'Centurion Lounge 無限使用': 'Centurion Lounge Unlimited Access',
+  'Chase Travel 飯店折抵': 'Chase Travel Hotel Credit',
+  'ChatGPT Business 折抵': 'ChatGPT Business Credit',
+  'Costco Gas 4% 回饋': 'Costco Gas 4% Cash Back',
+  'DashPass + DoorDash 折抵': 'DashPass + DoorDash Credit',
+  'Dell Technologies 折抵': 'Dell Technologies Credit',
+  'Delta Sky Club 無限使用': 'Delta Sky Club Unlimited Access',
+  'Delta 國內頭等艙升等憑證': 'Delta Domestic First Class Upgrade Cert.',
+  'Delta 餐廳消費 2x 里程': 'Delta Dining 2x Miles',
+  'Disney Bundle 折抵': 'Disney Bundle Credit',
+  'Disney 主題樂園 10% 折扣': 'Disney Theme Park 10% Discount',
+  'DoorDash DashPass 會員': 'DoorDash DashPass Membership',
+  'Equinox 健身折抵': 'Equinox Fitness Credit',
+  'Equinox+ 折抵': 'Equinox+ Credit',
+  'Exclusive Tables 餐廳折抵': 'Exclusive Tables Dining Credit',
+  'FHR / THC 飯店折抵 (Fine Hotels + Resorts)': 'Fine Hotels + Resorts / Hotel Collection Credit',
+  'Flying Blue 銀卡會籍': 'Flying Blue Silver Status',
+  'Global Entry / TSA Precheck': 'Global Entry / TSA Precheck Credit',
+  'Grubhub 餐飲折抵': 'Grubhub Dining Credit',
+  'Hilton Honors 金卡會籍': 'Hilton Honors Gold Status',
+  'Hilton 旗下飯店折抵': 'Hilton Portfolio Hotel Credit',
+  'Hilton 渡假村消費折抵': 'Hilton Resorts Credit',
+  'Hilton 金卡會籍': 'Hilton Honors Gold Status',
+  'Hilton 銀卡會籍': 'Hilton Honors Silver Status',
+  'Hilton 鑽石會籍': 'Hilton Honors Diamond Status',
+  'Home Chef 折抵': 'Home Chef Meal Kit Credit',
+  'Hyatt Discoverist 會籍': 'World of Hyatt Discoverist Status',
+  'Hyatt 免費住宿夜 (Cat 1-4)': 'Hyatt Free Night Award (Cat 1-4)',
+  'Hyatt 免費住宿夜 (消費 $15K)': 'Hyatt Free Night Award (after $15K spend)',
+  'Hyatt 免費住宿夜 (消費 $50K)': 'Hyatt Free Night Award (after $50K spend)',
+  'Hyatt 品質折抵': 'Hyatt Bonus Credit',
+  'IHG One Rewards 白金會籍': 'IHG One Rewards Platinum Elite Status',
+  'IHG 白金會籍': 'IHG One Rewards Platinum Elite Status',
+  'IHG 銀卡會籍': 'IHG One Rewards Silver Elite Status',
+  'Indeed 招聘平台折抵': 'Indeed Recruiting Credit',
+  'LoungeBuddy 貴賓室折抵': 'LoungeBuddy Airport Lounge Credit',
+  'Lyft 5% 回饋': 'Lyft 5% Cash Back',
+  'Lyft 共乘折抵': 'Lyft Rideshare Credit',
+  'Lyft 銀卡會籍': 'Lyft Silver Status',
+  'Marriott Bonvoy 金卡會籍': 'Marriott Bonvoy Gold Elite Status',
+  'Marriott 金卡會籍': 'Marriott Bonvoy Gold Elite Status',
+  'National 租車高階會籍': 'National Car Rental Emerald Club Executive',
+  'One Key Cash 2% 回饋': 'One Key Cash 2% Rewards',
+  'One Key Cash 3% 回饋': 'One Key Cash 3% Rewards',
+  'Peloton 健身折抵': 'Peloton Fitness Credit',
+  'Priority Pass / Sapphire Lounge': 'Priority Pass / Chase Sapphire Lounge Access',
+  'Priority Pass 機場貴賓室': 'Priority Pass Airport Lounge (incl. restaurants)',
+  'Priority Pass 貴賓室': 'Priority Pass Lounge Access',
+  'Rent Day 雙倍點數 (每月1日)': 'Rent Day Double Points (1st of each month)',
+  'Resy 餐廳折抵': 'Resy Dining Credit',
+  'Saks Fifth Avenue 購物折抵': 'Saks Fifth Avenue Shopping Credit',
+  'Squarespace 折抵': 'Squarespace Website Credit',
+  'Stubhub / viagogo 票券折抵': 'StubHub / viagogo Ticket Credit',
+  'The Edit 奢華酒店折抵': 'The Edit Luxury Hotel Credit',
+  'Uber Cash 折抵': 'Uber Cash Credit',
+  'United Club 單次通行證': 'United Club One-Time Pass',
+  'United Club 無限使用': 'United Club Unlimited Access',
+  'United Club 貴賓室無限使用': 'United Club Lounge Unlimited Access',
+  'United TravelBank 折抵': 'United TravelBank Cash Credit',
+  'United 消費 2x 里程': 'United 2x Miles on Purchases',
+  'United 里程獎勵 (5K PQP)': 'United Miles Bonus (5K PQP)',
+  'Virgin Points 年度獎勵': 'Annual Virgin Points Bonus',
+  'Walmart+ 會員折抵': 'Walmart+ Membership Credit',
+  '不限等級免費住宿券': 'Free Night Award (any category)',
+  '免費住宿夜 (35K pts)': 'Free Night Award (up to 35K points)',
+  '免費住宿夜 (50K pts)': 'Free Night Award (up to 50K points)',
+  '免費夜獎勵 (消費 $15K)': 'Free Night Award (after $15K spend)',
+  '全球通用同行者機票兌換券': 'Global Companion Fare Certificate',
+  '升等積分': 'Tier Qualifying Points Bonus',
+  '同行者機票 (買1送1)': 'Companion Certificate (Buy 1 Get 1)',
+  '同行者機票兌換 (消費 $30K)': 'Companion Ticket (after $30K spend)',
+  '同行者機票兌換券': 'Companion Fare Certificate',
+  '同行者機票折扣 ($125 off)': 'Companion Ticket Discount ($125 off)',
+  '商務折抵 (FedEx/Grubhub/辦公室)': 'Business Credit (FedEx/Grubhub/Office)',
+  '大額消費 2.5% 現金回饋 ($5000+)': '2.5% Cash Back on Purchases $5,000+',
+  '娛樂 / 餐飲 3% 回饋 (無年費)': 'Entertainment & Dining 3% Cash Back (no annual fee)',
+  '娛樂 / 餐飲 4% 回饋': 'Entertainment & Dining 4% Cash Back',
+  '季度 5% 旋轉類別回饋 (前 $1500)': 'Quarterly 5% Rotating Category (first $1,500)',
+  '定級點數 (EQP)': 'Elite Qualifying Points (EQP) Bonus',
+  '年度 10% 獎勵點數回饋': 'Annual 10% Points Bonus',
+  '年度 Companion Upgrade Voucher': 'Annual Companion Upgrade Voucher',
+  '年度 Flying Blue 里程': 'Annual Flying Blue Miles Bonus',
+  '年度旅行消費折抵': 'Annual Travel Credit',
+  '年度現金回饋憑證': 'Annual Cash Back Certificate',
+  '指定餐飲消費折抵': 'Dining Credit (select restaurants)',
+  '旅遊 / 餐飲 / 加油 3x 點數': 'Travel, Dining & Gas 3x Points',
+  '旅遊 / 餐飲消費折抵': 'Travel & Dining Credit',
+  '旅遊 2x 點數回饋': 'Travel 2x Points',
+  '旅遊消費 5% 回饋': 'Travel 5% Cash Back',
+  '旅遊消費折抵': 'Travel Credit',
+  '最高消費類別 5% 回饋 (前 $500)': 'Top Spend Category 5% Cash Back (first $500/mo)',
+  '機票消費折抵': 'Airfare Credit',
+  '每月 20+ 次消費獎勵加成 20%': '20% Bonus on 20+ Monthly Transactions',
+  '每月 30+ 次消費獎勵加成 50%': '50% Bonus on 30+ Monthly Transactions',
+  '消費 $150K 年度現金獎勵': 'Annual Cash Bonus (after $150K spend)',
+  '消費 2% 現金回饋 (前 $50K)': '2% Cash Back (first $50K/year)',
+  '消費 2x MR 點數 (前 $50K)': '2x Membership Rewards Points (first $50K/year)',
+  '消費四捨五入至 10 點': 'Points Rounded Up to Nearest 10',
+  '無年費 1.25x 里程回饋': '1.25x Miles (no annual fee)',
+  '無年費 1.5% 現金回饋': '1.5% Cash Back (no annual fee)',
+  '無年費 1.5x 里程回饋': '1.5x Miles (no annual fee)',
+  '無年費信用建立卡': 'No Annual Fee Credit Builder Card',
+  '無限 1.5% 現金回饋': 'Unlimited 1.5% Cash Back',
+  '無限 1.5x 旅遊點數': 'Unlimited 1.5x Travel Points',
+  '無限 2% 現金回饋': 'Unlimited 2% Cash Back',
+  '無限 2x 里程回饋': 'Unlimited 2x Miles',
+  '生活消費折抵 (Lifestyle)': 'Lifestyle Credit',
+  '租金 1x 點數 (無手續費)': 'Rent Payments 1x Points (no fee)',
+  '續卡獎勵點數': 'Anniversary Bonus Points',
+  '美籍航空消費折抵': 'Airline Incidental Fee Credit (US carriers)',
+  '自選類別 3% 現金回饋': 'Customized Cash Rewards 3% (chosen category)',
+  '自選類別 3% 現金回饋 (前 $50K)': 'Customized Cash Rewards 3% (first $50K)',
+  '航空公司附加費折抵 (Airline Fee Credit)': 'Airline Incidental Fee Credit',
+  '航空消費折抵': 'Airline Credit',
+  '萬豪白金會籍': 'Marriott Bonvoy Platinum Elite Status',
+  '萬豪金卡會籍': 'Marriott Bonvoy Gold Elite Status',
+  '萬豪銀卡會籍': 'Marriott Bonvoy Silver Elite Status',
+  '行李免費托運 (首件)': 'First Checked Bag Free',
+  '週年紀念積分': 'Anniversary Points Bonus',
+  '阿拉斯加航空貴賓室季度通行證': 'Alaska Lounge Quarterly Passes',
+  '飯店 / 機票折抵 ($5000+消費)': 'Hotel / Airfare Credit (after $5,000 spend)',
+  '飯店消費折抵': 'Hotel Credit',
+  '飯店訂購折抵 ($500+)': 'Hotel Booking Credit ($500+ stay)',
+  '餐廳 3% 回饋': 'Restaurants 3% Cash Back',
+  '餐飲 / 外送折抵': 'Dining & Delivery Credit',
+  '餐飲 / 雜貨 2x 里程': 'Dining & Groceries 2x Miles',
+  '餐飲折抵': 'Dining Credit',
+  '會籍狀態': 'Membership Status',
+  '永久': 'Permanent',
+  '一次性': 'One-time',
+  '每年': 'Annual',
+  '每月': 'Monthly',
+  '每季': 'Quarterly',
+  '每半年': 'Semi-annual',
+  '每 4 年': 'Every 4 Years',
+  '每持卡年': 'Per Cardmember Year',
+  '每日曆年': 'Per Calendar Year',
+  '張': 'cert(s)',
+  '點': 'pts',
+  '已啟用': 'Active',
+  '永久有效': 'Ongoing',
+  '每年續卡': 'Annual (upon renewal)',
+  '每季更新': 'Quarterly Renewal',
+  '開卡時': 'Upon Approval',
+  '續卡時': 'Upon Renewal',
+};
+
+function tCredit(name) {
+  if (currentLang === "en") return creditNameTranslations[name] || name;
+  return name;
+}
 
 // ──────────────────────────────────────────────────────────────
 //  THEME
