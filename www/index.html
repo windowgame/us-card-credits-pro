@@ -1,0 +1,3423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Card Credits Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-2: #111118;
+      --bg-3: #1a1a24;
+      --bg-card: #16161f;
+      --border: rgba(255,255,255,0.07);
+      --border-bright: rgba(255,255,255,0.14);
+      --text: #f0f0f5;
+      --text-2: #9090a8;
+      --text-3: #5a5a72;
+      --accent: #e8b923;
+      --accent-2: #f5d060;
+      --accent-glow: rgba(232,185,35,0.28);
+      --green: #3dd68c;
+      --yellow: #f5c842;
+      --red: #ff5c5c;
+      --amex: linear-gradient(135deg,#1a6fcf 0%,#0a3f8a 100%);
+      --chase: linear-gradient(135deg,#1e3a6e 0%,#091c3a 100%);
+      --citi: linear-gradient(135deg,#064a94 0%,#022650 100%);
+      --boa: linear-gradient(135deg,#c91933 0%,#7a0e1e 100%);
+      --capitalone: linear-gradient(135deg,#003d80 0%,#001e40 100%);
+      --wellsfargo: linear-gradient(135deg,#c42028 0%,#7d0e14 100%);
+      --united: linear-gradient(135deg,#0a5aab 0%,#022244 100%);
+      --radius: 16px;
+      --radius-lg: 24px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ─── LIGHT THEME ─────────────────────────────────────── */
+    [data-theme="light"] {
+      --bg: #f5f5f7;
+      --bg-2: #ffffff;
+      --bg-3: #ebebf0;
+      --bg-card: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --border-bright: rgba(0,0,0,0.14);
+      --text: #1a1a2e;
+      --text-2: #52526e;
+      --text-3: #9898b0;
+      --accent: #c89a10;
+      --accent-2: #a87d08;
+      --accent-glow: rgba(200,154,16,0.18);
+      --green: #1a9e5c;
+      --yellow: #c8920a;
+      --red: #d63030;
+      --shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    /* ─── THEME TOGGLE BUTTON ─────────────────────────────── */
+    .theme-toggle {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-2);
+      transition: all 0.18s ease;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { background: var(--bg-card); color: var(--text); border-color: var(--border-bright); }
+    .theme-toggle .icon-dark { display: block; }
+    .theme-toggle .icon-light { display: none; }
+    [data-theme="light"] .theme-toggle .icon-dark { display: none; }
+    [data-theme="light"] .theme-toggle .icon-light { display: block; }
+
+    /* light theme overrides for specific components */
+    [data-theme="light"] .topbar {
+      background: rgba(255,255,255,0.88);
+      border-bottom-color: rgba(0,0,0,0.08);
+    }
+    [data-theme="light"] .tabbar { background: #fff; }
+    [data-theme="light"] .sidebar { background: #fff; }
+    [data-theme="light"] .credits-panel { background: #fafafa; }
+    [data-theme="light"] .credit-item:hover { background: var(--bg-3); }
+    [data-theme="light"] .stat-card { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    [data-theme="light"] .modal { background: #fff; }
+    [data-theme="light"] .sidebar-mobile { background: #fff; }
+    [data-theme="light"] .storage-option:hover { background: rgba(200,154,16,0.05); }
+    [data-theme="light"] .storage-option.selected { background: rgba(200,154,16,0.08); }
+    [data-theme="light"] .batch-card-row { background: #fafafa; }
+    [data-theme="light"] .batch-card-row:hover { background: var(--bg-3); }
+    [data-theme="light"] .batch-card-row.selected { background: rgba(200,154,16,0.07); }
+    [data-theme="light"] .cl-item { background: #fafafa; }
+    [data-theme="light"] .cl-summary:hover { background: var(--bg-3); }
+    [data-theme="light"] .cat-item { background: #fff; }
+    [data-theme="light"] .progress-track { background: var(--bg-3); }
+    [data-theme="light"] .icloud-status { background: var(--bg-3); }
+    [data-theme="light"] .form-input { background: var(--bg-3); color: var(--text); }
+    [data-theme="light"] .form-check { background: var(--bg-3); }
+    [data-theme="light"] .log-btn {
+      color: var(--accent-2);
+      background: rgba(200,154,16,0.1);
+      border-color: rgba(200,154,16,0.25);
+    }
+    [data-theme="light"] .log-btn:hover { background: rgba(200,154,16,0.2); }
+    [data-theme="light"] .btn-ghost {
+      background: var(--bg-3);
+      color: var(--text-2);
+    }
+    [data-theme="light"] .btn-ghost:hover { background: var(--bg-card); color: var(--text); }
+    [data-theme="light"] .tab-btn.active { color: var(--accent-2); }
+    [data-theme="light"] .sidebar-link:hover { background: var(--bg-3); }
+    [data-theme="light"] .toast { background: #fff; border-color: rgba(0,0,0,0.12); color: var(--text); box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+    [data-theme="light"] #resetBanner { background: linear-gradient(90deg,#fffbe6,#fff8d0); border-bottom-color: rgba(200,154,16,0.3); }
+    [data-theme="light"] .cc-wrap .credits-panel { background: #fff; }
+    [data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 8px; }
+
+    /* ─── TOPBAR ─────────────────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 1500px; margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 800; font-size: 17px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .logo span { color: var(--accent-2); }
+
+    .topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #1a1200;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .btn-primary:hover { background: #f0c830; transform: translateY(-1px); }
+    .btn-ghost {
+      background: var(--bg-3);
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--bg-card); color: var(--text); border-color: var(--border-bright); }
+    .btn-icon { padding: 8px; border-radius: 10px; }
+
+    .hamburger { display: none; }
+
+    /* ─── TAB BAR ─────────────────────────────────────── */
+    .tabbar {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .tabbar::-webkit-scrollbar { display: none; }
+    .tabbar-inner {
+      max-width: 1500px; margin: 0 auto;
+      padding: 0 20px;
+      display: flex; gap: 2px;
+      align-items: center;
+    }
+    .tab-btn {
+      padding: 12px 18px;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-3);
+      background: none; border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text-2); }
+    .tab-btn.active { color: var(--accent-2); border-bottom-color: var(--accent); }
+
+    /* ─── LAYOUT ─────────────────────────────────────── */
+    .layout {
+      max-width: 1500px; margin: 0 auto;
+      display: flex; align-items: flex-start;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .sidebar {
+      width: 260px; flex-shrink: 0;
+      position: sticky; top: 101px;
+      height: calc(100vh - 101px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex; flex-direction: column;
+      gap: 24px;
+    }
+    .sidebar-section-title {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-2);
+      text-decoration: none;
+      cursor: pointer;
+      background: none; border: none;
+      width: 100%; text-align: left;
+      transition: all 0.15s ease;
+    }
+    .sidebar-link:hover { background: var(--bg-3); color: var(--text); }
+    .sidebar-link svg { flex-shrink: 0; opacity: 0.7; }
+
+    .bank-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--text-3);
+      padding: 16px 8px 0;
+    }
+
+    /* ─── MAIN ─────────────────────────────────────── */
+    .main {
+      flex: 1; min-width: 0;
+      padding: 32px 28px 64px;
+    }
+
+    /* ─── STATS BAR ─────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+    }
+    .stat-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-family: 'Inter', sans-serif;
+      font-size: 26px; font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    .stat-value.green { color: var(--green); }
+    .stat-value.accent { color: var(--accent-2); }
+    .stat-value.red { color: var(--red); }
+    .stat-value.default { color: var(--text); }
+
+    /* ─── SECTION TITLE ─────────────────────────────── */
+    .section-heading {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 16px;
+    }
+
+    /* ─── CARD GRID ─────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    /* ─── CREDIT CARD ────────────────────────────────── */
+    .cc-wrap { display: flex; flex-direction: column; gap: 12px; }
+    .cc-face {
+      border-radius: var(--radius-lg);
+      padding: 22px 22px 18px;
+      aspect-ratio: 1.586;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow);
+    }
+    .cc-face:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
+    .cc-face::after {
+      content: ''; position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cc-face .circle-1 {
+      position: absolute; width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      right: -40px; top: -40px;
+    }
+    .cc-face .circle-2 {
+      position: absolute; width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      right: 20px; bottom: -40px;
+    }
+    .cc-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      position: relative; z-index: 1;
+    }
+    .cc-bank {
+      font-size: 9px; font-weight: 800;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      opacity: 0.75; color: rgba(255,255,255,0.9);
+      margin-bottom: 4px;
+    }
+    .cc-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 700;
+      color: #fff; line-height: 1.2;
+    }
+    .badge-524 {
+      background: rgba(255,80,80,0.9);
+      color: #fff;
+      font-size: 9px; font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .cc-bottom {
+      position: relative; z-index: 1;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .cc-digits {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.8);
+    }
+    .cc-date {
+      font-size: 8px; font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+    .cc-actions { display: flex; gap: 6px; }
+    .cc-btn {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: rgba(255,255,255,0.8);
+      transition: all 0.15s ease;
+    }
+    .cc-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+    .cc-btn:hover svg { opacity: 1; }
+    .cc-btn svg { width: 13px; height: 13px; opacity: 0.8; }
+
+    /* ─── CREDITS PANEL ──────────────────────────────── */
+    .credits-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: slideDown 0.2s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .credits-panel-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .credit-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s ease;
+    }
+    .credit-item:last-child { border-bottom: none; }
+    .credit-item:hover { background: var(--bg-3); }
+    .credit-row-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .credit-name {
+      font-size: 13px; font-weight: 500;
+      color: var(--text); line-height: 1.4;
+      flex: 1; margin-right: 10px;
+    }
+    .period-badge {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 0.05em;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .credit-amounts {
+      display: flex; align-items: baseline; gap: 6px;
+      margin-bottom: 6px;
+    }
+    .amount-remain {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 700;
+      color: var(--text);
+    }
+    .amount-total {
+      font-size: 11px; color: var(--text-3); font-weight: 400;
+    }
+    .progress-track {
+      height: 3px;
+      background: var(--bg-3);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.6s ease;
+    }
+    .progress-fill.full { background: linear-gradient(90deg, var(--green), #5af0ac); }
+    .credit-footer {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .expiry-label {
+      font-size: 10px; color: var(--text-3);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .log-btn {
+      font-size: 11px; font-weight: 600;
+      color: #1a1200;
+        background: rgba(232,185,35,0.85);
+        border: 1px solid rgba(232,185,35,0.5);
+      padding: 4px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .log-btn:hover { background: rgba(232,185,35,0.95); }
+    .status-chip {
+      font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; gap: 5px;
+      margin-bottom: 8px;
+    }
+    .status-chip.on { color: var(--green); }
+    .status-chip.off { color: var(--text-3); }
+    .logs-mini {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      max-height: 80px; overflow-y: auto;
+    }
+    .log-entry {
+      display: flex; justify-content: space-between;
+      font-size: 10px; color: var(--text-3);
+      padding: 2px 0;
+    }
+    .log-entry span:last-child { color: var(--text-2); font-weight: 500; white-space: nowrap; }
+
+    /* ─── CATEGORY VIEW ITEM ─────────────────────────── */
+    .cat-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      transition: border-color 0.2s ease;
+    }
+    .cat-item:hover { border-color: rgba(232,185,35,0.3); }
+    .cat-source {
+      font-size: 10px; font-weight: 700;
+      color: var(--accent-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ─── EMPTY STATE ────────────────────────────────── */
+    .empty-state {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 100px 20px;
+      text-align: center;
+    }
+    .empty-icon {
+      width: 80px; height: 80px;
+      background: var(--bg-3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+    .empty-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .empty-sub { font-size: 14px; color: var(--text-2); max-width: 300px; line-height: 1.6; }
+
+    /* ─── MODAL ──────────────────────────────────────── */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-2);
+      border: 1px solid var(--border-bright);
+      border-radius: 20px;
+      width: 100%; max-width: 460px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      animation: modalIn 0.22s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 700;
+    }
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-2);
+      transition: all 0.15s ease;
+    }
+    .modal-close:hover { background: var(--bg-card); color: var(--text); }
+    .modal-body { padding: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 7px;
+      letter-spacing: 0.02em;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 13px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease;
+      appearance: none; -webkit-appearance: none;
+    }
+    .form-input:focus { border-color: var(--accent); }
+    .form-input option { background: var(--bg-2); color: var(--text); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-check {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .form-check input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .form-check label {
+      font-size: 13px; font-weight: 500;
+      color: var(--text-2);
+      cursor: pointer;
+    }
+    .modal-footer {
+      padding: 16px 24px 24px;
+      display: flex; gap: 10px; justify-content: flex-end;
+    }
+
+    /* ─── STORAGE PANEL ──────────────────────────────── */
+    .storage-modal { max-width: 520px; }
+    .storage-option {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .storage-option:hover { border-color: var(--accent); background: rgba(232,185,35,0.06); }
+    .storage-option.selected { border-color: var(--accent); background: rgba(232,185,35,0.1); }
+    .storage-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .storage-info h4 {
+      font-size: 14px; font-weight: 600;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .storage-info p { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+    .storage-info .badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px; margin-top: 6px;
+    }
+    .badge-safari { background: rgba(52,199,89,0.15); color: #34c759; border: 1px solid rgba(52,199,89,0.3); }
+    .badge-offline { background: rgba(255,200,50,0.15); color: var(--yellow); border: 1px solid rgba(255,200,50,0.3); }
+    .icloud-status {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 8px;
+    }
+    .dot-status {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dot-gray { background: var(--text-3); }
+    .dot-pulse {
+      background: var(--yellow);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ─── TOAST ──────────────────────────────────────── */
+    .toast-container {
+      position: fixed; bottom: 28px; right: 28px;
+      display: flex; flex-direction: column;
+      gap: 8px; z-index: 999;
+    }
+    .toast {
+      background: var(--bg-2);
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 10px;
+      animation: toastIn 0.25s ease;
+      max-width: 320px;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ─── MOBILE SIDEBAR OVERLAY ─────────────────────── */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 150;
+    }
+    .sidebar-backdrop.open { display: block; }
+    .sidebar-mobile {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 280px;
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      z-index: 160;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+      padding: 20px 16px;
+      overflow-y: auto;
+    }
+    .sidebar-mobile.open { transform: translateX(0); }
+    .sidebar-mobile-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .sidebar { display: none; }
+      .hamburger { display: flex; }
+      .main { padding: 20px 16px 48px; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .btn-label { display: none; }
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    footer a {
+      color: var(--text-2); text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    footer a:hover { color: var(--text); }
+    .coffee-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #FFE033; color: #1a1a00;
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.15s ease;
+    }
+    .coffee-btn:hover { transform: scale(1.04); }
+    /* ─── CHANGELOG ACCORDION ────────────────────────── */
+    .cl-item {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .cl-item[open] { border-color: var(--border-bright); }
+    .cl-item[open] .cl-chevron { transform: rotate(180deg); }
+    .cl-summary {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 10px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    .cl-summary::-webkit-details-marker { display: none; }
+    .cl-summary:hover { background: var(--bg-3); }
+    .cl-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .cl-badge-new {
+      color: var(--accent);
+      background: rgba(232,185,35,0.12);
+      border: 1px solid rgba(232,185,35,0.25);
+    }
+    .cl-badge-old {
+      color: var(--text-3);
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+    }
+    .cl-date { font-size: 10px; color: var(--text-3); flex: 1; }
+    .cl-chevron { color: var(--text-3); flex-shrink: 0; transition: transform 0.2s ease; }
+    .cl-list {
+      list-style: none;
+      padding: 6px 10px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      border-top: 1px solid var(--border);
+    }
+    .cl-list li {
+      font-size: 11px; color: var(--text-2);
+      display: flex; gap: 6px; line-height: 1.5;
+    }
+    .cl-list-old li { color: var(--text-3); }
+    .cl-dot { color: var(--accent); flex-shrink: 0; }
+    /* ─── BATCH ADD ──────────────────────────────────── */
+    .bank-pill {
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-3);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .bank-pill:hover { border-color: var(--accent); color: var(--text); }
+    .bank-pill.active {
+      background: rgba(232,185,35,0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .batch-card-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 13px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all .15s ease;
+      user-select: none;
+    }
+    .batch-card-row:hover { border-color: var(--border-bright); background: var(--bg-3); }
+    .batch-card-row.selected {
+      border-color: var(--accent);
+      background: rgba(232,185,35,0.07);
+    }
+    .batch-card-row.already-added {
+      opacity: 0.4; cursor: not-allowed;
+      pointer-events: none;
+    }
+    .batch-checkbox {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border-radius: 5px;
+      border: 2px solid var(--border-bright);
+      background: var(--bg-3);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s ease;
+    }
+    .batch-card-row.selected .batch-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .batch-checkbox svg { display: none; }
+    .batch-card-row.selected .batch-checkbox svg { display: block; }
+    .batch-bank-dot {
+      width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+    }
+    .batch-card-info { flex: 1; min-width: 0; }
+    .batch-card-name { font-size: 13px; font-weight: 500; color: var(--text); }
+    .batch-card-meta { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+    .batch-already-tag {
+      font-size: 10px; font-weight: 600;
+      color: var(--text-3);
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      padding: 2px 7px; border-radius: 6px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<input type="file" id="importInput" class="hidden" accept=".json" style="display:none">
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">
+      <div class="logo-icon" style="background:none;border-radius:0;overflow:visible;"><svg viewBox="0 0 1024 1024" width="34" height="34" xmlns="http://www.w3.org/2000/svg" style="display:block;"><defs><clipPath id="lci-cf"><rect x="340" y="360" width="560" height="346" rx="42"/></clipPath><clipPath id="lci-cb"><rect x="124" y="318" width="560" height="346" rx="42"/></clipPath><pattern id="lci-bg" x="0" y="0" width="1" height="5" patternUnits="userSpaceOnUse"><rect width="1" height="5" fill="#0f1f4b"/><rect y="3" width="1" height="1" fill="#091530" opacity="0.7"/></pattern><pattern id="lci-sh" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse"><line x1="0" y1="160" x2="160" y2="0" stroke="white" stroke-width="36" opacity="0.04"/></pattern><pattern id="lci-smc" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse"><line x1="0" y1="120" x2="120" y2="0" stroke="white" stroke-width="28" opacity="0.07"/></pattern><pattern id="lci-dl" x="0" y="0" width="1" height="4" patternUnits="userSpaceOnUse"><rect width="1" height="4" fill="#dde8ff"/><rect y="2" width="1" height="1" fill="#c0d0f5" opacity="0.7"/></pattern><pattern id="lci-dd" x="0" y="0" width="1" height="4" patternUnits="userSpaceOnUse"><rect width="1" height="4" fill="#1e3f9a"/><rect y="2" width="1" height="1" fill="#142e72" opacity="0.8"/></pattern></defs><rect x="0" y="0" width="1024" height="1024" rx="220" fill="url(#lci-bg)"/><rect x="0" y="0" width="1024" height="1024" rx="220" fill="url(#lci-sh)"/><g transform="rotate(-10 404 491)"><g clip-path="url(#lci-cb)"><rect x="124" y="318" width="560" height="346" rx="42" fill="url(#lci-dd)"/><rect x="124" y="318" width="560" height="346" rx="42" fill="url(#lci-smc)"/></g><rect x="124" y="318" width="560" height="346" rx="42" fill="none" stroke="#3a5fba" stroke-width="3"/><rect x="180" y="420" width="78" height="58" rx="10" fill="#f0c040"/><line x1="186" y1="435" x2="252" y2="435" stroke="#c8960a" stroke-width="2"/><line x1="186" y1="449" x2="252" y2="449" stroke="#c8960a" stroke-width="2"/><line x1="186" y1="463" x2="252" y2="463" stroke="#c8960a" stroke-width="2"/></g><g clip-path="url(#lci-cf)"><rect x="340" y="360" width="560" height="346" rx="42" fill="url(#lci-dl)"/><rect x="340" y="360" width="560" height="346" rx="42" fill="url(#lci-smc)"/><rect x="340" y="360" width="560" height="104" fill="#3b6fd4" opacity="0.93"/><rect x="340" y="360" width="560" height="104" fill="url(#lci-sh)"/><text x="874" y="415" text-anchor="end" dominant-baseline="central" font-family="sans-serif" font-size="52" font-weight="700" fill="white" letter-spacing="6" opacity="0.95">PRO</text></g><rect x="340" y="360" width="560" height="346" rx="42" fill="none" stroke="#a0b8e8" stroke-width="2"/><rect x="390" y="494" width="78" height="58" rx="10" fill="#f0c040"/><line x1="396" y1="509" x2="462" y2="509" stroke="#c8960a" stroke-width="2.2"/><line x1="396" y1="523" x2="462" y2="523" stroke="#c8960a" stroke-width="2.2"/><line x1="396" y1="537" x2="462" y2="537" stroke="#c8960a" stroke-width="2.2"/><circle cx="400" cy="628" r="12" fill="#7aa0e0"/><circle cx="432" cy="628" r="12" fill="#7aa0e0"/><circle cx="464" cy="628" r="12" fill="#7aa0e0"/><circle cx="496" cy="628" r="12" fill="#7aa0e0"/><rect x="390" y="656" width="200" height="13" rx="6" fill="#b3c9f9"/><rect x="760" y="620" width="100" height="13" rx="6" fill="#7aa0e0"/><rect x="760" y="643" width="75" height="10" rx="5" fill="#b3c9f9"/><g transform="translate(760,248) rotate(32) scale(3.2)"><ellipse cx="0" cy="0" rx="46" ry="13" fill="white"/><ellipse cx="30" cy="0" rx="18" ry="10" fill="white"/><polygon points="-5,-13 20,0 -5,13" fill="white"/><polygon points="-35,-13 -18,0 -35,13" fill="#dbeafe"/><polygon points="-28,-7 -18,0 -28,7" fill="#bfdbfe"/><ellipse cx="5" cy="-16" rx="9" ry="4" fill="#c8d8f8"/><ellipse cx="5" cy="16" rx="9" ry="4" fill="#c8d8f8"/></g><circle cx="530" cy="152" r="9" fill="white" opacity="0.5"/><circle cx="494" cy="172" r="7" fill="white" opacity="0.35"/><circle cx="462" cy="194" r="5" fill="white" opacity="0.2"/></svg></div>
+      US Card Credits <span>Pro</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon hamburger" onclick="toggleSidebar(true)" title="選單">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="切換主題">
+        <!-- 深色模式顯示：月亮（點了切換到淺色） -->
+        <svg class="icon-dark" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <!-- 淺色模式顯示：太陽（點了切換到深色） -->
+        <svg class="icon-light" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="btn btn-ghost" onclick="openStorageModal()" title="資料儲存選項">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="btn-label">儲存 / 還原</span>
+      </button>
+      <button class="btn btn-primary" onclick="openCardModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span class="btn-label">新增卡片</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- TAB BAR -->
+<nav class="tabbar">
+  <div class="tabbar-inner" id="tabContainer">
+    <button class="tab-btn active" onclick="switchTab('all','全部卡片')" id="tab-all">全部卡片</button>
+    <button class="tab-btn" onclick="switchTab('uber','Uber 系列')" id="tab-uber">Uber 系列</button>
+    <button class="tab-btn" onclick="switchTab('airline','航空相關')" id="tab-airline">航空相關</button>
+    <button class="tab-btn" onclick="switchTab('dining','餐飲 / 外送')" id="tab-dining">餐飲 / 外送</button>
+    <button class="tab-btn" onclick="switchTab('travel','飯店 / 旅遊')" id="tab-travel">飯店 / 旅遊</button>
+    <button class="tab-btn" onclick="switchTab('lifestyle','生活 / 休閒')" id="tab-lifestyle">生活 / 休閒</button>
+    <button class="tab-btn" onclick="switchTab('status','機場 / 會籍')" id="tab-status">機場 / 會籍</button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- DESKTOP SIDEBAR -->
+  <aside class="sidebar" id="desktopSidebar">
+    <div>
+      <div class="sidebar-section-title">統計</div>
+      <a href="#statsSection" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        權益總覽
+      </a>
+    </div>
+
+    <div>
+      <div class="sidebar-section-title">我的卡片</div>
+      <div id="sidebarBankGroups"></div>
+    </div>
+
+    <div id="sidebar524Block"></div>
+
+    <div>
+      <div class="sidebar-section-title">資料管理</div>
+      <button class="sidebar-link" onclick="openStorageModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        儲存 / 還原資料
+      </button>
+      <button class="sidebar-link" onclick="exportData()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        快速備份 (.json)
+      </button>
+      <button class="sidebar-link" onclick="triggerImport()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        還原資料
+      </button>
+      <button class="sidebar-link" onclick="openManualResetModal()" style="color:var(--red);">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        年度重置
+      </button>
+    </div>
+
+    <div>
+      <div class="sidebar-section-title">更新日誌</div>
+      <div style="padding:0 4px;display:flex;flex-direction:column;gap:2px;">
+
+        <details class="cl-item">
+          <summary class="cl-summary">
+            <span class="cl-badge cl-badge-new">v2.1.0</span>
+            <span class="cl-date">2026-05-28</span>
+            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <ul class="cl-list">
+            <li><span class="cl-dot">·</span>卡片資料庫擴充至 107 張（Amex / Chase / BoA / Wells Fargo / Citi / Capital One）</li>
+            <li><span class="cl-dot">·</span>批次快速新增 — 銀行篩選 pill + 勾選多張一鍵加入，已新增卡片標記鎖定</li>
+            <li><span class="cl-dot">·</span>52 張卡片獨立視覺設計（專屬漸層 / 材質紋理 / 幾何裝飾圖形）</li>
+            <li><span class="cl-dot">·</span>可使用額度欄位 — 新增時填寫或卡面點擊隨時編輯，顯示於卡面右下角</li>
+            <li><span class="cl-dot">·</span>年度重置系統 — 每年自動偵測提醒 + 手動重置，歷史記錄完整封存保留</li>
+            <li><span class="cl-dot">·</span>Amex Platinum / Business Platinum 補上 FHR 每半年 $300 飯店折抵</li>
+            <li><span class="cl-dot">·</span>Amex Business Gold / Business Platinum 補上 $300 ChatGPT Business 折抵</li>
+            <li><span class="cl-dot">·</span>旅遊分類頁籤修正 — 補入「旅行」關鍵字，CSR 等卡片正確歸類</li>
+            <li><span class="cl-dot">·</span>5/24 側邊欄重設計 — 計入卡片時間軸 + 所有卡片時間軸，依日期排列</li>
+            <li><span class="cl-dot">·</span>卡片升級 / 降級功能 — 同銀行切換，預覽新卡權益，可選保留歷史記錄</li>
+            <li><span class="cl-dot">·</span>淺色 / 深色主題切換 — Topbar 一鍵切換，自動偵測系統偏好，記憶選擇</li>
+            <li><span class="cl-dot">·</span>更新日誌改為 accordion 點擊展開</li>
+            <li><span class="cl-dot">·</span>側邊欄新增「年度重置」快捷按鈕</li>
+          </ul>
+        </details>
+
+        <details class="cl-item">
+          <summary class="cl-summary">
+            <span class="cl-badge cl-badge-old">v2.0.0</span>
+            <span class="cl-date">2026-05-27</span>
+            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <ul class="cl-list">
+            <li><span class="cl-dot">·</span>全新深色主題 UI</li>
+            <li><span class="cl-dot">·</span>金色系配色全面更新</li>
+            <li><span class="cl-dot">·</span>字體換用 Inter + JetBrains Mono</li>
+            <li><span class="cl-dot">·</span>iCloud Drive 同步功能</li>
+            <li><span class="cl-dot">·</span>HTML 含資料下載功能</li>
+            <li><span class="cl-dot">·</span>上架 GitHub Pages</li>
+            <li><span class="cl-dot">·</span>手機版 topbar 按鈕修正</li>
+          </ul>
+        </details>
+
+        <details class="cl-item">
+          <summary class="cl-summary">
+            <span class="cl-badge cl-badge-old">v1.0.0</span>
+            <span class="cl-date">2026-04-12</span>
+            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <ul class="cl-list cl-list-old">
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>初始版本發佈</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>七家銀行卡片資料庫</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>JSON 備份 / 還原</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>Chase 5/24 追蹤</li>
+          </ul>
+        </details>
+
+      </div>
+    </div>
+
+    <div class="sidebar-footer">by Randy Tsai</div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <div id="statsSection" class="stats-grid"></div>
+    <div id="tabHeading" class="section-heading" style="display:none"></div>
+    <div id="cardList"></div>
+    <div id="emptyState" class="empty-state" style="display:none">
+      <div class="empty-icon">💳</div>
+      <div class="empty-title">尚未新增任何卡片</div>
+      <div class="empty-sub">點擊右上角「新增卡片」開始記錄您的美國信用卡權益</div>
+    </div>
+
+    <footer>
+      <div>
+        <strong style="color:var(--text-2)">US Card Credits Pro</strong> · by Randy Tsai
+        · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.0.0</span>
+        · <a href="mailto:creditsprofeedback@gmail.com">意見回饋</a>
+      </div>
+      <a href="https://www.buymeacoffee.com/randytsai1022" target="_blank" class="coffee-btn">☕ Buy me a coffee</a>
+    </footer>
+  </main>
+
+</div>
+
+<!-- MOBILE SIDEBAR BACKDROP + PANEL -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
+<aside class="sidebar-mobile" id="mobileSidebar">
+  <div class="sidebar-mobile-header">
+    <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:15px">選單</span>
+    <button class="modal-close" onclick="toggleSidebar(false)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="sidebar-section-title">統計</div>
+  <a href="#statsSection" class="sidebar-link" onclick="toggleSidebar(false)">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    權益總覽
+  </a>
+  <div style="margin-top:16px" class="sidebar-section-title">我的卡片</div>
+  <div id="mobileSidebarGroups"></div>
+  <div id="mobile524Block" style="margin-top:16px"></div>
+  <div style="margin-top:16px" class="sidebar-section-title">資料管理</div>
+  <button class="sidebar-link" onclick="toggleSidebar(false);openStorageModal()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    儲存 / 還原資料
+  </button>
+  <button class="sidebar-link" onclick="toggleSidebar(false);exportData()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    快速備份 (.json)
+  </button>
+  <button class="sidebar-link" onclick="toggleSidebar(false);triggerImport()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    還原資料
+  </button>
+  <button class="sidebar-link" onclick="toggleSidebar(false);openManualResetModal()" style="color:var(--red);">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+    年度重置
+  </button>
+  <div style="margin-top:16px" class="sidebar-section-title">更新日誌</div>
+  <div style="padding:0 4px;margin-top:4px;display:flex;flex-direction:column;gap:2px;">
+
+    <details class="cl-item">
+      <summary class="cl-summary">
+        <span class="cl-badge cl-badge-new">v2.1.0</span>
+        <span class="cl-date">2026-05-28</span>
+        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <ul class="cl-list">
+        <li><span class="cl-dot">·</span>卡片資料庫擴充至 107 張（6 家銀行）</li>
+        <li><span class="cl-dot">·</span>批次快速新增 — 銀行篩選 + 勾選多張一鍵加入</li>
+        <li><span class="cl-dot">·</span>52 張卡片獨立視覺設計（漸層 / 材質 / 裝飾）</li>
+        <li><span class="cl-dot">·</span>可使用額度欄位，顯示於卡面，可隨時編輯</li>
+        <li><span class="cl-dot">·</span>年度重置系統，歷史記錄完整封存保留</li>
+        <li><span class="cl-dot">·</span>Amex Platinum / Biz Plat 補上 FHR $300 飯店折抵</li>
+        <li><span class="cl-dot">·</span>Amex Biz Gold / Biz Plat 補上 $300 ChatGPT 折抵</li>
+        <li><span class="cl-dot">·</span>旅遊分類頁籤修正（CSR 等卡片正確歸類）</li>
+        <li><span class="cl-dot">·</span>5/24 側邊欄重設計 — 雙時間軸分類顯示</li>
+        <li><span class="cl-dot">·</span>卡片升級 / 降級功能，可預覽新卡權益</li>
+        <li><span class="cl-dot">·</span>淺色 / 深色主題切換，記憶使用者選擇</li>
+        <li><span class="cl-dot">·</span>更新日誌 accordion 展開 + 側邊欄重置按鈕</li>
+      </ul>
+    </details>
+
+    <details class="cl-item">
+      <summary class="cl-summary">
+        <span class="cl-badge cl-badge-old">v2.0.0</span>
+        <span class="cl-date">2026-05-27</span>
+        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <ul class="cl-list cl-list-old">
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>全新深色主題 UI</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>金色系配色全面更新</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>字體換用 Inter + JetBrains Mono</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>iCloud Drive 同步功能</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>HTML 含資料下載功能</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>上架 GitHub Pages</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>手機版 topbar 修正</li>
+      </ul>
+    </details>
+
+    <details class="cl-item">
+      <summary class="cl-summary">
+        <span class="cl-badge cl-badge-old">v1.0.0</span>
+        <span class="cl-date">2026-04-12</span>
+        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <ul class="cl-list cl-list-old">
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>初始版本發佈</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>七家銀行卡片資料庫</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>JSON 備份 / 還原</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>Chase 5/24 追蹤</li>
+      </ul>
+    </details>
+
+  </div>
+  <div style="flex:1"></div>
+  <div class="sidebar-footer">by Randy Tsai</div>
+</aside>
+
+<!-- STORAGE MODAL -->
+<div class="overlay" id="storageOverlay">
+  <div class="modal storage-modal">
+    <div class="modal-header">
+      <span class="modal-title">儲存 / 還原資料</span>
+      <button class="modal-close" onclick="closeStorageModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="storage-option" onclick="showICloudGuide()">
+        <div class="storage-icon" style="background:rgba(52,199,89,0.12)">☁️</div>
+        <div class="storage-info">
+          <h4>iCloud Drive 同步</h4>
+          <p>將此 HTML 檔案儲存至 iCloud Drive，即可在所有 Apple 裝置上同步使用，資料自動保存於 localStorage。</p>
+          <span class="badge badge-safari">需要 Safari / iOS</span>
+        </div>
+      </div>
+
+      <div id="icloudGuide" style="display:none; margin-bottom:12px;">
+        <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:16px;font-size:12px;color:var(--text-2);line-height:1.8;">
+          <strong style="color:var(--text);display:block;margin-bottom:8px;">📋 iCloud Drive 使用方式：</strong>
+          <ol style="padding-left:16px;display:flex;flex-direction:column;gap:6px;">
+            <li>點擊下方「下載 HTML 檔案」取得最新版本</li>
+            <li>在 iPhone / iPad：透過「檔案」App 將 HTML 移到 iCloud Drive</li>
+            <li>在 Mac：將 HTML 拖移到 Finder → iCloud Drive 資料夾</li>
+            <li>以後直接從 iCloud Drive 開啟該 HTML 檔案即可</li>
+            <li>⚠️ 注意：資料存於各裝置 localStorage，不同裝置需手動匯出/匯入 JSON 來同步</li>
+          </ol>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:10px;justify-content:center;" onclick="downloadHTMLFile()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下載 HTML 檔案（含所有資料）
+        </button>
+      </div>
+
+      <div class="storage-option" onclick="exportData();closeStorageModal()">
+        <div class="storage-icon" style="background:rgba(255,200,50,0.12)">💾</div>
+        <div class="storage-info">
+          <h4>離線備份 JSON</h4>
+          <p>將您的卡片紀錄下載為 JSON 備份檔，可跨裝置、跨瀏覽器還原。建議定期備份。</p>
+          <span class="badge badge-offline">適用所有裝置</span>
+        </div>
+      </div>
+
+      <div class="storage-option" onclick="triggerImport();closeStorageModal()">
+        <div class="storage-icon" style="background:rgba(232,185,35,0.12)">📂</div>
+        <div class="storage-info">
+          <h4>還原備份資料</h4>
+          <p>選取先前備份的 JSON 檔案來還原所有卡片資料。</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div class="sidebar-section-title" style="margin-bottom:8px">目前儲存狀態</div>
+        <div class="icloud-status">
+          <div class="dot-status dot-green"></div>
+          <span id="storageStatusText">資料已儲存於本地瀏覽器 (localStorage)</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.6;">
+          ⚠️ 清除瀏覽器快取將導致資料遺失。請定期下載 JSON 備份或將 HTML 檔案儲存至 iCloud Drive。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CARD MODAL -->
+<div class="overlay" id="cardModalOverlay">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <span class="modal-title">新增信用卡</span>
+      <button class="modal-close" onclick="closeCardModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- MODE TABS -->
+    <div style="display:flex;border-bottom:1px solid var(--border);">
+      <button id="modeTabBatch" onclick="switchAddMode('batch')"
+        style="flex:1;padding:11px;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--accent);border-bottom:2px solid var(--accent);transition:all .15s;">
+        ⚡ 批次快速新增
+      </button>
+      <button id="modeTabSingle" onclick="switchAddMode('single')"
+        style="flex:1;padding:11px;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--text-3);border-bottom:2px solid transparent;transition:all .15s;">
+        + 單張新增
+      </button>
+    </div>
+
+    <!-- BATCH MODE -->
+    <div id="batchMode" class="modal-body" style="padding-top:16px;">
+      <!-- Bank filter pills -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="bankPills"></div>
+      <!-- Card checklist -->
+      <div id="batchCardList" style="display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;padding-right:4px;"></div>
+      <!-- Selected count bar -->
+      <div id="batchCountBar" style="margin-top:14px;padding:10px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text-2);display:flex;justify-content:space-between;align-items:center;">
+        <span>已選擇 <strong id="batchCount" style="color:var(--accent)">0</strong> 張卡片</span>
+        <button onclick="batchSelectAll()" style="font-size:11px;font-weight:600;color:var(--accent-2);background:none;border:none;cursor:pointer;text-decoration:underline;">全選目前頁</button>
+      </div>
+    </div>
+
+    <!-- SINGLE MODE -->
+    <div id="singleMode" class="modal-body" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">發卡銀行</label>
+        <select id="bankSelect" class="form-input" onchange="updateCardTypeOptions()">
+          <option value="Amex">American Express</option>
+          <option value="Chase">Chase</option>
+          <option value="Citi">Citi</option>
+          <option value="BoA">Bank of America</option>
+          <option value="CapitalOne">Capital One</option>
+          <option value="WellsFargo">Wells Fargo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">卡片名稱</label>
+        <select id="cardTypeSelect" class="form-input"></select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">核卡日期（選填）</label>
+          <input type="date" id="approvalDateInput" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">末四 / 五碼（選填）</label>
+          <input type="text" id="cardDigitsInput" class="form-input" placeholder="1234" maxlength="5">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">可使用額度 $ （選填）</label>
+          <input type="number" id="creditLimitInput" class="form-input" placeholder="例：10000" min="0" step="100">
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;">
+          <div class="form-check" style="width:100%;">
+            <input type="checkbox" id="is524Checkbox">
+            <label for="is524Checkbox">計入 Chase 5/24 規則</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeCardModal()">取消</button>
+      <button class="btn btn-primary" id="addCardBtn" onclick="handleAddCard()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span id="addCardBtnLabel">批次新增</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSACTION MODAL -->
+<div class="overlay" id="txOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">記錄使用</span>
+      <button class="modal-close" onclick="closeTxModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:16px;padding:10px 14px;background:var(--bg-3);border-radius:10px;border:1px solid var(--border);" id="txCreditName"></div>
+      <input type="hidden" id="txCardId">
+      <input type="hidden" id="txCreditIdx">
+      <div class="form-group">
+        <label class="form-label" id="txAmountLabel">金額 / 折抵 ($)</label>
+        <input type="number" id="txAmount" class="form-input" step="0.01" min="0" placeholder="0.00">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">日期（選填）</label>
+          <input type="date" id="txDate" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">備註（選填）</label>
+          <input type="text" id="txNote" class="form-input" placeholder="使用說明">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeTxModal()">取消</button>
+      <button class="btn btn-primary" onclick="submitTransaction()">確認記錄</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANNUAL RESET BANNER -->
+<div id="resetBanner" style="display:none;position:fixed;top:62px;left:0;right:0;z-index:180;background:linear-gradient(90deg,#1a1400,#2a1f00);border-bottom:1px solid rgba(232,185,35,0.35);padding:12px 20px;align-items:center;gap:14px;flex-wrap:wrap;">
+  <div style="font-size:20px;flex-shrink:0;">🎊</div>
+  <div style="flex:1;min-width:200px;">
+    <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:2px;">新年快樂！年度權益重置提醒</div>
+    <div style="font-size:12px;color:var(--text-2);">偵測到 <strong id="resetBannerYear" style="color:var(--text)"></strong> 年的權益記錄尚未封存。封存後將保留所有歷史記錄，並將退額歸零以迎接新的一年。</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button class="btn btn-ghost" onclick="dismissResetBanner()" style="font-size:12px;padding:7px 14px;">稍後再說</button>
+    <button class="btn btn-primary" onclick="confirmAutoReset()" style="font-size:12px;padding:7px 14px;">
+      ✅ 封存並重置
+    </button>
+  </div>
+</div>
+
+<!-- MANUAL RESET MODAL -->
+<div class="overlay" id="manualResetOverlay">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <span class="modal-title">手動年度重置</span>
+      <button class="modal-close" onclick="closeManualResetModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(232,185,35,0.08);border:1px solid rgba(232,185,35,0.2);border-radius:12px;padding:14px;margin-bottom:18px;font-size:12px;color:var(--text-2);line-height:1.7;">
+        <strong style="color:var(--accent);display:block;margin-bottom:6px;">⚠️ 操作說明</strong>
+        · 目前年度所有退額使用記錄將封存至「歷史記錄」<br>
+        · 所有 <strong style="color:var(--text)">非會籍狀態、非永久、非多年期</strong> 的退額將歸零<br>
+        · 此操作不可復原（但歷史資料不會刪除）
+      </div>
+      <div class="form-group">
+        <label class="form-label">封存為哪一年的記錄？</label>
+        <input type="number" id="manualResetYear" class="form-input"
+          value="" min="2020" max="2099" placeholder="例：2026">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeManualResetModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmManualReset()" style="background:var(--red);box-shadow:none;">
+        確認重置
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE / DOWNGRADE MODAL -->
+<div class="overlay" id="upgradeOverlay">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="modal-title">升級 / 降級卡片</span>
+      <button class="modal-close" onclick="closeUpgradeModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <!-- 現有卡片資訊 -->
+      <div id="upgradeFromCard" style="background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">目前卡片</div>
+        <div id="upgradeFromName" style="font-size:14px;font-weight:600;color:var(--text);"></div>
+        <div id="upgradeFromBank" style="font-size:11px;color:var(--text-3);margin-top:2px;"></div>
+      </div>
+
+      <!-- 升降級目標 -->
+      <div class="form-group">
+        <label class="form-label">切換至</label>
+        <select id="upgradeTargetSelect" class="form-input" onchange="previewUpgradeTarget()">
+        </select>
+      </div>
+
+      <!-- 預覽新卡 -->
+      <div id="upgradePreview" style="display:none;background:var(--bg-3);border:1px solid rgba(232,185,35,0.25);border-radius:12px;padding:14px;margin-bottom:18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">新卡片權益預覽</div>
+        <div id="upgradePreviewList" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- 保留選項 -->
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="form-check">
+          <input type="checkbox" id="upgradeKeepDate" checked>
+          <label for="upgradeKeepDate">保留原核卡日期（升降級不算新開卡，不影響 5/24）</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="upgradeKeepLimit" checked>
+          <label for="upgradeKeepLimit">保留原可使用額度</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="upgradeKeepDigits" checked>
+          <label for="upgradeKeepDigits">保留原末四碼</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="upgradeKeepHistory">
+          <label for="upgradeKeepHistory">保留原卡片的使用記錄與歷史</label>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;padding:10px 14px;background:rgba(232,185,35,0.06);border:1px solid rgba(232,185,35,0.18);border-radius:10px;font-size:11px;color:var(--text-2);line-height:1.7;">
+        ⚠️ 切換後，新卡片的所有權益將重置為 0，原卡片的記錄可選擇保留於歷史。
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeUpgradeModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmUpgrade()">確認切換</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ──────────────────────────────────────────────────────────────
+//  CARD DATABASE
+// ──────────────────────────────────────────────────────────────
+const cardDatabase = {
+  // ── AMERICAN EXPRESS ──────────────────────────────────────────
+  'Amex': [
+    // Personal
+    { name: 'The Platinum Card®', network: 'amex', annualFee: 895, credits: [
+      { name: 'FHR / THC 飯店折抵 (Fine Hotels + Resorts)', total: 600, period: '每年 (上下半年各 $300)', expiry: '2026-12-31' },
+      { name: '航空公司附加費折抵 (Airline Fee Credit)', total: 200, period: '每年（指定一家航空）', expiry: '2026-12-31' },
+      { name: 'Uber Cash 折抵', total: 200, period: '每年 ($15/月+$20/12月)', expiry: '2026-12-31' },
+      { name: 'Saks Fifth Avenue 購物折抵', total: 100, period: '每半年 ($50)', expiry: '2026-06-30' },
+      { name: 'Equinox 健身折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: 'CLEAR Plus 折抵', total: 199, period: '每年', expiry: '2026-12-31' },
+      { name: 'Disney Bundle 折抵', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Centurion Lounge 無限使用', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Priority Pass 機場貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Hilton Honors 金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Marriott Bonvoy 金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'American Express® Gold Card', network: 'amex', annualFee: 325, credits: [
+      { name: '指定餐飲消費折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+      { name: 'Uber Cash 折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+      { name: "Dunkin' 餐廳折抵", total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
+      { name: 'Resy 餐廳折抵', total: 100, period: '每半年 ($50)', expiry: '2026-06-30' }
+    ]},
+    { name: 'American Express® Green Card', network: 'amex', annualFee: 150, credits: [
+      { name: 'LoungeBuddy 貴賓室折抵', total: 100, period: '每年', expiry: '2026-12-31' },
+      { name: 'CLEAR Plus 折抵', total: 189, period: '每年', expiry: '2026-12-31' }
+    ]},
+    { name: 'Amex EveryDay® Credit Card', network: 'amex', annualFee: 0, credits: [
+      { name: '每月 20+ 次消費獎勵加成 20%', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Amex EveryDay® Preferred Credit Card', network: 'amex', annualFee: 95, credits: [
+      { name: '每月 30+ 次消費獎勵加成 50%', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Blue Cash Everyday® Card', network: 'amex', annualFee: 0, credits: [
+      { name: 'Disney Bundle 折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
+      { name: 'Home Chef 折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' }
+    ]},
+    { name: 'Blue Cash Preferred® Card', network: 'amex', annualFee: 95, credits: [
+      { name: 'Disney Bundle 折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
+      { name: 'Equinox+ 折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' }
+    ]},
+    { name: 'Marriott Bonvoy Brilliant®', network: 'amex', annualFee: 650, credits: [
+      { name: '餐飲折抵', total: 300, period: '每月 ($25)', expiry: '2026-12-31' },
+      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '萬豪白金會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Marriott Bonvoy Bevy™', network: 'amex', annualFee: 250, credits: [
+      { name: '餐飲折抵', total: 155, period: '每年', expiry: '2026-12-31' },
+      { name: '免費住宿夜 (50K pts)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '萬豪金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Hilton Honors Aspire', network: 'amex', annualFee: 550, credits: [
+      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Hilton 渡假村消費折抵', total: 400, period: '每半年 ($200)', expiry: '2026-12-31' },
+      { name: '航空消費折抵', total: 200, period: '每季 ($50)', expiry: '2026-12-31' },
+      { name: 'CLEAR Plus 折抵', total: 199, period: '每年', expiry: '2026-12-31' },
+      { name: 'Hilton 鑽石會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'National 租車高階會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Hilton Honors Surpass®', network: 'amex', annualFee: 150, credits: [
+      { name: 'Hilton 旗下飯店折抵', total: 200, period: '每季 ($50)', expiry: '2026-12-31' },
+      { name: '免費夜獎勵 (消費 $15K)', total: 1, period: '張', expiry: '每年' },
+      { name: 'Hilton 金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'National 租車高階會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Hilton Honors Card', network: 'amex', annualFee: 0, credits: [
+      { name: 'Hilton 銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Delta SkyMiles® Reserve', network: 'amex', annualFee: 650, credits: [
+      { name: 'Delta Sky Club 無限使用', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Centurion Lounge (Delta 航班)', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Delta 國內頭等艙升等憑證', total: 2, period: '張', expiry: '每年續卡' },
+      { name: 'Resy 餐廳折抵', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Delta SkyMiles® Platinum', network: 'amex', annualFee: 350, credits: [
+      { name: 'Delta 國內頭等艙升等憑證', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '同行者機票 (買1送1)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Delta SkyMiles® Gold', network: 'amex', annualFee: 150, credits: [
+      { name: '餐飲 / 外送折抵', total: 120, period: '每年 ($10/月)', expiry: '2026-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Delta SkyMiles® Blue', network: 'amex', annualFee: 0, credits: [
+      { name: 'Delta 餐廳消費 2x 里程', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    // Business
+    { name: 'Business Platinum Card®', network: 'amex', annualFee: 895, credits: [
+      { name: 'ChatGPT Business 折抵', total: 300, period: '每年 (日曆年)', expiry: '2026-12-31' },
+      { name: 'FHR / THC 飯店折抵 (Fine Hotels + Resorts)', total: 600, period: '每年 (上下半年各 $300)', expiry: '2026-12-31' },
+      { name: '航空公司附加費折抵 (Airline Fee Credit)', total: 200, period: '每年（指定一家航空）', expiry: '2026-12-31' },
+      { name: '飯店 / 機票折抵 ($5000+消費)', total: 200, period: '每年', expiry: '2026-12-31' },
+      { name: 'Dell Technologies 折抵', total: 400, period: '每半年 ($200)', expiry: '2026-06-30' },
+      { name: 'Indeed 招聘平台折抵', total: 360, period: '每月 ($30)', expiry: '2026-12-31' },
+      { name: 'Adobe Creative 折抵', total: 150, period: '每年', expiry: '2026-12-31' },
+      { name: 'CLEAR Plus 折抵', total: 199, period: '每年', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Centurion Lounge 無限使用', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Hilton 金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Marriott 金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Business Gold Card', network: 'amex', annualFee: 375, credits: [
+      { name: 'ChatGPT Business 折抵', total: 300, period: '每年 (日曆年)', expiry: '2026-12-31' },
+      { name: '商務折抵 (FedEx/Grubhub/辦公室)', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
+      { name: 'Walmart+ 會員折抵', total: 155.4, period: '每月 ($12.95)', expiry: '2026-12-31' },
+      { name: 'Squarespace 折抵', total: 150, period: '每年', expiry: '2026-12-31' }
+    ]},
+    { name: 'Business Green Rewards Card', network: 'amex', annualFee: 95, credits: [
+      { name: '旅遊 2x 點數回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Blue Business® Plus Credit Card', network: 'amex', annualFee: 0, credits: [
+      { name: '消費 2x MR 點數 (前 $50K)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Blue Business Cash™ Card', network: 'amex', annualFee: 0, credits: [
+      { name: '消費 2% 現金回饋 (前 $50K)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Marriott Bonvoy Business®', network: 'amex', annualFee: 125, credits: [
+      { name: '免費住宿夜 (35K pts)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '餐飲折抵', total: 120, period: '每年 ($10/月)', expiry: '2026-12-31' },
+      { name: '萬豪金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Hilton Honors Business', network: 'amex', annualFee: 95, credits: [
+      { name: 'Hilton 旗下飯店折抵', total: 240, period: '每季 ($60)', expiry: '2026-12-31' },
+      { name: 'Hilton 金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'National 租車高階會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Delta SkyMiles® Reserve Business', network: 'amex', annualFee: 650, credits: [
+      { name: 'Delta Sky Club 無限使用', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Delta 國內頭等艙升等憑證', total: 2, period: '張', expiry: '每年續卡' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Delta SkyMiles® Platinum Business', network: 'amex', annualFee: 350, credits: [
+      { name: '同行者機票 (買1送1)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Delta SkyMiles® Gold Business', network: 'amex', annualFee: 150, credits: [
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]}
+  ],
+
+  // ── CHASE ─────────────────────────────────────────────────────
+  'Chase': [
+    { name: 'Chase Sapphire Reserve® (CSR)', network: 'visa', annualFee: 795, credits: [
+      { name: '年度旅行消費折抵', total: 300, period: '每持卡年', expiry: '每年' },
+      { name: 'DashPass + DoorDash 折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: 'Lyft 共乘折抵', total: 120, period: '每年', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'The Edit 奢華酒店折抵', total: 500, period: '每年', expiry: '2026-12-31' },
+      { name: 'Exclusive Tables 餐廳折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: 'Stubhub / viagogo 票券折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: 'Peloton 健身折抵', total: 120, period: '每年', expiry: '2026-12-31' },
+      { name: 'Priority Pass / Sapphire Lounge', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'IHG 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Apple TV+ & Music', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Chase Sapphire Preferred® (CSP)', network: 'visa', annualFee: 95, credits: [
+      { name: 'Chase Travel 飯店折抵', total: 50, period: '每年', expiry: '2026-12-31' },
+      { name: '年度 10% 獎勵點數回饋', total: 0, period: '點數', expiry: '續卡時' },
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Chase Freedom Flex℠', network: 'mastercard', annualFee: 0, credits: [
+      { name: '季度 5% 旋轉類別回饋 (前 $1500)', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Chase Freedom Unlimited®', network: 'visa', annualFee: 0, credits: [
+      { name: '旅遊消費 5% 回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Chase Freedom® Rise', network: 'visa', annualFee: 0, credits: [
+      { name: '無年費 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Marriott Bonvoy Boundless®', network: 'visa', annualFee: 95, credits: [
+      { name: '免費住宿夜 (35K pts)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '萬豪銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Marriott Bonvoy Bold®', network: 'visa', annualFee: 0, credits: [
+      { name: '萬豪銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Marriott Bonvoy Bountiful™', network: 'visa', annualFee: 250, credits: [
+      { name: '免費住宿夜 (50K pts)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '萬豪金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'The World of Hyatt Credit Card', network: 'visa', annualFee: 95, credits: [
+      { name: 'Hyatt 免費住宿夜 (Cat 1-4)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Hyatt 免費住宿夜 (消費 $15K)', total: 1, period: '張', expiry: '每年' },
+      { name: 'Hyatt Discoverist 會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'IHG One Rewards Premier', network: 'mastercard', annualFee: 99, credits: [
+      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'United TravelBank 折抵', total: 50, period: '每半年 ($25)', expiry: '2026-06-30' },
+      { name: 'IHG 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'IHG One Rewards Traveler', network: 'mastercard', annualFee: 0, credits: [
+      { name: 'IHG 銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'United Club℠ Infinite', network: 'visa', annualFee: 525, credits: [
+      { name: 'United Club 貴賓室無限使用', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'IHG One Rewards 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: "Avis President's Club 會籍", total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'United Quest℠', network: 'visa', annualFee: 250, credits: [
+      { name: '機票消費折抵', total: 125, period: '每年', expiry: '2026-12-31' },
+      { name: 'United 里程獎勵 (5K PQP)', total: 5000, period: '點數', expiry: '每年' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'United Explorer℠', network: 'visa', annualFee: 95, credits: [
+      { name: 'United Club 單次通行證', total: 2, period: '張', expiry: '每年續卡' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'United Gateway℠', network: 'visa', annualFee: 0, credits: [
+      { name: 'United 消費 2x 里程', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Southwest Rapid Rewards® Priority', network: 'visa', annualFee: 149, credits: [
+      { name: '年度旅行消費折抵', total: 75, period: '每年', expiry: '2026-12-31' },
+      { name: '升等積分', total: 1500, period: '點數', expiry: '每年' },
+      { name: '4 次登機升等優先', total: 4, period: '張', expiry: '每年續卡' }
+    ]},
+    { name: 'Southwest Rapid Rewards® Premier', network: 'visa', annualFee: 99, credits: [
+      { name: '週年紀念積分', total: 6000, period: '點數', expiry: '每年' }
+    ]},
+    { name: 'Southwest Rapid Rewards® Plus', network: 'visa', annualFee: 69, credits: [
+      { name: '週年紀念積分', total: 3000, period: '點數', expiry: '每年' }
+    ]},
+    { name: 'British Airways Visa Signature®', network: 'visa', annualFee: 95, credits: [
+      { name: '同行者機票兌換 (消費 $30K)', total: 1, period: '張', expiry: '每年' }
+    ]},
+    { name: 'Iberia Visa Signature®', network: 'visa', annualFee: 95, credits: [
+      { name: '同行者機票兌換 (消費 $30K)', total: 1, period: '張', expiry: '每年' }
+    ]},
+    { name: 'Aer Lingus Visa Signature®', network: 'visa', annualFee: 95, credits: [
+      { name: '同行者機票兌換 (消費 $30K)', total: 1, period: '張', expiry: '每年' }
+    ]},
+    { name: 'Prime Visa (Amazon)', network: 'visa', annualFee: 0, credits: [
+      { name: 'Amazon / Whole Foods 5% 回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '$150 Amazon 禮品卡 (新卡)', total: 150, period: '一次性', expiry: '開卡時' }
+    ]},
+    { name: 'Disney® Premier Visa®', network: 'visa', annualFee: 49, credits: [
+      { name: '$300 Disney 消費折抵 (新卡)', total: 300, period: '一次性', expiry: '開卡時' },
+      { name: 'Disney 主題樂園 10% 折扣', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Disney® Visa®', network: 'visa', annualFee: 0, credits: [
+      { name: 'Disney 主題樂園 10% 折扣', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Ink Business Preferred®', network: 'visa', annualFee: 95, credits: [
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Cell phone 手機保險', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Ink Business Cash®', network: 'visa', annualFee: 0, credits: [
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Lyft 5% 回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Ink Business Unlimited®', network: 'visa', annualFee: 0, credits: [
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: '無限 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Ink Business Premier®', network: 'visa', annualFee: 195, credits: [
+      { name: '大額消費 2.5% 現金回饋 ($5000+)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Marriott Bonvoy Business® (Chase)', network: 'visa', annualFee: 125, credits: [
+      { name: '免費住宿夜 (35K pts)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '萬豪金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'The World of Hyatt Business', network: 'visa', annualFee: 199, credits: [
+      { name: 'Hyatt 免費住宿夜 (消費 $50K)', total: 1, period: '張', expiry: '每年' },
+      { name: 'Hyatt 品質折抵', total: 100, period: '每年', expiry: '2026-12-31' }
+    ]},
+    { name: 'IHG One Rewards Premier Business', network: 'mastercard', annualFee: 99, credits: [
+      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'IHG 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'United℠ Business', network: 'visa', annualFee: 99, credits: [
+      { name: 'United Club 單次通行證', total: 2, period: '張', expiry: '每年續卡' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'United Club℠ Business', network: 'visa', annualFee: 450, credits: [
+      { name: 'United Club 無限使用', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Southwest Rapid Rewards® Performance Business', network: 'visa', annualFee: 199, credits: [
+      { name: '年度旅行消費折抵', total: 125, period: '每年', expiry: '2026-12-31' },
+      { name: '4 次 Wi-Fi 憑證', total: 4, period: '張', expiry: '每年' },
+      { name: '升等積分', total: 1500, period: '點數', expiry: '每年' }
+    ]},
+    { name: 'Southwest Rapid Rewards® Premier Business', network: 'visa', annualFee: 99, credits: [
+      { name: '週年紀念積分', total: 6000, period: '點數', expiry: '每年' }
+    ]}
+  ],
+
+  // ── BANK OF AMERICA ───────────────────────────────────────────
+  'BoA': [
+    { name: 'Bank of America® Premium Rewards® Elite', network: 'visa', annualFee: 550, credits: [
+      { name: '美籍航空消費折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: '生活消費折抵 (Lifestyle)', total: 150, period: '每年', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '包含餐廳' }
+    ]},
+    { name: 'Bank of America® Premium Rewards®', network: 'visa', annualFee: 95, credits: [
+      { name: '旅遊 / 餐飲消費折抵', total: 100, period: '每年', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 100, period: '每 4 年', expiry: '2030-12-31' }
+    ]},
+    { name: 'Bank of America® Customized Cash Rewards', network: 'visa', annualFee: 0, credits: [
+      { name: '自選類別 3% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bank of America® Travel Rewards', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 1.5x 旅遊點數', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bank of America® Unlimited Cash Rewards', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Alaska Airlines Visa® Signature', network: 'visa', annualFee: 95, credits: [
+      { name: '同行者機票兌換券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Alaska Airlines Visa® Summit (Atmos)', network: 'visa', annualFee: 350, credits: [
+      { name: '全球通用同行者機票兌換券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '阿拉斯加航空貴賓室季度通行證', total: 8, period: '張 (每季2張)', expiry: '每季更新' },
+      { name: '定級點數 (EQP)', total: 10000, period: '點數', expiry: '每年續卡' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' }
+    ]},
+    { name: 'Air France KLM World Elite Mastercard®', network: 'mastercard', annualFee: 89, credits: [
+      { name: '年度 Flying Blue 里程', total: 5000, period: '點數', expiry: '每年' },
+      { name: 'Flying Blue 銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Virgin Atlantic Reward+ Mastercard', network: 'mastercard', annualFee: 90, credits: [
+      { name: '年度 Companion Upgrade Voucher', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Virgin Points 年度獎勵', total: 15000, period: '點數', expiry: '每年' }
+    ]},
+    { name: 'Virgin Atlantic Reward Mastercard', network: 'mastercard', annualFee: 0, credits: [
+      { name: 'Virgin Points 年度獎勵', total: 5000, period: '點數', expiry: '每年' }
+    ]},
+    { name: 'Bank of America® Business Advantage Customized Cash', network: 'visa', annualFee: 0, credits: [
+      { name: '自選類別 3% 現金回饋 (前 $50K)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bank of America® Business Advantage Unlimited Cash', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bank of America® Business Advantage Travel', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 1.5x 旅遊點數', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Alaska Airlines Visa® Business', network: 'visa', annualFee: 95, credits: [
+      { name: '同行者機票兌換券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]}
+  ],
+
+  // ── WELLS FARGO ───────────────────────────────────────────────
+  'WellsFargo': [
+    { name: 'Wells Fargo Autograph Journey℠', network: 'visa', annualFee: 95, credits: [
+      { name: '機票消費折抵', total: 50, period: '每年', expiry: '2026-12-31' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Wells Fargo Autograph℠', network: 'visa', annualFee: 0, credits: [
+      { name: '旅遊 / 餐飲 / 加油 3x 點數', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Wells Fargo Active Cash®', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 2% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Wells Fargo Reflect®', network: 'visa', annualFee: 0, credits: [
+      { name: '21 個月 0% APR 優惠', total: 0, period: '會籍狀態', expiry: '開卡後21月' }
+    ]},
+    { name: 'Wells Fargo One Key+™', network: 'visa', annualFee: 99, credits: [
+      { name: 'One Key Cash 3% 回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Wells Fargo One Key™', network: 'visa', annualFee: 0, credits: [
+      { name: 'One Key Cash 2% 回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bilt Mastercard®', network: 'mastercard', annualFee: 0, credits: [
+      { name: '租金 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Lyft 銀卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Rent Day 雙倍點數 (每月1日)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Wells Fargo Signify Business Cash℠', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 2% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]}
+  ],
+
+  // ── CITI ──────────────────────────────────────────────────────
+  'Citi': [
+    { name: 'Citi Strata Elite', network: 'mastercard', annualFee: 595, credits: [
+      { name: '旅遊消費折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: '飯店消費折抵', total: 250, period: '每年', expiry: '2026-12-31' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' }
+    ]},
+    { name: 'Citi Strata Premier℠', network: 'mastercard', annualFee: 95, credits: [
+      { name: '飯店訂購折抵 ($500+)', total: 100, period: '每年', expiry: '2026-12-31' }
+    ]},
+    { name: 'Citi Custom Cash®', network: 'mastercard', annualFee: 0, credits: [
+      { name: '最高消費類別 5% 回饋 (前 $500)', total: 0, period: '每月', expiry: '永久' }
+    ]},
+    { name: 'Citi Double Cash®', network: 'mastercard', annualFee: 0, credits: [
+      { name: '2% 無限現金回饋 (買+還款各1%)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Citi Rewards+®', network: 'mastercard', annualFee: 0, credits: [
+      { name: '消費四捨五入至 10 點', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '10% 點數回饋 (前 100K 兌換)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Citi® / AAdvantage® Executive World Elite', network: 'mastercard', annualFee: 595, credits: [
+      { name: 'Admirals Club 貴賓室無限使用', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Avis / Budget 租車折抵', total: 120, period: '每年', expiry: '2026-12-31' },
+      { name: 'Grubhub 餐飲折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+      { name: 'Lyft 共乘折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Citi® / AAdvantage® Platinum Select®', network: 'mastercard', annualFee: 99, credits: [
+      { name: '同行者機票折扣 ($125 off)', total: 125, period: '每年 (消費 $20K)', expiry: '2026-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Citi® / AAdvantage® MileUp®', network: 'mastercard', annualFee: 0, credits: [
+      { name: '餐飲 / 雜貨 2x 里程', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Costco Anywhere Visa® by Citi', network: 'visa', annualFee: 0, credits: [
+      { name: 'Costco Gas 4% 回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '餐廳 3% 回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '年度現金回饋憑證', total: 0, period: '點數', expiry: '每年2月' }
+    ]},
+    { name: 'Citi® / AAdvantage® Business™ World Elite', network: 'mastercard', annualFee: 99, credits: [
+      { name: '同行者機票折扣 ($125 off)', total: 125, period: '每年 (消費 $30K)', expiry: '2026-12-31' },
+      { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Costco Anywhere Visa® Business by Citi', network: 'visa', annualFee: 0, credits: [
+      { name: 'Costco Gas 4% 回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '年度現金回饋憑證', total: 0, period: '點數', expiry: '每年2月' }
+    ]}
+  ],
+
+  // ── CAPITAL ONE ───────────────────────────────────────────────
+  'CapitalOne': [
+    { name: 'Capital One Venture X Rewards', network: 'visa', annualFee: 395, credits: [
+      { name: 'Capital One Travel 旅遊折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: '續卡獎勵點數', total: 10000, period: '點數', expiry: '續卡時' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Capital One Lounge 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Capital One Venture Rewards', network: 'visa', annualFee: 95, credits: [
+      { name: 'Global Entry / TSA Precheck', total: 100, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '無限 2x 里程回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One VentureOne Rewards', network: 'visa', annualFee: 0, credits: [
+      { name: '無年費 1.25x 里程回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One Savor Rewards', network: 'mastercard', annualFee: 95, credits: [
+      { name: '娛樂 / 餐飲 4% 回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One SavorOne Rewards', network: 'mastercard', annualFee: 0, credits: [
+      { name: '娛樂 / 餐飲 3% 回饋 (無年費)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One Quicksilver Rewards', network: 'mastercard', annualFee: 0, credits: [
+      { name: '無限 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One QuicksilverOne Rewards', network: 'mastercard', annualFee: 39, credits: [
+      { name: '無限 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One Platinum', network: 'mastercard', annualFee: 0, credits: [
+      { name: '無年費信用建立卡', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One Venture X Business', network: 'visa', annualFee: 395, credits: [
+      { name: 'Capital One Travel 旅遊折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: '續卡獎勵點數', total: 10000, period: '點數', expiry: '續卡時' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Capital One Lounge 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Capital One Spark Miles for Business', network: 'visa', annualFee: 95, credits: [
+      { name: 'Global Entry / TSA Precheck', total: 100, period: '每 4 年', expiry: '2030-12-31' },
+      { name: '無限 2x 里程回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One Spark Miles Select', network: 'visa', annualFee: 0, credits: [
+      { name: '無年費 1.5x 里程回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Capital One Spark Cash Plus', network: 'mastercard', annualFee: 150, credits: [
+      { name: '無限 2% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '消費 $150K 年度現金獎勵', total: 200, period: '每年 (消費 $150K)', expiry: '2026-12-31' }
+    ]},
+    { name: 'Capital One Spark Cash Select', network: 'mastercard', annualFee: 0, credits: [
+      { name: '無年費 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]}
+  ]
+}
+
+// ──────────────────────────────────────────────────────────────
+//  CARD DESIGN SYSTEM
+// ──────────────────────────────────────────────────────────────
+const cardDesigns = {
+
+  // ── AMEX PERSONAL ──────────────────────────────────────────
+  'The Platinum Card®': {
+    bg: 'linear-gradient(145deg,#e8e8e8 0%,#c0c0c0 28%,#f5f5f5 48%,#a8a8a8 70%,#d4d4d4 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(255,255,255,0.55) 48%,transparent 68%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(160,160,160,0.12) 0px,rgba(160,160,160,0.12) 1px,transparent 1px,transparent 4px)',
+    textColor:'#1a1a1a', subColor:'rgba(0,0,0,0.48)', label:'PLATINUM', labelColor:'#888', decor:'lines',
+  },
+  'American Express® Gold Card': {
+    bg: 'linear-gradient(145deg,#b8780a 0%,#d99820 25%,#f5c84a 45%,#c88020 65%,#a06010 100%)',
+    shine: 'linear-gradient(115deg,transparent 25%,rgba(255,235,150,0.5) 47%,transparent 68%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(255,200,60,0.1) 0px,rgba(255,200,60,0.1) 1px,transparent 1px,transparent 6px)',
+    textColor:'#2a1400', subColor:'rgba(60,25,0,0.55)', label:'GOLD', labelColor:'#6a3800', decor:'dots',
+  },
+  'American Express® Green Card': {
+    bg: 'linear-gradient(145deg,#1b5e3b 0%,#2e8057 30%,#3ea870 50%,#2e8057 72%,#123d26 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(160,255,190,0.28) 50%,transparent 70%)',
+    texture: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 8px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'GREEN', labelColor:'rgba(200,255,210,0.75)', decor:'circles',
+  },
+  'Blue Cash Preferred® Card': {
+    bg: 'linear-gradient(135deg,#0d2d6b 0%,#1850b8 40%,#2870e0 60%,#1040a0 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(110,185,255,0.3) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'BLUE CASH PREFERRED', labelColor:'rgba(170,220,255,0.8)', decor:'wave',
+  },
+  'Blue Cash Everyday® Card': {
+    bg: 'linear-gradient(135deg,#1248a0 0%,#2060d8 45%,#3880f0 65%,#1040a0 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(140,200,255,0.25) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'BLUE CASH EVERYDAY', labelColor:'rgba(180,225,255,0.75)', decor:'wave',
+  },
+  'Amex EveryDay® Credit Card': {
+    bg: 'linear-gradient(135deg,#1a3060 0%,#2448a8 45%,#1a3060 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(120,170,255,0.25) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'AMEX EVERYDAY', labelColor:'rgba(170,210,255,0.75)', decor:'circles',
+  },
+  'Amex EveryDay® Preferred Credit Card': {
+    bg: 'linear-gradient(135deg,#0e2048 0%,#1a3888 45%,#0e2048 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(100,160,255,0.28) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'AMEX EVERYDAY PREFERRED', labelColor:'rgba(160,205,255,0.75)', decor:'circles',
+  },
+  'Marriott Bonvoy Brilliant®': {
+    bg: 'linear-gradient(145deg,#140606 0%,#3a1010 28%,#6a1818 52%,#3a1010 75%,#100404 100%)',
+    shine: 'linear-gradient(115deg,transparent 22%,rgba(220,165,75,0.42) 44%,rgba(255,205,105,0.2) 58%,transparent 76%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(212,168,75,0.07) 0px,rgba(212,168,75,0.07) 1px,transparent 1px,transparent 8px)',
+    textColor:'#f5e0b8', subColor:'rgba(240,215,160,0.62)', label:'BONVOY BRILLIANT', labelColor:'#d4a84b', decor:'marriott',
+  },
+  'Marriott Bonvoy Bevy™': {
+    bg: 'linear-gradient(145deg,#1a0808 0%,#3a1a1a 30%,#5a2424 52%,#3a1a1a 75%,#120505 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(200,150,60,0.32) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#f0d8b0', subColor:'rgba(235,210,150,0.6)', label:'BONVOY BEVY', labelColor:'#c89038', decor:'marriott',
+  },
+  'Hilton Honors Aspire': {
+    bg: 'linear-gradient(145deg,#05101e 0%,#0a2040 28%,#1040a0 50%,#0a2040 72%,#030c18 100%)',
+    shine: 'linear-gradient(115deg,transparent 20%,rgba(212,168,75,0.5) 40%,rgba(255,210,100,0.25) 58%,transparent 78%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(212,168,75,0.06) 0px,rgba(212,168,75,0.06) 1px,transparent 1px,transparent 5px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'HILTON HONORS ASPIRE', labelColor:'#d4a84b', decor:'circles',
+  },
+  'Hilton Honors Surpass®': {
+    bg: 'linear-gradient(145deg,#061226 0%,#0c2858 30%,#1548c8 52%,#0c2858 75%,#040c1a 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(100,180,255,0.3) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'HILTON HONORS SURPASS', labelColor:'rgba(160,215,255,0.8)', decor:'circles',
+  },
+  'Hilton Honors Card': {
+    bg: 'linear-gradient(135deg,#0a2a5a 0%,#1448b0 45%,#0a2a5a 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(100,170,255,0.22) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'HILTON HONORS', labelColor:'rgba(150,210,255,0.75)', decor:'circles',
+  },
+  'Delta SkyMiles® Reserve': {
+    bg: 'linear-gradient(145deg,#08101e 0%,#101e3a 28%,#0a1e3e 52%,#101e3a 75%,#060c16 100%)',
+    shine: 'linear-gradient(115deg,transparent 18%,rgba(180,25,25,0.45) 38%,rgba(255,50,50,0.18) 55%,transparent 74%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(255,255,255,0.03) 0px,rgba(255,255,255,0.03) 1px,transparent 1px,transparent 3px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'DELTA RESERVE', labelColor:'#cc2222', decor:'delta',
+  },
+  'Delta SkyMiles® Platinum': {
+    bg: 'linear-gradient(145deg,#101828 0%,#1e3050 30%,#003080 52%,#152848 75%,#0a1020 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(150,195,255,0.22) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'DELTA PLATINUM', labelColor:'rgba(175,215,255,0.8)', decor:'delta',
+  },
+  'Delta SkyMiles® Gold': {
+    bg: 'linear-gradient(145deg,#1e0f00 0%,#5a3000 32%,#c07000 52%,#4a2600 75%,#150a00 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(255,195,70,0.28) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'DELTA GOLD', labelColor:'#f0c030', decor:'delta',
+  },
+  'Delta SkyMiles® Blue': {
+    bg: 'linear-gradient(135deg,#0a2050 0%,#1545c0 45%,#0a2050 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(100,170,255,0.22) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'DELTA BLUE', labelColor:'rgba(160,210,255,0.8)', decor:'delta',
+  },
+
+  // ── AMEX BUSINESS ──────────────────────────────────────────
+  'Business Platinum Card®': {
+    bg: 'linear-gradient(145deg,#1e1e1e 0%,#3a3a3a 22%,#585858 40%,#303030 62%,#141414 100%)',
+    shine: 'linear-gradient(115deg,transparent 22%,rgba(255,255,255,0.42) 44%,transparent 66%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(255,255,255,0.07) 0px,rgba(255,255,255,0.07) 1px,transparent 1px,transparent 4px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'BUSINESS PLATINUM', labelColor:'#aaa', decor:'lines',
+  },
+  'Business Gold Card': {
+    bg: 'linear-gradient(145deg,#7a4e00 0%,#b87818 26%,#e0a830 46%,#b07010 68%,#6a4200 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(255,228,130,0.45) 46%,transparent 67%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(255,195,55,0.09) 0px,rgba(255,195,55,0.09) 1px,transparent 1px,transparent 6px)',
+    textColor:'#1a0e00', subColor:'rgba(55,28,0,0.58)', label:'BUSINESS GOLD', labelColor:'#54360a', decor:'dots',
+  },
+  'Business Green Rewards Card': {
+    bg: 'linear-gradient(145deg,#142e1a 0%,#245c30 30%,#32804a 52%,#245c30 75%,#0e2014 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(150,255,170,0.22) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'BUSINESS GREEN', labelColor:'rgba(180,245,195,0.75)', decor:'circles',
+  },
+  'Blue Business® Plus Credit Card': {
+    bg: 'linear-gradient(135deg,#0c3070 0%,#1a58c8 42%,#2a78e8 62%,#1248b0 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(120,185,255,0.28) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'BLUE BUSINESS PLUS', labelColor:'rgba(170,220,255,0.78)', decor:'wave',
+  },
+  'Marriott Bonvoy Business®': {
+    bg: 'linear-gradient(145deg,#1a0606 0%,#3e1212 30%,#681a1a 52%,#3e1212 75%,#120404 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(205,155,65,0.36) 45%,transparent 68%)',
+    texture: '',
+    textColor:'#f0d8b0', subColor:'rgba(235,208,148,0.6)', label:'BONVOY BUSINESS', labelColor:'#cc9830', decor:'marriott',
+  },
+  'Hilton Honors Business': {
+    bg: 'linear-gradient(145deg,#081428 0%,#102c60 30%,#1a50d8 52%,#102c60 75%,#050e1c 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(212,168,75,0.38) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'HILTON BUSINESS', labelColor:'#d4a84b', decor:'circles',
+  },
+  'Delta SkyMiles® Reserve Business': {
+    bg: 'linear-gradient(145deg,#060e1a 0%,#0e1c38 28%,#081c3c 52%,#0e1c38 75%,#040810 100%)',
+    shine: 'linear-gradient(115deg,transparent 18%,rgba(170,20,20,0.42) 38%,rgba(240,45,45,0.15) 54%,transparent 72%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(255,255,255,0.03) 0px,rgba(255,255,255,0.03) 1px,transparent 1px,transparent 3px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'DELTA RESERVE BUSINESS', labelColor:'#bb2020', decor:'delta',
+  },
+
+  // ── CHASE PERSONAL ─────────────────────────────────────────
+  'Chase Sapphire Reserve® (CSR)': {
+    bg: 'linear-gradient(145deg,#141414 0%,#242424 18%,#363636 36%,#202020 58%,#0c0c0c 100%)',
+    shine: 'linear-gradient(115deg,transparent 18%,rgba(195,172,92,0.52) 40%,rgba(238,215,130,0.3) 54%,transparent 73%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(175,152,72,0.09) 0px,rgba(175,152,72,0.09) 1px,transparent 1px,transparent 5px)',
+    textColor:'#f0d888', subColor:'rgba(218,185,112,0.68)', label:'SAPPHIRE RESERVE', labelColor:'#c8a848', decor:'sapphire',
+  },
+  'Chase Sapphire Preferred® (CSP)': {
+    bg: 'linear-gradient(145deg,#071a40 0%,#0d3090 26%,#1450c0 46%,#0b2878 68%,#051230 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(110,175,255,0.34) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(90,155,255,0.07) 0px,rgba(90,155,255,0.07) 1px,transparent 1px,transparent 6px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'SAPPHIRE PREFERRED', labelColor:'rgba(158,208,255,0.85)', decor:'sapphire',
+  },
+  'Chase Freedom Flex℠': {
+    bg: 'linear-gradient(145deg,#00246e 0%,#00389e 35%,#c00828 55%,#880018 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'FREEDOM FLEX', labelColor:'rgba(255,255,255,0.72)', decor:'freedom',
+  },
+  'Chase Freedom Unlimited®': {
+    bg: 'linear-gradient(145deg,#12306a 0%,#c02828 52%,#902020 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'FREEDOM UNLIMITED', labelColor:'rgba(255,255,255,0.72)', decor:'freedom',
+  },
+  'Chase Freedom® Rise': {
+    bg: 'linear-gradient(135deg,#1030a8 0%,#2050d8 45%,#1030a8 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(140,185,255,0.22) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'FREEDOM RISE', labelColor:'rgba(170,215,255,0.75)', decor:'circles',
+  },
+  'The World of Hyatt Credit Card': {
+    bg: 'linear-gradient(145deg,#081208 0%,#162e16 28%,#265826 50%,#162e16 72%,#060e06 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(165,255,175,0.2) 50%,transparent 70%)',
+    texture: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 10px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'WORLD OF HYATT', labelColor:'rgba(175,240,178,0.8)', decor:'circles',
+  },
+  'Marriott Bonvoy Boundless®': {
+    bg: 'linear-gradient(145deg,#120404 0%,#2e0e0e 30%,#501818 52%,#2e0e0e 75%,#0c0202 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(192,142,52,0.3) 46%,transparent 68%)',
+    texture: '',
+    textColor:'#f0d8b0', subColor:'rgba(228,200,140,0.58)', label:'BONVOY BOUNDLESS', labelColor:'#c09030', decor:'marriott',
+  },
+  'Marriott Bonvoy Bold®': {
+    bg: 'linear-gradient(135deg,#1c0606 0%,#3c1010 45%,#1c0606 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(185,138,48,0.26) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#f0d0a0', subColor:'rgba(225,192,130,0.56)', label:'BONVOY BOLD', labelColor:'#b88828', decor:'marriott',
+  },
+  'IHG One Rewards Premier': {
+    bg: 'linear-gradient(145deg,#080820 0%,#141448 28%,#2020a0 50%,#141448 72%,#050510 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(140,140,255,0.3) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'IHG ONE REWARDS PREMIER', labelColor:'rgba(180,180,255,0.8)', decor:'circles',
+  },
+  'United Club℠ Infinite': {
+    bg: 'linear-gradient(145deg,#001530 0%,#002870 30%,#0048c8 52%,#002870 75%,#000e20 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(90,175,255,0.3) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(90,160,255,0.05) 0px,rgba(90,160,255,0.05) 1px,transparent 1px,transparent 5px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'UNITED CLUB INFINITE', labelColor:'rgba(135,198,255,0.8)', decor:'united',
+  },
+  'United Quest℠': {
+    bg: 'linear-gradient(145deg,#001028 0%,#002060 30%,#0038b0 52%,#002060 75%,#000a18 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(80,165,255,0.26) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'UNITED QUEST', labelColor:'rgba(130,192,255,0.78)', decor:'united',
+  },
+  'United Explorer℠': {
+    bg: 'linear-gradient(135deg,#001848 0%,#003090 45%,#001848 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(80,158,255,0.24) 50%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'UNITED EXPLORER', labelColor:'rgba(128,190,255,0.76)', decor:'united',
+  },
+  'Southwest Rapid Rewards® Priority': {
+    bg: 'linear-gradient(145deg,#b50000 0%,#e00a10 35%,#ff2020 52%,#c00808 75%,#8a0000 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(255,200,200,0.25) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'SOUTHWEST PRIORITY', labelColor:'rgba(255,230,220,0.8)', decor:'circles',
+  },
+  'Prime Visa (Amazon)': {
+    bg: 'linear-gradient(145deg,#131921 0%,#1a2530 30%,#232f3e 52%,#1a2530 75%,#0d1117 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(255,165,0,0.4) 46%,rgba(255,195,50,0.2) 58%,transparent 76%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'PRIME VISA', labelColor:'#ff9900', decor:'circles',
+  },
+  'Ink Business Preferred®': {
+    bg: 'linear-gradient(145deg,#061c48 0%,#0e3490 28%,#1850d8 48%,#0e3490 72%,#040e28 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(100,170,255,0.3) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(80,155,255,0.06) 0px,rgba(80,155,255,0.06) 1px,transparent 1px,transparent 5px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'INK BUSINESS PREFERRED', labelColor:'rgba(155,205,255,0.82)', decor:'sapphire',
+  },
+
+  // ── BANK OF AMERICA ────────────────────────────────────────
+  'Bank of America® Premium Rewards® Elite': {
+    bg: 'linear-gradient(145deg,#700000 0%,#b01020 28%,#e01830 48%,#b01020 72%,#500000 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(255,175,175,0.28) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(255,195,195,0.06) 0px,rgba(255,195,195,0.06) 1px,transparent 1px,transparent 6px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'PREMIUM REWARDS ELITE', labelColor:'rgba(255,215,215,0.8)', decor:'circles',
+  },
+  'Bank of America® Premium Rewards®': {
+    bg: 'linear-gradient(145deg,#7a0010 0%,#c01828 30%,#e02838 52%,#c01828 75%,#5a000c 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(255,170,170,0.25) 46%,transparent 68%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'PREMIUM REWARDS', labelColor:'rgba(255,210,210,0.78)', decor:'circles',
+  },
+  'Alaska Airlines Visa® Summit (Atmos)': {
+    bg: 'linear-gradient(145deg,#001020 0%,#002858 28%,#0055c8 50%,#003888 74%,#000c18 100%)',
+    shine: 'linear-gradient(115deg,transparent 18%,rgba(175,228,255,0.42) 40%,rgba(115,198,255,0.2) 57%,transparent 76%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'ALASKA SUMMIT', labelColor:'rgba(178,228,255,0.86)', decor:'alaska',
+  },
+  'Alaska Airlines Visa® Signature': {
+    bg: 'linear-gradient(145deg,#001838 0%,#003278 30%,#0058c0 52%,#003278 75%,#000e20 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(160,218,255,0.32) 46%,transparent 68%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'ALASKA AIRLINES', labelColor:'rgba(168,222,255,0.8)', decor:'alaska',
+  },
+
+  // ── CAPITAL ONE ────────────────────────────────────────────
+  'Capital One Venture X Rewards': {
+    bg: 'linear-gradient(145deg,#060610 0%,#0c1428 24%,#101c48 44%,#0c1428 68%,#040408 100%)',
+    shine: 'linear-gradient(115deg,transparent 14%,rgba(115,95,255,0.52) 36%,rgba(175,158,255,0.26) 54%,transparent 76%)',
+    texture: 'radial-gradient(ellipse at 72% 28%,rgba(120,100,255,0.18) 0%,transparent 58%)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'VENTURE X', labelColor:'rgba(178,158,255,0.86)', decor:'stars',
+  },
+  'Capital One Venture X Business': {
+    bg: 'linear-gradient(145deg,#04040e 0%,#0a1225 24%,#0e1a42 44%,#0a1225 68%,#020206 100%)',
+    shine: 'linear-gradient(115deg,transparent 14%,rgba(105,88,245,0.5) 36%,rgba(165,150,245,0.24) 54%,transparent 76%)',
+    texture: 'radial-gradient(ellipse at 72% 28%,rgba(110,92,245,0.17) 0%,transparent 58%)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'VENTURE X BUSINESS', labelColor:'rgba(172,155,248,0.86)', decor:'stars',
+  },
+  'Capital One Venture Rewards': {
+    bg: 'linear-gradient(145deg,#0c0c22 0%,#181848 30%,#2828a8 52%,#181848 75%,#080818 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(135,118,255,0.35) 46%,transparent 68%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'VENTURE', labelColor:'rgba(178,168,255,0.8)', decor:'stars',
+  },
+  'Capital One Savor Rewards': {
+    bg: 'linear-gradient(145deg,#180808 0%,#3a1010 30%,#800000 52%,#3a1010 75%,#100404 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(255,160,140,0.3) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'SAVOR', labelColor:'rgba(255,200,188,0.8)', decor:'circles',
+  },
+
+  // ── WELLS FARGO ────────────────────────────────────────────
+  'Wells Fargo Autograph Journey℠': {
+    bg: 'linear-gradient(145deg,#5a0000 0%,#901018 30%,#c01c28 52%,#7a0c14 75%,#3e0000 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(255,195,175,0.28) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(255,195,175,0.06) 0px,rgba(255,195,175,0.06) 1px,transparent 1px,transparent 5px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'AUTOGRAPH JOURNEY', labelColor:'rgba(255,208,188,0.8)', decor:'circles',
+  },
+  'Wells Fargo Autograph℠': {
+    bg: 'linear-gradient(145deg,#6a0000 0%,#a81018 32%,#d01e2a 52%,#900e18 75%,#480000 100%)',
+    shine: 'linear-gradient(115deg,transparent 28%,rgba(255,188,168,0.24) 48%,transparent 70%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'AUTOGRAPH', labelColor:'rgba(255,202,182,0.78)', decor:'circles',
+  },
+  'Bilt Mastercard®': {
+    bg: 'linear-gradient(145deg,#080808 0%,#141414 26%,#222222 44%,#141414 68%,#060606 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(255,255,255,0.17) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(135deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 8px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'BILT', labelColor:'rgba(255,255,255,0.6)', decor:'lines',
+  },
+
+  // ── CITI ───────────────────────────────────────────────────
+  'Citi Strata Elite': {
+    bg: 'linear-gradient(145deg,#080e28 0%,#0e2258 26%,#1638a8 46%,#0e2258 70%,#050a18 100%)',
+    shine: 'linear-gradient(115deg,transparent 24%,rgba(155,198,255,0.34) 46%,transparent 68%)',
+    texture: 'repeating-linear-gradient(90deg,rgba(115,178,255,0.06) 0px,rgba(115,178,255,0.06) 1px,transparent 1px,transparent 4px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'STRATA ELITE', labelColor:'rgba(158,208,255,0.85)', decor:'lines',
+  },
+  'Citi Strata Premier℠': {
+    bg: 'linear-gradient(145deg,#0a1230 0%,#102448 28%,#183c88 48%,#102448 72%,#060c1c 100%)',
+    shine: 'linear-gradient(115deg,transparent 26%,rgba(140,188,255,0.28) 46%,transparent 68%)',
+    texture: '',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.58)', label:'STRATA PREMIER', labelColor:'rgba(152,202,255,0.8)', decor:'lines',
+  },
+  'Citi® / AAdvantage® Executive World Elite': {
+    bg: 'linear-gradient(145deg,#020208 0%,#060620 24%,#0c0c48 44%,#060620 68%,#020206 100%)',
+    shine: 'linear-gradient(115deg,transparent 18%,rgba(195,215,255,0.4) 40%,rgba(155,188,255,0.2) 57%,transparent 76%)',
+    texture: 'repeating-linear-gradient(45deg,rgba(145,178,255,0.05) 0px,rgba(145,178,255,0.05) 1px,transparent 1px,transparent 6px)',
+    textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'AADVANTAGE EXECUTIVE', labelColor:'rgba(178,208,255,0.86)', decor:'aa',
+  },
+};
+
+function getCardDecor(decor, textColor) {
+  switch(decor) {
+    case 'lines':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;right:-20px;top:-20px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(255,255,255,0.1);"></div>
+        <div style="position:absolute;right:20px;bottom:-40px;width:140px;height:140px;border-radius:50%;border:28px solid rgba(255,255,255,0.06);"></div>
+      </div>`;
+    case 'dots':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;right:-30px;top:-30px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.1);"></div>
+        <div style="position:absolute;right:30px;bottom:-50px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.06);"></div>
+      </div>`;
+    case 'circles':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;border:2px solid rgba(255,255,255,0.14);"></div>
+        <div style="position:absolute;right:-5px;top:-5px;width:155px;height:155px;border-radius:50%;border:2px solid rgba(255,255,255,0.09);"></div>
+        <div style="position:absolute;right:28px;bottom:-60px;width:148px;height:148px;border-radius:50%;border:2px solid rgba(255,255,255,0.07);"></div>
+      </div>`;
+    case 'wave':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <svg viewBox="0 0 400 220" style="position:absolute;right:-20px;top:0;width:220px;height:100%;opacity:0.1;" preserveAspectRatio="none">
+          <path d="M0,55 Q100,15 200,55 Q300,95 400,55 L400,220 L0,220Z" fill="white"/>
+          <path d="M0,88 Q100,48 200,88 Q300,128 400,88 L400,220 L0,220Z" fill="white" opacity="0.5"/>
+        </svg>
+      </div>`;
+    case 'sapphire':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <svg viewBox="0 0 300 200" style="position:absolute;right:-10px;top:-10px;width:55%;height:110%;opacity:0.12;" preserveAspectRatio="xMidYMid slice">
+          <polygon points="150,10 278,78 278,158 150,188 22,158 22,78" fill="none" stroke="white" stroke-width="3"/>
+          <polygon points="150,34 252,90 252,146 150,164 48,146 48,90" fill="none" stroke="white" stroke-width="2"/>
+          <polygon points="150,58 226,102 226,134 150,140 74,134 74,102" fill="none" stroke="white" stroke-width="1.5"/>
+        </svg>
+      </div>`;
+    case 'delta':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <svg viewBox="0 0 200 200" style="position:absolute;right:-18px;top:50%;transform:translateY(-50%);width:48%;height:130%;opacity:0.11;" preserveAspectRatio="xMidYMid meet">
+          <polygon points="100,5 193,168 7,168" fill="none" stroke="white" stroke-width="4"/>
+          <polygon points="100,30 172,158 28,158" fill="none" stroke="white" stroke-width="3"/>
+          <polygon points="100,55 151,148 49,148" fill="none" stroke="white" stroke-width="2"/>
+        </svg>
+      </div>`;
+    case 'freedom':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,0.05) 0%,transparent 50%);"></div>
+        <div style="position:absolute;right:0;top:0;bottom:0;width:45%;background:linear-gradient(135deg,rgba(255,255,255,0.06),transparent);"></div>
+      </div>`;
+    case 'united':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <svg viewBox="0 0 200 200" style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:46%;height:120%;opacity:0.1;" preserveAspectRatio="xMidYMid meet">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="white" stroke-width="5"/>
+          <circle cx="100" cy="100" r="62" fill="none" stroke="white" stroke-width="3"/>
+          <circle cx="100" cy="100" r="36" fill="none" stroke="white" stroke-width="2"/>
+          <line x1="12" y1="100" x2="188" y2="100" stroke="white" stroke-width="2"/>
+          <line x1="100" y1="12" x2="100" y2="188" stroke="white" stroke-width="2"/>
+        </svg>
+      </div>`;
+    case 'marriott':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <svg viewBox="0 0 200 200" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);width:50%;height:130%;opacity:0.12;" preserveAspectRatio="xMidYMid meet">
+          <path d="M100,15 L185,178 L100,136 L15,178 Z" fill="none" stroke="#d4a84b" stroke-width="4"/>
+          <path d="M100,42 L163,168 L100,132 L37,168 Z" fill="none" stroke="#d4a84b" stroke-width="3"/>
+          <path d="M100,68 L142,158 L100,128 L58,158 Z" fill="none" stroke="#d4a84b" stroke-width="2"/>
+        </svg>
+      </div>`;
+    case 'stars':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 72% 26%,rgba(155,135,255,0.3) 0%,transparent 56%);"></div>
+        ${[...Array(14)].map((_,i)=>{
+          const x=52+Math.sin(i*2.618)*40,y=28+Math.cos(i*2.618)*34,s=0.8+(i%3)*0.7;
+          return `<div style="position:absolute;left:${x}%;top:${y}%;width:${s}px;height:${s}px;border-radius:50%;background:rgba(255,255,255,${0.4+0.3*(i%2)});"></div>`;
+        }).join('')}
+      </div>`;
+    case 'alaska':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,80,200,0.22) 0%,rgba(0,20,80,0) 62%);"></div>
+        <svg viewBox="0 0 300 180" style="position:absolute;right:-8px;bottom:-8px;width:65%;height:78%;opacity:0.12;" preserveAspectRatio="xMidYMid meet">
+          <path d="M8,158 Q80,38 152,78 Q224,118 292,18" fill="none" stroke="white" stroke-width="3"/>
+          <path d="M8,136 Q80,18 152,58 Q224,98 292,0" fill="none" stroke="white" stroke-width="2"/>
+        </svg>
+      </div>`;
+    case 'aa':
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 78% 18%,rgba(195,218,255,0.22) 0%,transparent 58%);"></div>
+        <svg viewBox="0 0 200 200" style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:42%;height:118%;opacity:0.1;">
+          <circle cx="100" cy="100" r="84" fill="none" stroke="white" stroke-width="6"/>
+          <path d="M28,100 Q100,28 172,100 Q100,172 28,100Z" fill="none" stroke="white" stroke-width="3"/>
+        </svg>
+      </div>`;
+    default:
+      return `<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+        <div style="position:absolute;right:-28px;top:-28px;width:178px;height:178px;border-radius:50%;background:rgba(255,255,255,0.07);"></div>
+        <div style="position:absolute;right:18px;bottom:-38px;width:118px;height:118px;border-radius:50%;background:rgba(255,255,255,0.05);"></div>
+      </div>`;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  NETWORK LOGOS (SVG)
+// ──────────────────────────────────────────────────────────────
+function getNetworkLogo(network, onDark) {
+  // onDark = true → 白色/淺色版（用於深色卡面）
+  // onDark = false → 深色版（用於淺色卡面，暫不用）
+  switch (network) {
+    case 'visa':
+      // VISA wordmark - italic serif, classic style
+      return `<svg width="52" height="18" viewBox="0 0 52 18" xmlns="http://www.w3.org/2000/svg">
+        <text x="1" y="15" font-family="Arial,sans-serif" font-size="17" font-weight="900"
+          font-style="italic" letter-spacing="-0.5"
+          fill="${onDark ? 'rgba(255,255,255,0.92)' : 'rgba(30,60,140,0.92)'}">VISA</text>
+      </svg>`;
+
+    case 'mastercard':
+      // Mastercard - two overlapping circles
+      return `<svg width="44" height="28" viewBox="0 0 44 28" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="14" r="13" fill="${onDark ? 'rgba(235,0,27,0.88)' : 'rgba(235,0,27,0.85)'}"/>
+        <circle cx="28" cy="14" r="13" fill="${onDark ? 'rgba(255,163,0,0.88)' : 'rgba(255,163,0,0.85)'}"/>
+        <path d="M22 5.2 C 24.8 7.4 26.6 10.5 26.6 14 C 26.6 17.5 24.8 20.6 22 22.8 C 19.2 20.6 17.4 17.5 17.4 14 C 17.4 10.5 19.2 7.4 22 5.2Z"
+          fill="${onDark ? 'rgba(255,120,0,0.7)' : 'rgba(255,100,0,0.65)'}"/>
+      </svg>`;
+
+    case 'amex':
+      // Amex - centurion-inspired shield / "AMEX" wordmark box
+      return `<svg width="44" height="28" viewBox="0 0 44 28" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="44" height="28" rx="4"
+          fill="${onDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,100,200,0.15)'}"/>
+        <text x="22" y="18.5" font-family="Arial,sans-serif" font-size="9.5" font-weight="900"
+          letter-spacing="1.5" text-anchor="middle"
+          fill="${onDark ? 'rgba(255,255,255,0.92)' : 'rgba(0,80,180,0.92)'}">AMEX</text>
+      </svg>`;
+
+    default:
+      return '';
+  }
+}
+
+const bankGradients = {
+  Amex: 'var(--amex)', Chase: 'var(--chase)', Citi: 'var(--citi)',
+  BoA: 'var(--boa)', CapitalOne: 'var(--capitalone)',
+  WellsFargo: 'var(--wellsfargo)'
+};
+const bankColors = {
+  Amex: '#1a6fcf', Chase: '#1e3a6e', Citi: '#064a94',
+  BoA: '#c91933', CapitalOne: '#003d80', WellsFargo: '#c42028'
+};
+
+// ──────────────────────────────────────────────────────────────
+//  STATE
+// ──────────────────────────────────────────────────────────────
+let myCards = JSON.parse(localStorage.getItem('uccp_v2')) || [];
+let currentTab = 'all';
+let expandedCardId = null;
+
+function save() {
+  localStorage.setItem('uccp_v2', JSON.stringify(myCards));
+  // migrate from old key
+}
+
+// migrate old data
+(function() {
+  const old = localStorage.getItem('my_credits_tracker');
+  if (old && myCards.length === 0) {
+    try { myCards = JSON.parse(old); save(); } catch(e) {}
+  }
+})();
+
+// ──────────────────────────────────────────────────────────────
+//  ANNUAL RESET
+// ──────────────────────────────────────────────────────────────
+function shouldSkipReset(period) {
+  // 不重置的類型：會籍狀態、多年期、永久、一次性
+  const skip = ['會籍狀態', '永久', '一次性', '每 4 年', '每 4年'];
+  return skip.some(s => period.includes(s));
+}
+
+function performReset(year, isAuto) {
+  let resetCount = 0;
+  myCards.forEach(card => {
+    card.credits.forEach(cr => {
+      if (shouldSkipReset(cr.period)) return;
+      if (!cr.used && (!cr.logs || cr.logs.length === 0)) return; // 沒記錄就跳過
+      // 封存到 history
+      if (!cr.history) cr.history = [];
+      cr.history.push({
+        year,
+        used: cr.used,
+        total: cr.total,
+        logs: cr.logs || []
+      });
+      // 重置
+      cr.used = 0;
+      cr.logs = [];
+      resetCount++;
+    });
+    card.lastResetYear = year;
+  });
+  save();
+  return resetCount;
+}
+
+function checkAutoReset() {
+  const thisYear = new Date().getFullYear();
+  const lastResetYear = parseInt(localStorage.getItem('uccp_lastResetYear') || '0');
+  if (lastResetYear < thisYear && myCards.length > 0) {
+    // 有卡片且今年尚未重置
+    const hasData = myCards.some(c => c.credits.some(cr => cr.used > 0 || (cr.logs && cr.logs.length > 0)));
+    if (hasData) {
+      const prevYear = thisYear - 1;
+      showResetBanner(prevYear);
+    } else {
+      // 無資料，靜默標記今年已檢查
+      localStorage.setItem('uccp_lastResetYear', String(thisYear));
+    }
+  }
+}
+
+function showResetBanner(prevYear) {
+  const banner = document.getElementById('resetBanner');
+  document.getElementById('resetBannerYear').textContent = prevYear;
+  banner.style.display = 'flex';
+}
+
+function confirmAutoReset() {
+  const thisYear = new Date().getFullYear();
+  const prevYear = thisYear - 1;
+  const count = performReset(prevYear, true);
+  localStorage.setItem('uccp_lastResetYear', String(thisYear));
+  document.getElementById('resetBanner').style.display = 'none';
+  render();
+  toast(`✅ ${prevYear} 年記錄已封存，${count} 項權益已重置為 0`, 'var(--green)');
+}
+
+function dismissResetBanner() {
+  const thisYear = new Date().getFullYear();
+  localStorage.setItem('uccp_lastResetYear', String(thisYear));
+  document.getElementById('resetBanner').style.display = 'none';
+}
+
+function openManualResetModal() {
+  document.getElementById('manualResetOverlay').classList.add('open');
+}
+function closeManualResetModal() {
+  document.getElementById('manualResetOverlay').classList.remove('open');
+}
+function confirmManualReset() {
+  const yearInput = document.getElementById('manualResetYear').value;
+  const year = parseInt(yearInput) || new Date().getFullYear();
+  const count = performReset(year, false);
+  localStorage.setItem('uccp_lastResetYear', String(new Date().getFullYear()));
+  closeManualResetModal();
+  render();
+  toast(`✅ ${year} 年記錄已封存，${count} 項權益已重置為 0`, 'var(--green)');
+}
+
+
+function render() {
+  const list = document.getElementById('cardList');
+  const statsEl = document.getElementById('statsSection');
+  const empty = document.getElementById('emptyState');
+  const heading = document.getElementById('tabHeading');
+
+  if (myCards.length === 0) {
+    list.innerHTML = '';
+    statsEl.innerHTML = '';
+    document.getElementById('sidebarBankGroups').innerHTML = '';
+    document.getElementById('mobileSidebarGroups').innerHTML = '';
+    document.getElementById('sidebar524Block').innerHTML = '';
+    document.getElementById('mobile524Block').innerHTML = '';
+    empty.style.display = 'flex';
+    heading.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+
+  renderStats(statsEl);
+  renderSidebar();
+  render524();
+
+  if (currentTab === 'all') {
+    heading.style.display = 'none';
+    list.innerHTML = `<div class="card-grid">${myCards.map(c => renderCard(c)).join('')}</div>`;
+  } else {
+    const items = getCategoryItems(currentTab);
+    const tabNames = { uber:'Uber 系列', airline:'航空相關', dining:'餐飲 / 外送', travel:'飯店 / 旅遊', lifestyle:'生活 / 休閒', status:'機場 / 會籍' };
+    heading.style.display = 'block';
+    heading.textContent = tabNames[currentTab] || currentTab;
+    if (items.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">此分類目前沒有紀錄</div><div class="empty-sub">您的卡片中目前沒有符合此分類的權益</div></div>';
+    } else {
+      list.innerHTML = `<div class="card-grid">${items.map(({card,credit,creditIdx}) => renderCatItem(card,credit,creditIdx)).join('')}</div>`;
+    }
+  }
+}
+
+function renderStats(el) {
+  let totalPos = 0, totalUsed = 0;
+  myCards.forEach(c => c.credits.forEach(cr => {
+    if (cr.period !== '會籍狀態' && !cr.period.includes('張') && !cr.period.includes('點')) {
+      totalPos += cr.total; totalUsed += cr.used;
+    }
+  }));
+  const cards524 = myCards.filter(c => c.is524).length;
+  const pct = totalPos > 0 ? Math.round((totalUsed/totalPos)*100) : 0;
+
+  el.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">年度總權益估算</div>
+      <div class="stat-value default">$${totalPos.toLocaleString()}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">已省下 / 折抵</div>
+      <div class="stat-value green">$${totalUsed.toLocaleString()}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">權益達成率</div>
+      <div class="stat-value accent">${pct}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">5/24 進度</div>
+      <div class="stat-value ${cards524 >= 5 ? 'red' : 'default'}">${cards524} <span style="font-size:16px;opacity:0.4">/ 5</span></div>
+    </div>
+  `;
+}
+
+function renderSidebar() {
+  const grouped = groupByBank();
+  const html = Object.entries(grouped).map(([bank, cards]) => `
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:6px;padding:0 8px;margin-bottom:4px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:${bankColors[bank]||'#888'};flex-shrink:0;display:inline-block;"></span>
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">${bank}</span>
+      </div>
+      ${cards.map(c => `
+        <a href="#card-${c.id}" class="sidebar-link" style="font-size:12px;padding:6px 10px;" onclick="document.getElementById('sidebarBackdrop').classList.remove('open');document.getElementById('mobileSidebar').classList.remove('open')">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.cardName}${c.lastDigits?` <span style="opacity:0.4;font-size:10px;">#${c.lastDigits}</span>`:''}</span>
+        </a>
+      `).join('')}
+    </div>
+  `).join('');
+  document.getElementById('sidebarBankGroups').innerHTML = html;
+  document.getElementById('mobileSidebarGroups').innerHTML = html;
+}
+
+function render524() {
+  const cards524 = myCards.filter(c => c.is524);
+  const count = cards524.length;
+
+  // 5/24 卡片依日期排序
+  const dated524 = cards524.filter(c => c.approvalDate)
+    .sort((a,b) => a.approvalDate.localeCompare(b.approvalDate));
+  const undated524 = cards524.filter(c => !c.approvalDate);
+
+  // 所有卡片依日期排序
+  const datedAll = myCards.filter(c => c.approvalDate)
+    .sort((a,b) => a.approvalDate.localeCompare(b.approvalDate));
+  const undatedAll = myCards.filter(c => !c.approvalDate);
+
+  function cardRow(card, showBadge) {
+    const bankDot = `<span style="display:inline-block;width:6px;height:6px;border-radius:2px;background:${bankColors[card.bank]||'#888'};flex-shrink:0;margin-top:2px;"></span>`;
+    return `
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);">
+        <div style="width:2px;background:var(--border);flex-shrink:0;align-self:stretch;border-radius:2px;margin:2px 0;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">
+            ${bankDot}
+            <span style="font-size:11px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${card.cardName}${card.lastDigits?` <span style="opacity:0.38;font-size:9px;">#${card.lastDigits}</span>`:''}</span>
+            ${showBadge && card.is524 ? '<span style="font-size:8px;font-weight:800;background:rgba(255,80,80,0.15);color:var(--red);border:1px solid rgba(255,80,80,0.25);padding:1px 5px;border-radius:4px;flex-shrink:0;">5/24</span>' : ''}
+          </div>
+          <div style="font-size:10px;color:var(--text-3);font-family:\'JetBrains Mono\',monospace;">${card.approvalDate || '—'}</div>
+        </div>
+      </div>`;
+  }
+
+  function section(title, datedCards, undatedCards, showBadge) {
+    if (datedCards.length === 0 && undatedCards.length === 0) {
+      return `<div style="font-size:11px;color:var(--text-3);padding:8px 0;">尚無資料</div>`;
+    }
+    return `
+      ${datedCards.map(c => cardRow(c, showBadge)).join('')}
+      ${undatedCards.length > 0 ? `
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);padding:6px 0 2px;">未填日期</div>
+        ${undatedCards.map(c => cardRow(c, showBadge)).join('')}
+      ` : ''}
+    `;
+  }
+
+  const html = `
+    <div>
+      <div class="sidebar-section-title">5/24 統計</div>
+
+      <!-- 計入張數 -->
+      <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:4px;margin-bottom:12px;">
+        <div style="font-size:10px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">計入張數</div>
+        <div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:${count>=5?'var(--red)':'var(--accent-2)'};">${count} <span style="font-size:13px;opacity:0.45;">/ 5</span></div>
+        ${count >= 5 ? '<div style="font-size:10px;color:var(--red);margin-top:4px;font-weight:600;">⚠ 已達 5/24 上限</div>' : count >= 4 ? '<div style="font-size:10px;color:var(--yellow);margin-top:4px;font-weight:600;">⚡ 剩餘 1 張</div>' : ''}
+      </div>
+
+      <!-- 1. 計入5/24 的卡片 -->
+      <details class="cl-item" style="margin-bottom:8px;" ${dated524.length > 0 ? 'open' : ''}>
+        <summary class="cl-summary">
+          <span style="flex:1;font-size:11px;font-weight:700;color:var(--text);">計入 5/24 的卡片</span>
+          <span style="font-size:10px;font-weight:700;color:${count>=5?'var(--red)':'var(--accent)'};margin-right:4px;">${count} 張</span>
+          <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div style="padding:4px 10px 8px;">
+          ${section('', dated524, undated524, false)}
+        </div>
+      </details>
+
+      <!-- 2. 所有卡片辦理時間軸 -->
+      <details class="cl-item">
+        <summary class="cl-summary">
+          <span style="flex:1;font-size:11px;font-weight:700;color:var(--text);">所有卡片辦理時間軸</span>
+          <span style="font-size:10px;font-weight:700;color:var(--text-3);margin-right:4px;">${myCards.length} 張</span>
+          <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div style="padding:4px 10px 8px;">
+          ${section('', datedAll, undatedAll, true)}
+        </div>
+      </details>
+    </div>
+  `;
+  document.getElementById('sidebar524Block').innerHTML = html;
+  document.getElementById('mobile524Block').innerHTML = html;
+}
+
+function renderCard(card) {
+  const design = cardDesigns[card.cardName];
+  const fallbackGrad = bankGradients[card.bank] || 'linear-gradient(135deg,#333,#111)';
+  const bg = design ? design.bg : fallbackGrad;
+  const shine = design ? design.shine : '';
+  const texture = design ? design.texture : '';
+  const textColor = design ? design.textColor : '#fff';
+  const subColor = design ? design.subColor : 'rgba(255,255,255,0.6)';
+  const labelColor = design ? design.labelColor : 'rgba(255,255,255,0.5)';
+  const decor = design ? getCardDecor(design.decor, textColor) : '';
+  const isExp = expandedCardId === card.id;
+
+  // 年費（優先用 card 儲存的，fallback 到 template）
+  const template = (cardDatabase[card.bank]||[]).find(c => c.name === card.cardName);
+  const annualFee = card.annualFee ?? template?.annualFee ?? 0;
+  const network = card.network ?? template?.network ?? '';
+  const onDark = textColor === '#fff' || textColor.includes('f5') || textColor.includes('f0');
+  const networkLogo = getNetworkLogo(network, onDark);
+
+  // 計算總權益估算值（排除會籍狀態、點數、張數類）
+  const totalValue = card.credits.reduce((sum, cr) => {
+    if (cr.period === '會籍狀態' || cr.period === '永久' || cr.period === '一次性') return sum;
+    if (cr.period.includes('張') || cr.period.includes('點')) return sum;
+    return sum + (cr.total || 0);
+  }, 0);
+  const netValue = totalValue - annualFee;
+
+  return `
+    <div class="cc-wrap" id="card-${card.id}" style="scroll-margin-top:120px;">
+      <div class="cc-face" style="background:${bg};position:relative;" onclick="toggleExpand('${card.id}')">
+        ${texture ? `<div style="position:absolute;inset:0;background:${texture};border-radius:inherit;pointer-events:none;"></div>` : ''}
+        ${shine ? `<div style="position:absolute;inset:0;background:${shine};border-radius:inherit;pointer-events:none;z-index:1;"></div>` : ''}
+        ${decor}
+        <div style="position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:22px 22px 18px;">
+          <div class="cc-top">
+            <div>
+              <div class="cc-bank" style="color:${labelColor};font-size:8px;letter-spacing:0.14em;">${card.bank}</div>
+              <div class="cc-name" style="color:${textColor}">${card.cardName}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+              ${card.is524 ? '<span class="badge-524">5/24</span>' : ''}
+              <div class="cc-actions" onclick="event.stopPropagation()">
+                <button class="cc-btn" onclick="openUpgradeModal('${card.id}')" title="升級 / 降級" style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.15);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="${textColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.7"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
+                </button>
+                <button class="cc-btn" onclick="removeCard('${card.id}')" title="移除" style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.15);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="${textColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.7"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+                <button class="cc-btn" title="${isExp?'收合':'展開'}" style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.15);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="${textColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.7">${isExp?'<polyline points="18 15 12 9 6 15"/>':'<polyline points="6 9 12 15 18 9"/>'}</svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="cc-bottom">
+            <div>
+              <div class="cc-digits" style="color:${subColor}">${card.lastDigits ? '•••• •••• •••• '+card.lastDigits : '•••• •••• •••• ••••'}</div>
+              ${card.approvalDate ? `<div class="cc-date" style="color:${subColor}">Approved: ${card.approvalDate}</div>` : ''}
+              <div style="margin-top:4px;display:flex;align-items:center;gap:5px;">
+                <span style="font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:${subColor};opacity:0.65;">Annual Fee</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${subColor};opacity:0.85;">${annualFee === 0 ? 'No Fee' : '$'+annualFee.toLocaleString()}</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+              <!-- Network Logo -->
+              <div style="opacity:0.95;">${networkLogo}</div>
+              <!-- Credit Limit -->
+              ${card.creditLimit
+                ? `<div style="text-align:right;">
+                     <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${subColor};opacity:0.85;">$${Number(card.creditLimit).toLocaleString()}</div>
+                     <div style="font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:${subColor};opacity:0.55;">Limit</div>
+                   </div>`
+                : `<button onclick="event.stopPropagation();editCreditLimit('${card.id}')" style="font-size:8px;color:${subColor};opacity:0.45;background:rgba(0,0,0,0.12);border:1px dashed rgba(255,255,255,0.18);padding:2px 7px;border-radius:5px;cursor:pointer;letter-spacing:0.03em;">+ 額度</button>`
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      ${isExp ? `
+        <div class="credits-panel">
+          <div class="credits-panel-header" style="padding:12px 16px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span>權益詳細 · ${card.credits.length} 項</span>
+              <span style="font-size:9px;color:var(--text-3);">折抵類合計</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+              <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
+                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">年費</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--red);">${annualFee === 0 ? 'Free' : '-$'+annualFee.toLocaleString()}</div>
+              </div>
+              <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
+                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">總權益值</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--green);">$${totalValue.toLocaleString()}</div>
+              </div>
+              <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
+                <div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">淨值</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${netValue >= 0 ? 'var(--accent)' : 'var(--red)'};">${netValue >= 0 ? '+' : ''}$${netValue.toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+          ${card.credits.map((cr,i) => renderCreditItem(card,cr,i)).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderCreditItem(card, cr, idx) {
+  const isStatus = cr.period === '會籍狀態';
+  const isCount = cr.period.includes('張');
+  const isPoints = cr.period.includes('點');
+  const remain = cr.total - cr.used;
+  const pct = cr.total > 0 ? Math.min(100, (cr.used/cr.total)*100) : (cr.used>0?100:0);
+  const fmtRemain = isCount ? `${remain} 張` : isPoints ? `${remain.toLocaleString()} 點` : `$${remain.toFixed(2)}`;
+  const fmtTotal = isCount ? `${cr.total} 張` : isPoints ? `${cr.total.toLocaleString()} 點` : `$${cr.total.toFixed(2)}`;
+
+  return `
+    <div class="credit-item">
+      <div class="credit-row-top">
+        <div class="credit-name">${cr.name}</div>
+        <span class="period-badge">${cr.period}</span>
+      </div>
+      ${isStatus ? `
+        <div class="status-chip ${cr.used>0?'on':'off'}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${cr.used>0?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/>'}</svg>
+          ${cr.used>0 ? '已啟用權益' : '尚未標記啟用'}
+        </div>
+      ` : `
+        <div class="credit-amounts">
+          <span class="amount-remain">${fmtRemain}</span>
+          <span class="amount-total">剩餘 / ${fmtTotal}</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill ${pct>=100?'full':''}" style="width:${pct}%"></div>
+        </div>
+      `}
+      <div class="credit-footer">
+        <span class="expiry-label">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${cr.expiry}
+        </span>
+        <button class="log-btn" onclick="openTxModal('${card.id}',${idx},'${cr.name.replace(/'/g,"\\'")}')">${isStatus ? '切換狀態' : '記錄使用'}</button>
+      </div>
+      ${cr.logs && cr.logs.length > 0 ? `
+        <div class="logs-mini">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;">${new Date().getFullYear()} 年記錄</div>
+          ${cr.logs.slice().reverse().slice(0,5).map(log => `
+            <div class="log-entry">
+              <span>${log.date}${log.note?' · '+log.note:''}</span>
+              <span>${isStatus ? '' : `${isCount?'-'+log.amount+'張':isPoints?'-'+log.amount+'點':'-$'+log.amount}`}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+      ${cr.history && cr.history.length > 0 ? `
+        <div class="logs-mini" style="margin-top:4px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;">歷史記錄</div>
+          ${cr.history.slice().reverse().map(h => `
+            <details style="margin-bottom:2px;">
+              <summary style="font-size:10px;color:var(--text-3);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:2px 0;">
+                <span>📅 ${h.year} 年</span>
+                <span style="color:var(--text-2);font-weight:600;">${isCount?h.used+'張':isPoints?h.used.toLocaleString()+'點':'$'+h.used.toFixed(2)} / ${isCount?h.total+'張':isPoints?h.total.toLocaleString()+'點':'$'+h.total.toFixed(2)}</span>
+              </summary>
+              <div style="padding-left:8px;margin-top:4px;">
+                ${(h.logs||[]).slice().reverse().map(log => `
+                  <div class="log-entry">
+                    <span>${log.date}${log.note?' · '+log.note:''}</span>
+                    <span>${isStatus ? '' : `${isCount?'-'+log.amount+'張':isPoints?'-'+log.amount+'點':'-$'+log.amount}`}</span>
+                  </div>
+                `).join('')}
+                ${(!h.logs||h.logs.length===0)?'<div style="font-size:10px;color:var(--text-3);padding:2px 0;">無詳細記錄</div>':''}
+              </div>
+            </details>
+          `).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderCatItem(card, cr, idx) {
+  const grad = bankGradients[card.bank] || 'linear-gradient(135deg,#333,#111)';
+  return `
+    <div class="cat-item">
+      <div class="cat-source">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${grad.match(/#[0-9a-f]{6}/i)?.[0]||'#e8b923'};"></span>
+        ${card.cardName}${card.lastDigits ? ' #'+card.lastDigits : ''}
+      </div>
+      ${renderCreditItem(card, cr, idx)}
+    </div>
+  `;
+}
+
+// ──────────────────────────────────────────────────────────────
+//  INTERACTIONS
+// ──────────────────────────────────────────────────────────────
+function toggleExpand(id) {
+  expandedCardId = expandedCardId === id ? null : id;
+  render();
+  if (expandedCardId) {
+    setTimeout(() => {
+      const el = document.getElementById('card-'+id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 80);
+  }
+}
+
+window.removeCard = function(id) {
+  if (confirm('確定要移除這張卡片嗎？此動作將無法復原。')) {
+    myCards = myCards.filter(c => c.id !== id);
+    save(); render();
+    toast('卡片已移除', '#ff5c5c');
+  }
+};
+
+window.editCreditLimit = function(id) {
+  const card = myCards.find(c => c.id === id);
+  if (!card) return;
+  const current = card.creditLimit ? String(card.creditLimit) : '';
+  const val = prompt(`設定「${card.cardName}」的可使用額度（$）\n留空則清除額度顯示：`, current);
+  if (val === null) return; // cancelled
+  const num = parseFloat(val.replace(/,/g, ''));
+  card.creditLimit = (!val.trim() || isNaN(num)) ? null : num;
+  save(); render();
+  toast(card.creditLimit ? `額度已設為 $${card.creditLimit.toLocaleString()} ✓` : '額度已清除', 'var(--green)');
+};
+
+function switchTab(id) {
+  currentTab = id;
+  expandedCardId = null;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  render();
+}
+
+function groupByBank() {
+  return myCards.reduce((acc, c) => {
+    if (!acc[c.bank]) acc[c.bank] = [];
+    acc[c.bank].push(c);
+    return acc;
+  }, {});
+}
+
+function getCategoryItems(tabId) {
+  const filters = {
+    uber: ['uber'],
+    airline: ['航空','airline','機票','united'],
+    dining: ['餐飲','餐廳','grubhub','dunkin','resy','stubhub','viagogo','doordash','dashpass'],
+    travel: ['飯店','hotel','旅遊','旅行','travel','住宿','travelbank','hyatt','ihg','hilton','marriott','bonvoy'],
+    lifestyle: ['娛樂','disney','walmart','saks','lululemon','equinox','peloton','stubhub','viagogo','dell','adobe','indeed','squarespace','apple','生活'],
+    status: ['會籍','clear','global entry','tsa','nexus','貴賓室','新貴通','lounge','行李','優先登機','club']
+  };
+  const kws = filters[tabId] || [];
+  const list = [];
+  myCards.forEach(card => {
+    card.credits.forEach((credit, idx) => {
+      if (kws.some(k => credit.name.toLowerCase().includes(k) || credit.period.toLowerCase().includes(k))) {
+        list.push({ card, credit, creditIdx: idx });
+      }
+    });
+  });
+  return list;
+}
+
+// ──────────────────────────────────────────────────────────────
+//  MODALS — ADD CARD (BATCH + SINGLE)
+// ──────────────────────────────────────────────────────────────
+let currentAddMode = 'batch';
+let activeBatchBank = 'all';
+let batchSelected = new Set(); // Set of "bank::cardName"
+
+function openCardModal() {
+  currentAddMode = 'batch';
+  activeBatchBank = 'all';
+  batchSelected.clear();
+  renderBatchUI();
+  switchAddMode('batch');
+  updateCardTypeOptions();
+  document.getElementById('cardModalOverlay').classList.add('open');
+}
+
+function closeCardModal() {
+  document.getElementById('cardModalOverlay').classList.remove('open');
+  document.getElementById('cardDigitsInput').value = '';
+  document.getElementById('approvalDateInput').value = '';
+  document.getElementById('is524Checkbox').checked = false;
+  document.getElementById('creditLimitInput').value = '';
+  batchSelected.clear();
+}
+
+function switchAddMode(mode) {
+  currentAddMode = mode;
+  const isBatch = mode === 'batch';
+  document.getElementById('batchMode').style.display = isBatch ? 'block' : 'none';
+  document.getElementById('singleMode').style.display = isBatch ? 'none' : 'block';
+  // tab styles
+  const tabBatch = document.getElementById('modeTabBatch');
+  const tabSingle = document.getElementById('modeTabSingle');
+  tabBatch.style.color = isBatch ? 'var(--accent)' : 'var(--text-3)';
+  tabBatch.style.borderBottomColor = isBatch ? 'var(--accent)' : 'transparent';
+  tabSingle.style.color = !isBatch ? 'var(--accent)' : 'var(--text-3)';
+  tabSingle.style.borderBottomColor = !isBatch ? 'var(--accent)' : 'transparent';
+  document.getElementById('addCardBtnLabel').textContent = isBatch ? '批次新增' : '新增卡片';
+}
+
+function renderBatchUI() {
+  const banks = ['all', ...Object.keys(cardDatabase)];
+  const bankLabels = { all: '全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo' };
+
+  // Bank pills
+  document.getElementById('bankPills').innerHTML = banks.map(b => `
+    <button class="bank-pill ${activeBatchBank === b ? 'active' : ''}" onclick="setBatchBank('${b}')">
+      ${bankLabels[b] || b}
+    </button>
+  `).join('');
+
+  // Card list
+  const addedKeys = new Set(myCards.map(c => c.bank + '::' + c.cardName));
+  const allCards = [];
+  Object.entries(cardDatabase).forEach(([bank, cards]) => {
+    cards.forEach(card => allCards.push({ bank, card }));
+  });
+  const filtered = activeBatchBank === 'all' ? allCards : allCards.filter(c => c.bank === activeBatchBank);
+
+  document.getElementById('batchCardList').innerHTML = filtered.map(({ bank, card }) => {
+    const key = bank + '::' + card.name;
+    const isSelected = batchSelected.has(key);
+    const isAdded = addedKeys.has(key);
+    const creditCount = card.credits.length;
+    const bgColor = bankColors[bank] || '#888';
+    return `
+      <div class="batch-card-row ${isSelected ? 'selected' : ''} ${isAdded ? 'already-added' : ''}"
+           onclick="toggleBatchCard('${key}')">
+        <div class="batch-checkbox">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1a1200" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="batch-bank-dot" style="background:${bgColor}"></div>
+        <div class="batch-card-info">
+          <div class="batch-card-name" style="display:flex;align-items:center;gap:6px;">
+            ${card.name}
+            <span style="opacity:0.7;flex-shrink:0;">${getNetworkLogo(card.network || '', false)}</span>
+          </div>
+          <div class="batch-card-meta">${bank} · ${creditCount} 項權益 · ${card.annualFee === 0 ? '免年費' : '年費 $' + card.annualFee.toLocaleString()}</div>
+        </div>
+        ${isAdded ? '<span class="batch-already-tag">已新增</span>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  updateBatchCount();
+}
+
+function setBatchBank(bank) {
+  activeBatchBank = bank;
+  renderBatchUI();
+}
+
+function toggleBatchCard(key) {
+  if (batchSelected.has(key)) batchSelected.delete(key);
+  else batchSelected.add(key);
+  renderBatchUI();
+}
+
+function batchSelectAll() {
+  const addedKeys = new Set(myCards.map(c => c.bank + '::' + c.cardName));
+  const allCards = [];
+  Object.entries(cardDatabase).forEach(([bank, cards]) => {
+    cards.forEach(card => allCards.push({ bank, card }));
+  });
+  const filtered = activeBatchBank === 'all' ? allCards : allCards.filter(c => c.bank === activeBatchBank);
+  const allKeys = filtered.filter(({ bank, card }) => !addedKeys.has(bank + '::' + card.name)).map(({ bank, card }) => bank + '::' + card.name);
+  const allSelected = allKeys.every(k => batchSelected.has(k));
+  if (allSelected) allKeys.forEach(k => batchSelected.delete(k));
+  else allKeys.forEach(k => batchSelected.add(k));
+  renderBatchUI();
+}
+
+function updateBatchCount() {
+  document.getElementById('batchCount').textContent = batchSelected.size;
+}
+
+function handleAddCard() {
+  if (currentAddMode === 'batch') {
+    addBatchCards();
+  } else {
+    addNewCard();
+  }
+}
+
+function addBatchCards() {
+  if (batchSelected.size === 0) { toast('請至少勾選一張卡片', 'var(--yellow)'); return; }
+  let count = 0;
+  batchSelected.forEach(key => {
+    const [bank, ...nameParts] = key.split('::');
+    const cardName = nameParts.join('::');
+    const template = (cardDatabase[bank] || []).find(c => c.name === cardName);
+    if (!template) return;
+    const chase524Banks = ['Chase', 'United'];
+    myCards.push({
+      id: crypto.randomUUID(),
+      bank, cardName,
+      lastDigits: '',
+      approvalDate: '',
+      is524: chase524Banks.includes(bank),
+      creditLimit: null,
+      annualFee: template.annualFee ?? 0,
+      network: template.network ?? '',
+      addedAt: new Date().toISOString(),
+      credits: template.credits.map(cr => ({ ...cr, used: 0, logs: [] }))
+    });
+    count++;
+  });
+  save(); closeCardModal(); render();
+  toast(`已新增 ${count} 張卡片 ✓`, 'var(--green)');
+}
+
+function updateCardTypeOptions() {
+  const bank = document.getElementById('bankSelect').value;
+  const sel = document.getElementById('cardTypeSelect');
+  sel.innerHTML = (cardDatabase[bank]||[]).map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+}
+
+function addNewCard() {
+  const bank = document.getElementById('bankSelect').value;
+  const cardName = document.getElementById('cardTypeSelect').value;
+  const lastDigits = document.getElementById('cardDigitsInput').value.trim();
+  const approvalDate = document.getElementById('approvalDateInput').value;
+  const is524 = document.getElementById('is524Checkbox').checked;
+  const creditLimit = parseFloat(document.getElementById('creditLimitInput').value) || null;
+  const template = (cardDatabase[bank]||[]).find(c => c.name === cardName);
+  if (!template) return;
+  myCards.push({
+    id: crypto.randomUUID(),
+    bank, cardName, lastDigits, approvalDate, is524, creditLimit,
+    annualFee: template.annualFee ?? 0,
+    network: template.network ?? '',
+    addedAt: new Date().toISOString(),
+    credits: template.credits.map(cr => ({ ...cr, used: 0, logs: [] }))
+  });
+  save(); closeCardModal(); render();
+  toast('卡片已新增 ✓', 'var(--green)');
+}
+
+function openTxModal(cardId, creditIdx, creditName) {
+  const card = myCards.find(c => c.id === cardId);
+  const credit = card.credits[creditIdx];
+  document.getElementById('txCardId').value = cardId;
+  document.getElementById('txCreditIdx').value = creditIdx;
+  document.getElementById('txCreditName').textContent = `正在更新「${creditName}」`;
+  const isCount = credit.period.includes('張');
+  const isPoints = credit.period.includes('點');
+  const isStatus = credit.period === '會籍狀態';
+  document.getElementById('txAmountLabel').textContent = isStatus ? '設定狀態值 (0=未啟用, 1=已啟用)' : isCount ? '使用數量（張）' : isPoints ? '獲得點數（點）' : '金額 / 折抵 ($)';
+  document.getElementById('txAmount').placeholder = isStatus ? '1' : isCount ? '1' : isPoints ? '1000' : '0.00';
+  document.getElementById('txOverlay').classList.add('open');
+}
+function closeTxModal() {
+  document.getElementById('txOverlay').classList.remove('open');
+  document.getElementById('txAmount').value = '';
+  document.getElementById('txNote').value = '';
+  document.getElementById('txDate').value = '';
+}
+function submitTransaction() {
+  const cardId = document.getElementById('txCardId').value;
+  const idx = parseInt(document.getElementById('txCreditIdx').value);
+  const amount = parseFloat(document.getElementById('txAmount').value) || 0;
+  const note = document.getElementById('txNote').value || '手動紀錄';
+  const inputDate = document.getElementById('txDate').value;
+  const displayDate = inputDate ? new Date(inputDate + 'T00:00:00').toLocaleDateString('zh-TW') : new Date().toLocaleDateString('zh-TW');
+  const card = myCards.find(c => c.id === cardId);
+  card.credits[idx].used += amount;
+  card.credits[idx].logs.push({ amount, note, date: displayDate });
+  save(); closeTxModal(); render();
+  toast('紀錄已儲存 ✓', 'var(--green)');
+}
+
+function openStorageModal() { document.getElementById('storageOverlay').classList.add('open'); }
+function closeStorageModal() { document.getElementById('storageOverlay').classList.remove('open'); }
+function showICloudGuide() {
+  const g = document.getElementById('icloudGuide');
+  g.style.display = g.style.display === 'none' ? 'block' : 'none';
+}
+
+// ──────────────────────────────────────────────────────────────
+//  DATA MANAGEMENT
+// ──────────────────────────────────────────────────────────────
+function exportData() {
+  if (myCards.length === 0) { toast('目前沒有資料可備份', 'var(--yellow)'); return; }
+  const blob = new Blob([JSON.stringify(myCards, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `UCCP_Backup_${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('備份下載成功 ✓', 'var(--green)');
+}
+
+function triggerImport() { document.getElementById('importInput').click(); }
+
+document.getElementById('importInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (Array.isArray(data)) {
+        if (confirm('確定要還原資料嗎？這將覆蓋目前所有記錄。')) {
+          myCards = data; save(); render();
+          toast('資料已成功還原 ✓', 'var(--green)');
+        }
+      } else { toast('格式錯誤，無法還原', 'var(--red)'); }
+    } catch { toast('無法解析檔案', 'var(--red)'); }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+function downloadHTMLFile() {
+  // Embed current data into the HTML for iCloud portability
+  const pageHTML = document.documentElement.outerHTML
+    .replace(
+      /let myCards = JSON\.parse\(localStorage\.getItem\('uccp_v2'\)\) \|\| \[\];/,
+      `let myCards = ${JSON.stringify(myCards)};`
+    );
+  const blob = new Blob([pageHTML], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `US_Card_Credits_Pro_${new Date().toISOString().split('T')[0]}.html`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('HTML 檔案（含資料）已下載 ✓', 'var(--green)');
+}
+
+// ──────────────────────────────────────────────────────────────
+//  UPGRADE / DOWNGRADE
+// ──────────────────────────────────────────────────────────────
+let upgradeTargetCardId = null;
+
+function openUpgradeModal(id) {
+  const card = myCards.find(c => c.id === id);
+  if (!card) return;
+  upgradeTargetCardId = id;
+
+  // 顯示來源卡
+  document.getElementById('upgradeFromName').textContent = card.cardName + (card.lastDigits ? ` #${card.lastDigits}` : '');
+  document.getElementById('upgradeFromBank').textContent = card.bank;
+
+  // 建立同銀行其他卡片選項（排除自己）
+  const bankCards = (cardDatabase[card.bank] || []).filter(c => c.name !== card.cardName);
+  const sel = document.getElementById('upgradeTargetSelect');
+  sel.innerHTML = bankCards.length === 0
+    ? '<option value="">— 同銀行無其他卡片 —</option>'
+    : bankCards.map(c => `<option value="${c.name.replace(/"/g,'&quot;')}">${c.name}</option>`).join('');
+
+  document.getElementById('upgradePreview').style.display = 'none';
+  if (bankCards.length > 0) previewUpgradeTarget();
+
+  document.getElementById('upgradeOverlay').classList.add('open');
+}
+
+function closeUpgradeModal() {
+  document.getElementById('upgradeOverlay').classList.remove('open');
+  upgradeTargetCardId = null;
+}
+
+function previewUpgradeTarget() {
+  const card = myCards.find(c => c.id === upgradeTargetCardId);
+  if (!card) return;
+  const targetName = document.getElementById('upgradeTargetSelect').value;
+  const template = (cardDatabase[card.bank] || []).find(c => c.name === targetName);
+  if (!template) { document.getElementById('upgradePreview').style.display = 'none'; return; }
+
+  const list = template.credits.map(cr => {
+    const isStatus = cr.period === '會籍狀態';
+    const val = isStatus ? '會籍' : cr.period.includes('張') ? `${cr.total} 張` : cr.period.includes('點') ? `${cr.total.toLocaleString()} 點` : `$${cr.total}`;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:3px 0;border-bottom:1px solid var(--border);">
+      <span style="color:var(--text-2);flex:1;margin-right:8px;">${cr.name}</span>
+      <span style="color:var(--accent);font-weight:600;flex-shrink:0;">${val}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('upgradePreviewList').innerHTML = list;
+  document.getElementById('upgradePreview').style.display = 'block';
+}
+
+function confirmUpgrade() {
+  const card = myCards.find(c => c.id === upgradeTargetCardId);
+  if (!card) return;
+  const targetName = document.getElementById('upgradeTargetSelect').value;
+  if (!targetName) { toast('請選擇目標卡片', 'var(--yellow)'); return; }
+  const template = (cardDatabase[card.bank] || []).find(c => c.name === targetName);
+  if (!template) return;
+
+  const keepDate    = document.getElementById('upgradeKeepDate').checked;
+  const keepLimit   = document.getElementById('upgradeKeepLimit').checked;
+  const keepDigits  = document.getElementById('upgradeKeepDigits').checked;
+  const keepHistory = document.getElementById('upgradeKeepHistory').checked;
+
+  const oldName    = card.cardName;
+  const oldCredits = card.credits;
+
+  // 若保留歷史，把舊卡所有有記錄的 credit 封存到 history
+  const archivedHistory = keepHistory ? oldCredits.map(cr => {
+    const hasData = cr.used > 0 || (cr.logs && cr.logs.length > 0);
+    return hasData ? { year: new Date().getFullYear(), cardName: oldName, used: cr.used, total: cr.total, logs: cr.logs || [], creditName: cr.name } : null;
+  }).filter(Boolean) : [];
+
+  // 切換卡名與權益
+  card.cardName   = targetName;
+  card.credits    = template.credits.map(cr => ({ ...cr, used: 0, logs: [] }));
+  if (!keepDate)   { card.approvalDate = ''; }
+  if (!keepLimit)  { card.creditLimit = null; }
+  if (!keepDigits) { card.lastDigits = ''; }
+
+  // 把封存歷史掛在卡片層級（卡片歷史）
+  if (!card.upgradeHistory) card.upgradeHistory = [];
+  if (archivedHistory.length > 0) {
+    card.upgradeHistory.push({
+      date: new Date().toLocaleDateString('zh-TW'),
+      fromCard: oldName,
+      toCard: targetName,
+      credits: archivedHistory
+    });
+  }
+
+  // 5/24 預設：Chase 系列保留原設定，其他銀行不計入
+  // （升降級通常不計新開卡，保留原設定即可）
+
+  save();
+  closeUpgradeModal();
+  expandedCardId = null;
+  render();
+  toast(`✅ 已從「${oldName}」切換為「${targetName}」`, 'var(--green)');
+}
+
+
+// ──────────────────────────────────────────────────────────────
+//  THEME
+// ──────────────────────────────────────────────────────────────
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('uccp_theme', theme);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  toast(next === 'light' ? '☀️ 淺色主題' : '🌙 深色主題', 'var(--accent)');
+}
+// 初始化主題
+(function() {
+  const saved = localStorage.getItem('uccp_theme');
+  if (saved) { applyTheme(saved); }
+  else {
+    const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    applyTheme(preferLight ? 'light' : 'dark');
+  }
+})();
+
+function toggleSidebar(show) {
+  const backdrop = document.getElementById('sidebarBackdrop');
+  const sidebar = document.getElementById('mobileSidebar');
+  if (show) { backdrop.classList.add('open'); sidebar.classList.add('open'); }
+  else { backdrop.classList.remove('open'); sidebar.classList.remove('open'); }
+}
+
+// ──────────────────────────────────────────────────────────────
+//  TOAST
+// ──────────────────────────────────────────────────────────────
+function toast(msg, color = 'var(--accent-2)') {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<span class="toast-dot" style="background:${color}"></span>${msg}`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'opacity 0.4s ease';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 400);
+  }, 3000);
+}
+
+// ──────────────────────────────────────────────────────────────
+//  INIT
+// ──────────────────────────────────────────────────────────────
+updateCardTypeOptions();
+document.getElementById('manualResetYear').value = new Date().getFullYear() - 1;
+render();
+checkAutoReset();
+</script>
+</body>
+</html>

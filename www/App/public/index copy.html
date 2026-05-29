@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>US Card Credits Pro</title>
+    <link rel="stylesheet" href="tailwind.min.css">
+    <script src="lucide.min.js"></script>
+    <style>
+        
+        body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; scroll-behavior: smooth; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        #mobileMenu { transition: transform 0.3s ease-in-out; }
+        .menu-open { transform: translateX(0) !important; }
+        
+        .tab-active { color: #2563eb; border-bottom: 2px solid #2563eb; background: #eff6ff; }
+        
+        /* 擬真卡片陰影與反射光影 */
+        .card-thumbnail { 
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18), 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .card-thumbnail:hover { 
+            transform: translateY(-6px) rotateX(2deg) rotateY(2deg); 
+            box-shadow: 0 25px 45px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* 光澤反射效果 */
+        .card-sheen::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.08) 42%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.08) 58%, transparent 65%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        /* 擬真拉絲金屬紋路 */
+        .brushed-metal {
+            background-size: 4px 4px;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900 text-left">
+
+    <input type="file" id="importInput" class="hidden" onchange="importData(event)" accept=".json">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 text-left">
+        <div class="max-w-[1440px] mx-auto px-4 h-16 flex items-center justify-between text-left">
+            <div class="flex items-center gap-3 text-left">
+                <button onclick="toggleMobileMenu(true)" class="md:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors text-left">
+                    <i data-lucide="menu" class="text-slate-600"></i>
+                </button>
+                <i data-lucide="shield-check" class="text-blue-600 hidden xs:block"></i>
+                <h1 class="text-lg md:text-xl font-bold text-slate-800 tracking-tight text-left">US Card Credits Pro</h1>
+            </div>
+            <div class="flex items-center gap-4 text-left">
+                <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 shadow-sm text-center text-nowrap">
+                    <i data-lucide="plus" size="18"></i> <span>新增<span class="hidden sm:inline">信用卡</span></span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="bg-white border-t border-slate-100 overflow-x-auto custom-scrollbar no-scrollbar-at-small text-left">
+            <div class="max-w-[1440px] mx-auto px-4 flex gap-1 whitespace-nowrap text-left" id="tabContainer">
+                <button onclick="switchTab('all')" id="tab-all" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all tab-active">全部卡片</button>
+                <button onclick="switchTab('uber')" id="tab-uber" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all">Uber 系列</button>
+                <button onclick="switchTab('airline')" id="tab-airline" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all">航空相關</button>
+                <button onclick="switchTab('dining')" id="tab-dining" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all">餐飲/外送</button>
+                <button onclick="switchTab('travel')" id="tab-travel" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all">飯店/旅遊</button>
+                <button onclick="switchTab('lifestyle')" id="tab-lifestyle" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all">生活/休閒</button>
+                <button onclick="switchTab('status')" id="tab-status" class="px-5 py-3 text-sm font-bold text-slate-500 hover:text-blue-600 transition-all">機場/會籍</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="menuBackdrop" onclick="toggleMobileMenu(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden transition-opacity opacity-0 text-left"></div>
+    <aside id="mobileMenu" class="fixed top-0 left-0 bottom-0 w-[280px] bg-white z-[60] shadow-2xl md:hidden flex flex-col p-4 transform -translate-x-full transition-transform duration-300 ease-in-out text-left">
+        <div class="flex justify-between items-center mb-8 px-2 text-left">
+            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2 text-left">
+                <i data-lucide="layout-grid" size="18"></i> 管理選單
+            </h2>
+            <button onclick="toggleMobileMenu(false)" class="p-2 hover:bg-slate-100 rounded-lg text-left">
+                <i data-lucide="x" class="text-slate-400 text-left"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto custom-scrollbar text-left text-wrap">
+            <div class="mb-6 text-left">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 text-left">統計與導航</h3>
+                <a href="#statsSection" onclick="toggleMobileMenu(false)" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left mb-1">
+                    <i data-lucide="bar-chart-3" size="18"></i>
+                    <span class="text-sm font-medium text-left">權益總覽</span>
+                </a>
+                <div id="mobileSidebarGroups" class="space-y-6 text-left"></div>
+            </div>
+
+            <div id="mobile524Stats" class="mb-6 pt-4 border-t border-slate-100 text-left"></div>
+
+            <div class="mb-6 pt-4 border-t border-slate-100 text-left">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 text-left">資料管理</h3>
+                <button onclick="exportData()" class="w-full flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left text-sm font-medium mb-1">
+                    <i data-lucide="download" size="18"></i> 備份資料 (.json)
+                </button>
+                <button onclick="triggerImport()" class="w-full flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left text-sm font-medium mb-1">
+                    <i data-lucide="upload" size="18"></i> 還原資料 (匯入)
+                </button>
+                <button onclick="openChangelogModal(); toggleMobileMenu(false);" class="w-full flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left text-sm font-medium">
+                    <i data-lucide="history" size="18"></i> 更新日誌
+                </button>
+            </div>
+        </div>
+        <div class="pt-4 mt-2 border-t border-slate-100 px-3 text-left">
+            <p class="text-[10px] text-slate-400 font-medium tracking-tight text-left">by Randy Tsai</p>
+        </div>
+    </aside>
+
+    <div class="max-w-[1440px] mx-auto flex text-left">
+        <aside class="hidden md:flex flex-col w-72 h-[calc(100vh-112px)] sticky top-28 border-r border-slate-200 bg-white p-4 text-left">
+            <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 text-left">
+                <div class="mb-6 text-left">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-4 text-left text-wrap">統計資訊</h3>
+                    <a href="#statsSection" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors mb-1 text-left">
+                        <i data-lucide="bar-chart-3" size="18"></i>
+                        <span class="text-sm font-medium text-left text-nowrap">權益總覽</span>
+                    </a>
+                </div>
+
+                <div id="sidebarContent" class="text-left mb-8">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-4 text-left text-nowrap">我的卡片清單</h3>
+                    <div id="sidebarBankGroups" class="space-y-6 text-left"></div>
+                </div>
+
+                <div id="sidebar524Analysis" class="mb-8 pt-6 border-t border-slate-100 text-left"></div>
+
+                <div class="pt-6 border-t border-slate-100 text-left">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-4 text-left text-nowrap">資料管理</h3>
+                    <button onclick="exportData()" class="w-full flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left text-sm font-medium mb-1">
+                        <i data-lucide="download" size="18"></i> 備份資料 (.json)
+                    </button>
+                    <button onclick="triggerImport()" class="w-full flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left text-sm font-medium mb-1">
+                        <i data-lucide="upload" size="18"></i> 還原資料 (匯入)
+                    </button>
+                    <button onclick="openChangelogModal()" class="w-full flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors text-left text-sm font-medium">
+                        <i data-lucide="history" size="18"></i> 更新日誌
+                    </button>
+                </div>
+            </div>
+            <div class="pt-4 mt-2 border-t border-slate-100 px-3 text-left">
+                <p class="text-[10px] text-slate-400 font-medium tracking-tight text-left">by Randy Tsai</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 px-4 md:px-8 py-8 min-w-0 text-left">
+            <div id="statsSection" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 text-left"></div>
+            
+            <div id="cardList" class="space-y-12 pb-12 text-left"></div>
+
+            <footer class="mt-12 py-8 border-t border-slate-200 flex flex-col items-center gap-6 text-center text-left">
+                <div class="flex flex-col md:flex-row items-center gap-4 justify-center text-left">
+                    <p class="text-sm text-slate-500 font-bold tracking-tight text-left">US Card Credits Pro by Randy Tsai</p>
+                </div>
+                
+                <div class="flex flex-col gap-1 text-[10px] text-slate-400 font-medium leading-relaxed text-center text-left">
+                    <p>資料僅儲存於本地，移機將導致資料遺失。</p>
+                    <p>請定期點選側邊欄的「備份資料」功能，保存檔案。</p>
+                    <p class="text-slate-300 mt-1 opacity-80 uppercase tracking-widest text-center">
+                        Ver. 0.2.0 (2026-05-27) | Feedback? <a href="mailto:creditsprofeedback@gmail.com" class="underline hover:text-blue-400 transition-colors">creditsprofeedback@gmail.com</a>
+                    </p>
+                </div>
+            </footer>
+
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center py-32 text-slate-400 text-center text-left">
+                <div class="bg-slate-100 p-6 rounded-full mb-4 mx-auto text-center">
+                    <i data-lucide="credit-card" size="48" class="opacity-20 mx-auto text-center"></i>
+                </div>
+                <p class="text-lg font-medium text-center">目前還沒有卡片</p>
+                <p class="text-sm text-center">點擊右上角按鈕開始加入您的信用卡權益，或從備份還原。</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="cardModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 text-left">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center text-left">
+                <h3 class="text-xl font-bold text-slate-800 text-left">選擇要添加的信用卡</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-left"><i data-lucide="x"></i></button>
+            </div>
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar text-left">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1 text-left">發卡銀行</label>
+                    <select id="bankSelect" onchange="updateCardTypeOptions()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-left">
+                        <option value="Amex">American Express</option>
+                        <option value="Chase">Chase</option>
+                        <option value="Citi">Citi</option>
+                        <option value="BoA">Bank of America</option>
+                        <option value="CapitalOne">Capital One</option>
+                        <option value="WellsFargo">Wells Fargo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1 text-left">卡片名稱</label>
+                    <select id="cardTypeSelect" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-left text-wrap"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-left">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1 text-left">核卡日期 (選填)</label>
+                        <input type="date" id="approvalDateInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-left">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1 text-left">末四/五碼 (選填)</label>
+                        <input type="text" id="cardDigitsInput" placeholder="1234" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-left">
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 text-left">
+                    <input type="checkbox" id="is524Checkbox" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 cursor-pointer text-left">
+                    <label for="is524Checkbox" class="text-sm font-bold text-slate-700 cursor-pointer text-left text-wrap leading-tight">
+                        納入 Chase 5/24 計算
+                        <span class="block text-[10px] text-slate-400 font-normal">勾選後將統計在主頁與側邊欄分析中</span>
+                    </label>
+                </div>
+                <div class="pt-4 flex gap-3 sticky bottom-0 bg-white text-left">
+                    <button onclick="closeModal()" class="flex-1 px-4 py-3 bg-slate-100 text-slate-600 rounded-xl font-semibold hover:bg-slate-200 transition-all text-center text-left">取消</button>
+                    <button onclick="addNewCard()" class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 shadow-md transition-all text-center text-left">確認添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="transactionModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 text-left text-wrap">
+            <div class="p-6 border-b border-slate-100 text-left">
+                <h3 class="text-lg font-bold text-slate-800 text-left">記錄使用細節</h3>
+                <p id="txCreditName" class="text-sm text-slate-500 font-medium text-left"></p>
+            </div>
+            <div class="p-6 space-y-4 text-left text-wrap">
+                <input type="hidden" id="txCardId">
+                <input type="hidden" id="txCreditIdx">
+                
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1 text-left">使用日期 (不填則預設為今日)</label>
+                    <input type="date" id="txDate" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-left">
+                </div>
+
+                <div>
+                    <label id="txAmountLabel" class="block text-sm font-semibold text-slate-700 mb-1 text-left">金額/數量</label>
+                    <input type="number" id="txAmount" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-left">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1 text-left text-wrap">說明備註</label>
+                    <input type="text" id="txNote" placeholder="例如: 飯店住宿, 機票折抵" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-left">
+                </div>
+                <div class="flex gap-3 text-center">
+                    <button onclick="closeTxModal()" class="flex-1 px-4 py-3 bg-slate-100 text-slate-600 rounded-xl font-semibold text-center">取消</button>
+                    <button onclick="submitTransaction()" class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 shadow-md transition-all text-center">儲存紀錄</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="changelogModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 text-left">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center text-left">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2 text-left">
+                    <i data-lucide="history" class="text-blue-600"></i> 更新日誌
+                </h3>
+                <button onclick="closeChangelogModal()" class="text-slate-400 hover:text-slate-600 text-left"><i data-lucide="x"></i></button>
+            </div>
+            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar text-left">
+                <div class="border-l-2 border-blue-500 pl-4 relative space-y-2">
+                    <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-blue-50"></div>
+                    <div class="flex items-baseline justify-between">
+                        <span class="font-black text-slate-800 text-base">Ver. 0.2.0</span>
+                        <span class="text-xs font-semibold text-slate-400">2026-05-27</span>
+                    </div>
+                    <p class="text-xs font-bold text-blue-600">目前版本</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1.5 leading-relaxed pl-1">
+                        <li>新增「更新日誌」查閱功能。</li>
+                        <li>重構側邊欄架構，優化分類切換與 5/24 進度追蹤邏輯。</li>
+                        <li>修復 <code>removeCard</code> 在極端資料結構下的作用域綁定錯誤。</li>
+                        <li>擴充完整發卡行核心卡片權益資料庫。</li>
+                    </ul>
+                </div>
+
+                <div class="border-l-2 border-slate-200 pl-4 relative space-y-2">
+                    <div class="absolute w-3 h-3 bg-slate-200 rounded-full -left-[7px] top-1.5"></div>
+                    <div class="flex items-baseline justify-between">
+                        <span class="font-black text-slate-700 text-base">Ver. 0.1.0</span>
+                        <span class="text-xs font-semibold text-slate-400">2026-04-15</span>
+                    </div>
+                    <ul class="list-disc list-inside text-xs text-slate-500 space-y-1.5 leading-relaxed pl-1">
+                        <li>US Card Credits Pro 專案初始建立。</li>
+                        <li>實作本地 LocalStorage 資料持久化儲存與 JSON 備份/還原機制。</li>
+                        <li>加入極致擬真的官方卡片 3D 光影與拉絲紋路視覺複刻。</li>
+                    </ul>
+                </div>
+
+                <div class="pt-2 sticky bottom-0 bg-white text-left">
+                    <button onclick="closeChangelogModal()" class="w-full px-4 py-3 bg-slate-100 text-slate-600 rounded-xl font-semibold hover:bg-slate-200 transition-all text-center">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- STREAMING_CHUNK: Defining exhaustive credit card database... ---
+        // 擬真卡片樣式與權益資料庫
+        const cardDatabase = {
+            'Amex': [
+                { name: 'The Platinum Card (個人白金)', credits: [
+                    { name: '航空消費折抵', total: 200, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Uber 折抵', total: 200, period: '每月 ($15/$35)', expiry: '2026-12-31' },
+                    { name: 'Uber One 訂閱折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'CLEAR Plus 折抵', total: 209, period: '每年', expiry: '2026-12-31' },
+                    { name: '飯店訂購折抵 (FHR/THC)', total: 200, period: '每年', expiry: '2026-12-31' },
+                    { name: '數位娛樂消費折抵', total: 300, period: '每月 ($25)', expiry: '2026-12-31' },
+                    { name: 'Equinox 健身折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Resy 餐廳訂位折抵', total: 400, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Saks Fifth Avenue 購物折抵', total: 100, period: '每半年 ($50)', expiry: '2026-06-30' },
+                    { name: 'Walmart+ 會員折抵', total: 155.4, period: '每月 ($12.95)', expiry: '2026-12-31' },
+                    { name: 'Lululemon 購物折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Oura Ring 購買折抵', total: 200, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: 'Hilton 飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: '萬豪 飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: '立鼎世 (LHW) Sterling 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'Hertz President’s Circle 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'American Express® Gold Card (個人金卡)', credits: [
+                    { name: '指定餐飲消費折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'Uber 折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'Dunkin’ 餐廳折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
+                    { name: 'Resy 餐廳預約服務折抵', total: 100, period: '每半年 ($50)', expiry: '2026-06-30' }
+                ]},
+                { name: 'American Express® Green Card', credits: [
+                    { name: 'CLEAR Plus 折抵', total: 189, period: '每年', expiry: '2026-12-31' },
+                    { name: 'LoungeBuddy 貴賓室折抵', total: 100, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Amex EveryDay® Credit Card', credits: [
+                    { name: '20次以上消費獲取額外 20% 點數', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Amex EveryDay® Preferred Credit Card', credits: [
+                    { name: '30次以上消費獲取額外 50% 點數', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Blue Cash Everyday® Card', credits: [
+                    { name: 'Home Chef 廚藝箱折抵', total: 180, period: '每月 ($15)', expiry: '2026-12-31' },
+                    { name: 'Disney Bundle 訂閱折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' }
+                ]},
+                { name: 'Blue Cash Preferred® Card', credits: [
+                    { name: 'Equinox 健身折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'Disney Bundle 訂閱折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' }
+                ]},
+                { name: 'Marriott Bonvoy Brilliant®', credits: [
+                    { name: '餐飲折抵', total: 300, period: '每月 ($25)', expiry: '2026-12-31' }, 
+                    { name: '飯店消費折抵', total: 100, period: '每次入住', expiry: '2026-12-31' },
+                    { name: '萬豪飯店白金會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: '年度免費住宿券 (最高 85k)', total: 1, period: '張', expiry: '每年續卡' }
+                ]},
+                { name: 'Marriott Bonvoy Bevy™', credits: [
+                    { name: '飯店消費折抵', total: 100, period: '每次入住', expiry: '2026-12-31' },
+                    { name: '萬豪飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Hilton Honors Aspire', credits: [
+                    { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: 'Hilton 飯店鑽石會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'Hilton 渡假村消費折抵', total: 400, period: '每半年 ($200)', expiry: '2026-12-31' },
+                    { name: '航空消費折抵', total: 200, period: '每季 ($50)', expiry: '2026-12-31' },
+                    { name: 'CLEAR Plus 折抵', total: 199, period: '每年', expiry: '2026-12-31' },
+                    { name: 'National 租車高階會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Hilton Honors Surpass', credits: [
+                    { name: 'Hilton 飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'Hilton 旗下飯店折抵', total: 200, period: '每季 ($50)', expiry: '2026-12-31' },
+                    { name: 'National 租車高階會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Hilton Honors Card (無年費)', credits: [
+                    { name: 'Hilton 飯店銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Delta SkyMiles® Reserve', credits: [
+                    { name: 'Delta 旗下飯店折抵', total: 200, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Delta 乘機隨行券 (Companion Certificate)', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: 'Delta Sky Club 貴賓室使用權', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'Resy 餐廳消費折抵', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
+                    { name: 'Rideshare 共乘折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' }
+                ]},
+                { name: 'Delta SkyMiles® Platinum', credits: [
+                    { name: 'Delta 旗下飯店折抵', total: 150, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Delta 乘機隨行券 (Companion Certificate)', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: 'Resy 餐廳消費折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'Rideshare 共乘折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' }
+                ]},
+                { name: 'Delta SkyMiles® Gold', credits: [
+                    { name: 'Delta 旗下飯店折抵', total: 100, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Delta SkyMiles® Blue', credits: [
+                    { name: '機上消費 20% 額外折扣', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                // AMEX Business Cards
+                { name: 'Business Platinum Card® (商務白金)', credits: [
+                    { name: '航空消費折抵', total: 200, period: '每年', expiry: '2026-12-31' },
+                    { name: 'CLEAR Plus 折抵', total: 209, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Dell 消費折抵', total: 400, period: '每半年 ($200)', expiry: '2026-12-31' },
+                    { name: '飯店訂購折抵 (FHR/THC)', total: 600, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Indeed 人才招募折抵', total: 360, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Adobe 軟體服務折抵', total: 250, period: '每年', expiry: '2026-12-31' },
+                    { name: '電信服務折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: 'Hilton 飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: '萬豪 飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: '立鼎世 (LHW) Sterling 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'Hertz President’s Circle 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'ChatGPT Business 訂閱折抵', total: 300, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Business Gold Card (商務金卡)', credits: [
+                    { name: '商務折抵 (FedEx/Grubhub/辦公店)', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
+                    { name: 'Walmart+ 會員折抵', total: 155.4, period: '每月 ($12.95)', expiry: '2026-12-31' },
+                    { name: 'Squarespace 服務折抵', total: 150, period: '每年', expiry: '2026-12-31' },
+                    { name: 'ChatGPT Business 訂閱折抵', total: 300, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Business Green Reward Card', credits: [
+                    { name: '年度旅行消費折抵', total: 0, period: '會籍狀態', expiry: '續卡時' }
+                ]},
+                { name: 'Blue Business® Plus Credit Card', credits: [
+                    { name: '無年費 2x 點數回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Blue Business Cash™ Card', credits: [
+                    { name: '無年費 2% 現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Marriott Bonvoy Business® (AMEX)', credits: [
+                    { name: '年度免費住宿券 (最高 35k)', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: '萬豪飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Hilton Honors Business (AMEX)', credits: [
+                    { name: 'Hilton 旗下飯店折抵', total: 240, period: '每季 ($60)', expiry: '2026-12-31' },
+                    { name: 'Hilton 飯店金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'National 租車高階會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Delta SkyMiles® Business Reserve', credits: [
+                    { name: 'Delta 旗下飯店折抵', total: 200, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Delta 乘機隨行券 (Companion Certificate)', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: 'Delta Sky Club 貴賓室使用權', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Delta SkyMiles® Business Platinum', credits: [
+                    { name: 'Delta 旗下飯店折抵', total: 150, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Delta 乘機隨行券 (Companion Certificate)', total: 1, period: '張', expiry: '每年續卡' }
+                ]},
+                { name: 'Delta SkyMiles® Business Gold', credits: [
+                    { name: 'Delta 旗下飯店折抵', total: 100, period: '每年', expiry: '2026-12-31' }
+                ]}
+            ],
+            'Chase': [
+                { name: 'Chase Sapphire Reserve® (CSR)', credits: [
+                    { name: '年度旅行消費折抵 (Travel Credit)', total: 300, period: '每持卡年', expiry: '每年' },
+                    { name: '機場合作貴賓室 (PP/Sapphire)', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'DashPass + DoorDash 折抵', total: 300, period: '每日曆年', expiry: '2026-12-31' },
+                    { name: 'Lyft 共乘服務折抵', total: 120, period: '每日曆年', expiry: '2026-12-31' },
+                    { name: 'GE / TSA Precheck / NEXUS 折抵', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: 'The Edit 奢華酒店訂房折抵', total: 500, period: '每日曆年', expiry: '2026-12-31' },
+                    { name: '特定酒店 brand 折抵補助', total: 250, period: '2026 限定', expiry: '2026-12-31' },
+                    { name: 'Exclusive Tables 餐廳折抵', total: 300, period: '每日曆年', expiry: '2026-12-31' },
+                    { name: 'Stubhub / viagogo 票券折抵', total: 300, period: '每日曆年', expiry: '2026-12-31' },
+                    { name: 'Peloton 健身服務折抵', total: 120, period: '每日曆年', expiry: '2026-12-31' },
+                    { name: '洲際酒店集團 (IHG) 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'Apple TV+ & Music 影音服務', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Chase Sapphire Preferred® (CSP)', credits: [
+                    { name: 'Chase Travel 飯店折抵', total: 50, period: '每年', expiry: '2026-12-31' },
+                    { name: '年度 10% 獎勵點數回饋', total: 0, period: '點數', expiry: '續卡時' },
+                    { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Chase Freedom Flex℠', credits: [
+                    { name: '每季 5% 類別加碼回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Chase Freedom Unlimited®', credits: [
+                    { name: '1.5% 無限消費點數回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Chase Freedom® Rise', credits: [
+                    { name: '信用累積 1.5% 現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Marriott Bonvoy Boundless®', credits: [
+                    { name: '年度免費住宿券 (最高 35k)', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: '萬豪飯店銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Marriott Bonvoy Bold®', credits: [
+                    { name: '萬豪飯店銀卡會籍 (無年費)', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Marriott Bonvoy Bountiful™', credits: [
+                    { name: '年度免費住宿券 (最高 50k)', total: 1, period: '張', expiry: '每年續卡' }
+                ]},
+                { name: 'The World of Hyatt Credit Card', credits: [
+                    { name: '免費住宿券 (Category 1-4)', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: '凱悅探索者 (Discoverist) 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'IHG One Rewards Premier', credits: [
+                    { name: 'United TravelBank 現金折抵', total: 50, period: '每半年 ($25)', expiry: '2026-06-30' },
+                    { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: 'IHG 飯店白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'IHG One Rewards Traveler', credits: [
+                    { name: '住三晚送一晚訂房權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'United Club℠ Infinite', credits: [
+                    { name: 'United Club 貴賓室無限使用權', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: '搭乘 UA 第一與第二件托運行李免費', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: 'IHG One Rewards 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+                    { name: 'Avis President’s Club 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'United Quest℠', credits: [
+                    { name: 'UA 航班消費折抵', total: 125, period: '每年', expiry: '2026-12-31' },
+                    { name: '年度里程點數返還', total: 5000, period: '點數', expiry: '每年續卡' }
+                ]},
+                { name: 'United Explorer℠', credits: [
+                    { name: 'United Club 貴賓室一次性通行證', total: 2, period: '張', expiry: '每年續卡' },
+                    { name: '搭乘 UA 第一件托運行李免費', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' }
+                ]},
+                { name: 'United Gateway℠', credits: [
+                    { name: '機上消費 25% 額外折扣', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Southwest Rapid Rewards® Priority', credits: [
+                    { name: 'Southwest 航班折抵', total: 75, period: '每年', expiry: '2026-12-31' },
+                    { name: '年度點數獎勵', total: 7500, period: '點數', expiry: '每年續卡' },
+                    { name: '升等搭機次數', total: 4, period: '張', expiry: '每年' }
+                ]},
+                { name: 'Southwest Rapid Rewards® Premier', credits: [
+                    { name: '年度點數獎勵', total: 6000, period: '點數', expiry: '每年續卡' }
+                ]},
+                { name: 'Southwest Rapid Rewards® Plus', credits: [
+                    { name: '年度點數獎勵', total: 3000, period: '點數', expiry: '每年續卡' }
+                ]},
+                { name: 'British Airways / Iberia / Aer Lingus Visa Signature®', credits: [
+                    { name: '同行者機票折抵券 (Companion Ticket)', total: 1, period: '張', expiry: '每年' }
+                ]},
+                { name: 'Prime Visa (Amazon 聯名卡)', credits: [
+                    { name: 'Amazon 5% 加碼回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Disney® Premier Visa® / Disney® Visa®', credits: [
+                    { name: '迪士尼專屬消費 2% 折抵回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                // Chase Business Cards
+                { name: 'Ink Business Preferred®', credits: [
+                    { name: '商務手機保險保額補貼', total: 1000, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Ink Business Cash®', credits: [
+                    { name: '辦公用品與電信消費 5% 加碼回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Ink Business Unlimited®', credits: [
+                    { name: '無限制 1.5% 商業回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Ink Business Premier®', credits: [
+                    { name: '大額商務交易 2.5% 現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Marriott Bonvoy Business® (Chase)', credits: [
+                    { name: '年度免費住宿券 (最高 35k)', total: 1, period: '張', expiry: '每年續卡' }
+                ]},
+                { name: 'The World of Hyatt Business Credit Card', credits: [
+                    { name: 'Hyatt 飯店消費折抵', total: 100, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'IHG One Rewards Premier Business', credits: [
+                    { name: 'United TravelBank 現金折抵', total: 50, period: '每半年 ($25)', expiry: '2026-06-30' },
+                    { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: 'IHG 飯店白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'United℠ Business / United Club℠ Business', credits: [
+                    { name: 'UA 航班消費折抵', total: 100, period: '每年', expiry: '2026-12-31' },
+                    { name: 'United Club 貴賓室一次性通行證', total: 2, period: '張', expiry: '每年續卡' }
+                ]},
+                { name: 'Southwest Rapid Rewards® Performance / Premier Business', credits: [
+                    { name: 'Southwest 機上 Wi-Fi 補貼', total: 365, period: '每年', expiry: '2026-12-31' },
+                    { name: '升等搭機次數', total: 4, period: '張', expiry: '每年' }
+                ]}
+            ],
+            'BoA': [
+                { name: 'Bank of America® Premium Rewards® Elite', credits: [
+                    { name: '美籍航空消費折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+                    { name: '生活消費折抵 (Lifestyle)', total: 150, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: '新貴通 (Priority Pass) 會員', total: 0, period: '會籍狀態', expiry: '包含貴賓室/餐廳' }
+                ]},
+                { name: 'Bank of America® Premium Rewards®', credits: [
+                    { name: '航空消費折抵', total: 100, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Global Entry / TSA Precheck', total: 100, period: '每 4 年', expiry: '2030-12-31' }
+                ]},
+                { name: 'Bank of America® Customized Cash Rewards', credits: [
+                    { name: '自選類別最高 3% 現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Bank of America® Travel Rewards', credits: [
+                    { name: '無限制 1.5x 旅遊點數回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Bank of America® Unlimited Cash Rewards', credits: [
+                    { name: '無限制 1.5% 現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Alaska Airlines Visa® (阿拉斯加航空)', credits: [
+                    { name: '「全世界」通用同行者機票兌換券', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: '搭乘阿拉斯加航空首件行李免費', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Air France KLM World Elite Mastercard®', credits: [
+                    { name: '年度哩程點數獎勵', total: 5000, period: '點數', expiry: '每年續卡' }
+                ]},
+                { name: 'Virgin Atlantic Reward+ / Reward', credits: [
+                    { name: '年度同行者機票 / 升等券', total: 1, period: '張', expiry: '每年' }
+                ]},
+                // BOA Business Cards
+                { name: 'Bank of America® Business Advantage Customized Cash Rewards', credits: [
+                    { name: '自選商務消費 3% 折抵回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Bank of America® Business Advantage Unlimited Cash Rewards', credits: [
+                    { name: '無限制 1.5% 商業現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Bank of America® Business Advantage Travel Rewards', credits: [
+                    { name: '商務旅遊 1.5x 點數回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Alaska Airlines Visa® Business', credits: [
+                    { name: '「全世界」通用同行者機票兌換券', total: 1, period: '張', expiry: '每年續卡' },
+                    { name: '阿拉斯加航空搭機行李免費權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]}
+            ],
+            'WellsFargo': [
+                { name: 'Wells Fargo Autograph Journey℠', credits: [
+                    { name: '機票消費折抵', total: 50, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Wells Fargo Autograph℠', credits: [
+                    { name: '熱門生活與餐飲 3x 點數回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Wells Fargo Active Cash®', credits: [
+                    { name: '無年費 2% 無限制現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Wells Fargo Reflect®', credits: [
+                    { name: '無年費最高 21 個月零利率期權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Wells Fargo One Key+™ / One Key™', credits: [
+                    { name: 'OneKey Cash 點數獎勵', total: 100, period: '點數', expiry: '每年' },
+                    { name: 'Global Entry / TSA Precheck', total: 100, period: '每 4 年', expiry: '2030-12-31' }
+                ]},
+                { name: 'Bilt Mastercard®', credits: [
+                    { name: '付房租免手續費與雙倍點數權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                // Wells Fargo Business
+                { name: 'Wells Fargo Signet℠ Electronic Commerce Card', credits: [
+                    { name: '專為電子商務設計的商務回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]}
+            ],
+            'Citi': [
+                { name: 'Citi Strata Elite', credits: [
+                    { name: '年度旅遊消費折抵 (Travel Credit)', total: 250, period: '每年', expiry: '2026-12-31' },
+                    { name: '機場貴賓室無限使用權', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Citi Strata Premier℠', credits: [
+                    { name: '飯店訂購折抵 ($500+)', total: 100, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Citi Custom Cash®', credits: [
+                    { name: '單月最高消費類別 5% 回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Citi Double Cash®', credits: [
+                    { name: '無年費 2% 無限制現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Citi Rewards+®', credits: [
+                    { name: '年度兌換點數 10% 返還權益', total: 0, period: '點數', expiry: '永久' }
+                ]},
+                { name: 'Citi® / AAdvantage® Executive World Elite Mastercard®', credits: [
+                    { name: 'AA 貴賓室 (Admirals Club) 會員', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: '搭乘 AA 第一件托運行李免費', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'AA 航班優先登機', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: 'Avis / Budget 租車折抵', total: 120, period: '每年', expiry: '2026-12-31' },
+                    { name: 'Grubhub 餐飲折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+                    { name: 'Lyft 共乘服務折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' }
+                ]},
+                { name: 'Citi® / AAdvantage® Platinum Select®', credits: [
+                    { name: '搭乘 AA 首件托運行李免費', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: '機票折扣 (消費滿 20k)', total: 125, period: '每年', expiry: '2026-12-31' }
+                ]},
+                { name: 'Citi® / AAdvantage® MileUp®', credits: [
+                    { name: 'AA 哩程雙倍累積權益 (無年費)', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Costco Anywhere Visa® Card by Citi', credits: [
+                    { name: 'Costco 消費高回饋權益 (加油4%)', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                // Citi Business Cards
+                { name: 'Citi® / AAdvantage® Business™ World Elite Mastercard®', credits: [
+                    { name: 'AA 托運行李免費權益', total: 0, period: '會籍狀態', expiry: '永久' },
+                    { name: 'AA 同行者折抵券 (Companion Certificate)', total: 99, period: '每年', expiry: '續卡時' }
+                ]},
+                { name: 'Costco Anywhere Visa® Business Card by Citi', credits: [
+                    { name: '商務Costco消費回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]}
+            ],
+            'CapitalOne': [
+                { name: 'Capital One Venture X Rewards', credits: [
+                    { name: 'Capital One Travel 旅遊折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+                    { name: '續卡獎勵點數', total: 10000, period: '點數', expiry: '續卡時' },
+                    { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+                    { name: '新貴通 (Priority Pass) 會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Capital One Venture Rewards', credits: [
+                    { name: '雙倍消費哩程回饋權益', total: 0, period: '點數', expiry: '永久' }
+                ]},
+                { name: 'Capital One Ventureone Rewards', credits: [
+                    { name: '無年費旅遊累積卡回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Capital One Savor', credits: [
+                    { name: '餐飲、娛樂與影音服務 4% 回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Capital One SavorOne Rewards', credits: [
+                    { name: '無年費餐飲消費 3% 回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Capital One Quicksilver Rewards ( / QuicksilverOne)', credits: [
+                    { name: '常規消費 1.5% 無限制現金回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                { name: 'Capital One Platinum', credits: [
+                    { name: '信用累積專用無年費權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]},
+                // Capital One Business
+                { name: 'Capital One Venture X Business', credits: [
+                    { name: 'Capital One Travel 旅遊折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+                    { name: '續卡獎勵點數', total: 10000, period: '點數', expiry: '續卡時' },
+                    { name: '新貴通 (Priority Pass) 商業會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
+                ]},
+                { name: 'Capital One Spark Miles for Business ( / Spark Miles Select)', credits: [
+                    { name: 'Global Entry / TSA Precheck', total: 100, period: '每 4 年', expiry: '2030-12-31' }
+                ]},
+                { name: 'Capital One Spark Cash Plus ( / Spark Cash Select)', credits: [
+                    { name: '無限制 2% 商業現金折抵回饋權益', total: 0, period: '會籍狀態', expiry: '永久' }
+                ]}
+            ]
+        };
+
+        // 核心變數
+        let myCards = JSON.parse(localStorage.getItem('my_credits_tracker')) || [];
+        let currentTab = 'all';
+        let expandedCardId = null;
+
+        function save() { localStorage.setItem('my_credits_tracker', JSON.stringify(myCards)); }
+
+        // 將 removeCard 正確綁定到 window 全域作用域
+        window.removeCard = function(id) {
+            if (window.confirm('確定要移除這張卡片嗎？此動作將無法復原。')) {
+                myCards = myCards.filter(c => c.id !== id);
+                save();
+                render();
+            }
+        };
+
+        function init() {
+            lucide.createIcons();
+            updateCardTypeOptions();
+            render();
+        }
+
+        // --- 資料管理 ---
+        function exportData() {
+            if (myCards.length === 0) { showToast("目前沒有資料可以備份。"); return; }
+            const dataStr = JSON.stringify(myCards, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `US_Card_Credits_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("備份成功！檔案已下載。");
+        }
+
+        function triggerImport() { document.getElementById('importInput').click(); }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        if (confirm('確定要還原資料嗎？這將會覆蓋目前的紀錄。')) {
+                            myCards = importedData;
+                            save();
+                            render();
+                            showToast("資料已成功還原！");
+                        }
+                    } else { showToast("還原失敗：檔案格式不正確。"); }
+                } catch (err) { showToast("還原失敗：無法解析檔案。"); }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        // --- 更新日誌控制 ---
+        function openChangelogModal() {
+            document.getElementById('changelogModal').classList.remove('hidden');
+        }
+
+        function closeChangelogModal() {
+            document.getElementById('changelogModal').classList.add('hidden');
+        }
+
+        // --- UI 控制 ---
+        function switchTab(tabId) {
+            currentTab = tabId;
+            expandedCardId = null;
+            const tabs = document.querySelectorAll('#tabContainer button');
+            tabs.forEach(t => t.classList.remove('tab-active'));
+            document.getElementById('tab-' + tabId).classList.add('tab-active');
+            render();
+        }
+
+        function toggleMobileMenu(show) {
+            const menu = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('menuBackdrop');
+            if (show) {
+                backdrop.classList.remove('hidden');
+                setTimeout(() => { backdrop.classList.add('opacity-100'); menu.classList.add('menu-open'); }, 10);
+            } else {
+                menu.classList.remove('menu-open');
+                backdrop.classList.remove('opacity-100');
+                setTimeout(() => { backdrop.classList.add('hidden'); }, 300);
+            }
+        }
+
+        function updateCardTypeOptions() {
+            const bank = document.getElementById('bankSelect').value;
+            const select = document.getElementById('cardTypeSelect');
+            if (cardDatabase[bank]) {
+                select.innerHTML = cardDatabase[bank].map(card => `<option value="${card.name}">${card.name}</option>`).join('');
+            }
+        }
+
+        function openModal() { document.getElementById('cardModal').classList.remove('hidden'); }
+        function closeModal() { 
+            document.getElementById('cardModal').classList.add('hidden'); 
+            document.getElementById('cardDigitsInput').value = ''; 
+            document.getElementById('approvalDateInput').value = '';
+            document.getElementById('is524Checkbox').checked = false;
+        }
+
+        function addNewCard() {
+            const bank = document.getElementById('bankSelect').value;
+            const cardName = document.getElementById('cardTypeSelect').value;
+            const lastDigits = document.getElementById('cardDigitsInput').value.trim();
+            const approvalDate = document.getElementById('approvalDateInput').value;
+            const is524 = document.getElementById('is524Checkbox').checked;
+            
+            const template = cardDatabase[bank].find(c => c.name === cardName);
+            const newCard = {
+                id: crypto.randomUUID(),
+                bank, cardName, lastDigits, approvalDate, is524,
+                addedAt: new Date().toISOString(),
+                credits: template.credits.map(cr => ({ ...cr, used: 0, logs: [] }))
+            };
+            myCards.push(newCard);
+            save();
+            closeModal();
+            render();
+        }
+
+        function toggleCardExpansion(id) {
+            expandedCardId = expandedCardId === id ? null : id;
+            render();
+        }
+
+        function openTxModal(cardId, creditIdx, creditName) {
+            const card = myCards.find(c => c.id === cardId);
+            const credit = card.credits[creditIdx];
+            document.getElementById('txCardId').value = cardId;
+            document.getElementById('txCreditIdx').value = creditIdx;
+            document.getElementById('txCreditName').innerText = `正在更新「${creditName}」`;
+            const isCount = credit.period.includes('張');
+            const isPoints = credit.period.includes('點');
+            document.getElementById('txAmountLabel').innerText = isCount ? '使用數量 (張)' : isPoints ? '獲得點數 (點)' : '金額/折抵 ($)';
+            document.getElementById('txAmount').placeholder = isCount ? '1' : isPoints ? '1000' : '0.00';
+            document.getElementById('transactionModal').classList.remove('hidden');
+        }
+
+        function closeTxModal() { document.getElementById('transactionModal').classList.add('hidden'); document.getElementById('txAmount').value = ''; document.getElementById('txNote').value = ''; }
+
+        function submitTransaction() {
+            const cardId = document.getElementById('txCardId').value;
+            const idx = parseInt(document.getElementById('txCreditIdx').value);
+            const amount = parseFloat(document.getElementById('txAmount').value) || 0;
+            const note = document.getElementById('txNote').value || '手動紀錄';
+            const inputDate = document.getElementById('txDate').value;
+            
+            const displayDate = inputDate ? new Date(inputDate).toLocaleDateString('zh-TW') : new Date().toLocaleDateString('zh-TW');
+
+            const card = myCards.find(c => c.id === cardId);
+            card.credits[idx].used += amount;
+            card.credits[idx].logs.push({ amount, note, date: displayDate });
+            save();
+            closeTxModal();
+            render();
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full text-sm font-bold z-[100] shadow-xl animate-bounce text-center text-wrap";
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        function getCategoryFilteredCredits(tabId) {
+            const filters = {
+                'uber': ['uber'],
+                'airline': ['航空', 'airline', '機票', 'united', 'delta'],
+                'dining': ['餐飲', '餐廳', 'grubhub', 'dunkin', 'resy', 'stubhub', 'viagogo', 'doordash', 'dashpass'],
+                'travel': ['飯店', 'hotel', '旅遊', 'travel', 'fhr', 'thc', '住宿', 'travelbank'],
+                'lifestyle': ['娛樂', 'disney', 'walmart', 'saks', 'lululemon', 'equinox', 'peloton', 'stubhub', 'viagogo', 'dell', 'adobe', 'indeed', 'squarespace', '影音', 'apple', '生活'],
+                'status': ['會籍', 'clear', 'global entry', 'tsa', 'nexus', '貴賓室', '新貴通', 'lounge', '行李', '優先登機', 'club']
+            };
+            const list = [];
+            const keywords = filters[tabId];
+            if (!keywords) return list;
+            myCards.forEach(card => {
+                card.credits.forEach((credit, idx) => {
+                    const match = keywords.some(k => credit.name.toLowerCase().includes(k) || credit.period.toLowerCase().includes(k));
+                    if (match) list.push({ card, credit, creditIdx: idx });
+                });
+            });
+            return list;
+        }
+
+        function render() {
+            const container = document.getElementById('cardList');
+            const sidebar = document.getElementById('sidebarBankGroups');
+            const mobileSidebar = document.getElementById('mobileSidebarGroups');
+            const sidebar524 = document.getElementById('sidebar524Analysis');
+            const mobile524 = document.getElementById('mobile524Stats');
+            const stats = document.getElementById('statsSection');
+            const empty = document.getElementById('emptyState');
+
+            if (myCards.length === 0) {
+                container.innerHTML = ''; sidebar.innerHTML = ''; mobileSidebar.innerHTML = ''; stats.innerHTML = ''; 
+                sidebar524.innerHTML = ''; mobile524.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            const grouped = myCards.reduce((acc, card) => { if (!acc[card.bank]) acc[card.bank] = []; acc[card.bank].push(card); return acc; }, {});
+            const bankColors = { 'Amex': 'bg-blue-500', 'Chase': 'bg-indigo-900', 'Citi': 'bg-blue-900', 'BoA': 'bg-red-600', 'CapitalOne': 'bg-navy-800', 'WellsFargo': 'bg-red-800', 'United': 'bg-blue-700' };
+
+            const genSidebarHTML = (isMobile) => Object.entries(grouped).map(([bank, cards]) => `
+                <div class="text-left">
+                    <div class="px-3 mb-2 flex items-center gap-2 text-left">
+                        <span class="w-2 h-2 rounded-full ${bankColors[bank] || 'bg-slate-400'} text-left"></span>
+                        <span class="text-[10px] md:text-xs font-black text-slate-800 uppercase text-left">${bank}</span>
+                    </div>
+                    <div class="space-y-1 text-left text-wrap">
+                        ${cards.map(c => `
+                            <a href="#card-${c.id}" onclick="${isMobile ? 'toggleMobileMenu(false)' : ''}" class="flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all text-sm truncate font-medium text-left text-nowrap">
+                                ${c.cardName} ${c.lastDigits ? `<span class="text-[10px] opacity-60">#${c.lastDigits}</span>` : ''}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            sidebar.innerHTML = genSidebarHTML(false);
+            mobileSidebar.innerHTML = genSidebarHTML(true);
+
+            const cards524 = myCards.filter(c => c.is524);
+            const total524Count = cards524.length;
+            let earliest524Card = null;
+            if (total524Count > 0) {
+                const dated524 = cards524.filter(c => c.approvalDate).sort((a, b) => a.approvalDate.localeCompare(b.approvalDate));
+                earliest524Card = dated524.length > 0 ? dated524[0] : null;
+            }
+
+            const analysisHTML = `
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-4 text-left">5/24 統計分析</h3>
+                <div class="px-3 space-y-3 text-left">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-1 text-left text-nowrap">5/24 卡片張數</p>
+                        <p class="text-lg font-black ${total524Count >= 5 ? 'text-red-500' : 'text-blue-600'} text-left">${total524Count} / 5</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-left text-wrap overflow-hidden">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-1 text-left text-nowrap">最早辦理的卡片</p>
+                        <p class="text-xs font-bold text-slate-700 truncate text-left">${earliest524Card ? earliest524Card.cardName : '無資料'}</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5 text-left">${earliest524Card ? earliest524Card.approvalDate : '--'}</p>
+                    </div>
+                </div>
+            `;
+            sidebar524.innerHTML = analysisHTML;
+            mobile524.innerHTML = analysisHTML;
+
+            let totalPos = 0, totalUsed = 0;
+            myCards.forEach(c => {
+                c.credits.forEach(cr => { if (cr.period !== '會籍狀態' && !cr.period.includes('張') && !cr.period.includes('點')) { totalPos += cr.total; totalUsed += cr.used; } });
+            });
+            
+            stats.innerHTML = `
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 text-left"><p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase mb-1 tracking-wider text-nowrap text-left">年度總權益預估</p><h4 class="text-xl md:text-2xl font-black text-slate-800 text-left">$${totalPos.toLocaleString()}</h4></div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 text-left"><p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase mb-1 tracking-wider text-nowrap text-left">已省下/折抵</p><h4 class="text-xl md:text-2xl font-black text-green-600 text-left">$${totalUsed.toLocaleString()}</h4></div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 text-left"><p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase mb-1 tracking-wider text-nowrap text-left">權益達成率</p><h4 class="text-xl md:text-2xl font-black text-blue-600 text-left">${totalPos ? Math.round((totalUsed/totalPos)*100) : 0}%</h4></div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 text-left"><p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase mb-1 tracking-wider text-nowrap text-left">目前 5/24 進度</p><h4 class="text-xl md:text-2xl font-black ${total524Count >= 5 ? 'text-red-500' : 'text-slate-800'} text-left">${total524Count} / 5</h4></div>
+            `;
+
+            if (currentTab === 'all') {
+                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">${myCards.map(card => renderCardThumbnail(card)).join('')}</div>`;
+            } else {
+                const filtered = getCategoryFilteredCredits(currentTab);
+                if (filtered.length === 0) {
+                    container.innerHTML = `<div class="py-20 text-center text-slate-400 text-left"><p class="text-left text-center">此分類目前沒有相關權益</p></div>`;
+                } else {
+                    container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">${filtered.map(item => renderCreditItem(item.card, item.credit, item.creditIdx)).join('')}</div>`;
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function getCardVisuals(card) {
+            const name = card.cardName.toLowerCase();
+            const bank = card.bank;
+            
+            let bgStyle = "";
+            let textColor = "text-white";
+            let descColor = "opacity-75";
+            let chipColor = "gold"; 
+            let amexPattern = false;
+            let stripePattern = false;
+            let luxuryBadge = false;
+
+            if (name.includes('platinum')) {
+                if (name.includes('business')) {
+                    bgStyle = "background: linear-gradient(135deg, #f3f4f6 0%, #d1d5db 40%, #9ca3af 70%, #e5e7eb 100%); color: #1e293b;";
+                    textColor = "text-slate-800";
+                    descColor = "text-slate-500 font-bold";
+                    chipColor = "silver";
+                } else {
+                    bgStyle = "background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 45%, #d1d5db 75%, #f3f4f6 100%); color: #0f172a;";
+                    textColor = "text-slate-800";
+                    descColor = "text-slate-500 font-semibold";
+                    chipColor = "silver";
+                    amexPattern = true;
+                }
+            } else if (name.includes('gold')) {
+                if (name.includes('business')) {
+                    bgStyle = "background: linear-gradient(135deg, #fef08a 0%, #fef08a 20%, #eab308 75%, #ca8a04 100%); color: #422006;";
+                    textColor = "text-amber-950";
+                    descColor = "text-amber-800";
+                    chipColor = "gold";
+                } else {
+                    bgStyle = "background: linear-gradient(135deg, #fef9c3 0%, #fef08a 35%, #facc15 70%, #d97706 100%); color: #451a03;";
+                    textColor = "text-amber-950";
+                    descColor = "text-amber-900 font-medium";
+                    chipColor = "gold";
+                    amexPattern = true;
+                }
+            } else if (name.includes('reserve') && bank === 'Chase') {
+                bgStyle = "background: linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #111827 100%); border: 1px solid rgba(255,255,255,0.08);";
+                textColor = "text-white";
+                chipColor = "gold";
+                luxuryBadge = true;
+            } else if (name.includes('preferred') && bank === 'Chase') {
+                bgStyle = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 40%, #0c4a6e 80%, #0f172a 100%);";
+                textColor = "text-white";
+                chipColor = "silver";
+            } else if (name.includes('venture x')) {
+                bgStyle = "background: linear-gradient(135deg, #042f2e 0%, #0c4a6e 60%, #111827 100%);";
+                textColor = "text-white";
+                chipColor = "silver";
+                luxuryBadge = true;
+            } else if (name.includes('bilt')) {
+                bgStyle = "background: linear-gradient(135deg, #1c1917 0%, #0c0a09 100%); border: 1px solid #d97706;";
+                textColor = "text-amber-100";
+                descColor = "text-amber-500/80";
+                chipColor = "gold";
+            } else if (name.includes('aspire')) {
+                bgStyle = "background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c1d95 80%, #0f172a 100%);";
+                textColor = "text-indigo-100";
+                chipColor = "gold";
+            } else if (name.includes('surpass')) {
+                bgStyle = "background: linear-gradient(135deg, #075985 0%, #0c4a6e 100%);";
+                textColor = "text-sky-100";
+                chipColor = "silver";
+            } else if (name.includes('brilliant')) {
+                bgStyle = "background: linear-gradient(135deg, #1f2937 0%, #111827 100%);";
+                textColor = "text-gray-100";
+                chipColor = "silver";
+                stripePattern = true;
+            } else if (name.includes('green')) {
+                bgStyle = "background: linear-gradient(135deg, #0f766e 0%, #115e59 70%, #134e4a 100%);";
+                textColor = "text-teal-50";
+                chipColor = "silver";
+            } else if (bank === 'Citi') {
+                bgStyle = "background: linear-gradient(135deg, #334155 0%, #1e293b 60%, #0f172a 100%);";
+                textColor = "text-white";
+                chipColor = "silver";
+            } else if (bank === 'BoA') {
+                if (name.includes('elite')) {
+                    bgStyle = "background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #09090b 100%); border: 1.5px solid #a1a1aa;";
+                    textColor = "text-white";
+                    chipColor = "silver";
+                } else {
+                    bgStyle = "background: linear-gradient(135deg, #e31837 0%, #9e121a 100%);";
+                    textColor = "text-white";
+                    chipColor = "gold";
+                }
+            } else if (bank === 'WellsFargo') {
+                bgStyle = "background: linear-gradient(135deg, #ef4444 0%, #b91c1c 65%, #7f1d1d 100%);";
+                textColor = "text-white";
+                chipColor = "gold";
+            } else if (name.includes('united') || name.includes('explorer')) {
+                bgStyle = "background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 50%, #1e3a8a 100%);";
+                textColor = "text-blue-50";
+                chipColor = "silver";
+            } else {
+                bgStyle = "background: linear-gradient(135deg, #475569 0%, #1e293b 100%);";
+                textColor = "text-white";
+                chipColor = "gold";
+            }
+
+            let networkLogo = "";
+            if (bank === 'Amex') {
+                networkLogo = `
+                    <div class="bg-sky-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded shadow-sm border border-sky-400">AMEX</div>
+                `;
+            } else if (name.includes('bilt') || name.includes('strata') || name.includes('premier') || name.includes('double') || name.includes('reward')) {
+                networkLogo = `
+                    <div class="flex items-center -space-x-2">
+                        <div class="w-6 h-6 rounded-full bg-[#eb001b] opacity-90"></div>
+                        <div class="w-6 h-6 rounded-full bg-[#ff5f00] opacity-80"></div>
+                    </div>
+                `;
+            } else {
+                networkLogo = `
+                    <div class="text-white italic font-black tracking-widest text-lg opacity-90 drop-shadow-sm">VISA</div>
+                `;
+            }
+
+            let chipHTML = "";
+            if (chipColor === 'gold') {
+                chipHTML = `
+                    <div class="absolute top-[42%] left-[8%] w-[14%] h-[18%] bg-gradient-to-br from-yellow-100 via-yellow-400 to-amber-600 rounded-md border border-amber-600/40 overflow-hidden flex flex-wrap p-0.5 shadow-inner">
+                        <div class="w-full h-1/2 border-b border-amber-800/20 flex"><div class="w-1/2 border-r border-amber-800/20"></div><div class="w-1/2"></div></div>
+                        <div class="w-full h-1/2 flex"><div class="w-1/2 border-r border-amber-800/20"></div><div class="w-1/2"></div></div>
+                    </div>
+                `;
+            } else if (chipColor === 'silver') {
+                chipHTML = `
+                    <div class="absolute top-[42%] left-[8%] w-[14%] h-[18%] bg-gradient-to-br from-slate-100 via-slate-300 to-slate-500 rounded-md border border-slate-400/50 overflow-hidden flex flex-wrap p-0.5 shadow-inner">
+                        <div class="w-full h-1/2 border-b border-slate-600/20 flex"><div class="w-1/2 border-r border-slate-600/20"></div><div class="w-1/2"></div></div>
+                        <div class="w-full h-1/2 flex"><div class="w-1/2 border-r border-slate-600/20"></div><div class="w-1/2"></div></div>
+                    </div>
+                `;
+            } else {
+                chipHTML = `
+                    <div class="absolute top-[42%] left-[8%] w-[14%] h-[18%] bg-gradient-to-br from-zinc-600 via-zinc-800 to-black rounded-md border border-zinc-700 overflow-hidden flex flex-wrap p-0.5 shadow-inner">
+                        <div class="w-full h-1/2 border-b border-zinc-900/30 flex"><div class="w-1/2 border-r border-zinc-900/30"></div><div class="w-1/2"></div></div>
+                        <div class="w-full h-1/2 flex"><div class="w-1/2 border-r border-zinc-900/30"></div><div class="w-1/2"></div></div>
+                    </div>
+                `;
+            }
+
+            let overlayPattern = "";
+            if (amexPattern) {
+                overlayPattern = `
+                    <div class="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
+                        <svg class="w-36 h-36" viewBox="0 0 100 100" fill="currentColor">
+                            <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="currentColor" stroke-width="1"/>
+                        </svg>
+                    </div>
+                `;
+            } else if (stripePattern) {
+                overlayPattern = `
+                    <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-orange-500/20 via-yellow-500/10 to-transparent pointer-events-none"></div>
+                `;
+            } else if (luxuryBadge) {
+                overlayPattern = `
+                    <div class="absolute right-8 top-16 opacity-[0.03] pointer-events-none">
+                        <i data-lucide="crown" class="w-32 h-32"></i>
+                    </div>
+                `;
+            }
+
+            return { bgStyle, textColor, descColor, chipHTML, networkLogo, overlayPattern };
+        }
+
+        function renderCardThumbnail(card) {
+            const isExpanded = expandedCardId === card.id;
+            const style = getCardVisuals(card);
+            
+            return `
+            <div id="card-${card.id}" class="flex flex-col gap-4 scroll-mt-32 text-left">
+                <div class="card-thumbnail card-sheen brushed-metal p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between aspect-[1.58/1] text-white" style="${style.bgStyle}">
+                    
+                    ${style.overlayPattern}
+                    
+                    <div class="flex justify-between items-start z-10 relative">
+                        <div class="flex flex-col text-left">
+                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] ${style.descColor}">${card.bank}</p>
+                            <h3 class="text-base md:text-lg font-black leading-tight tracking-tight ${style.textColor} truncate max-w-[180px]">${card.cardName}</h3>
+                        </div>
+                        ${card.is524 ? '<span class="bg-red-500/90 text-white text-[8px] px-2 py-0.5 rounded-full font-black shadow-sm tracking-wider">5/24</span>' : ''}
+                    </div>
+
+                    ${style.chipHTML}
+
+                    <div class="absolute top-[48%] left-[24%] opacity-40 z-10">
+                        <svg class="w-4 h-4 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M5 8a6 6 0 0 1 0 8M8 6a9 9 0 0 1 0 12M11 4a12 12 0 0 1 0 16" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+
+                    <div class="z-10 relative flex justify-between items-end">
+                        <div class="flex flex-col gap-0.5">
+                            <p class="text-sm font-mono tracking-[0.15em] opacity-90 ${style.textColor}">
+                                ${card.lastDigits ? '•••• ' + card.lastDigits : '•••• ••••'}
+                            </p>
+                            ${card.approvalDate ? `<p class="text-[8px] opacity-60 font-semibold tracking-wider">APPROVED: ${card.approvalDate}</p>` : ''}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="event.stopPropagation(); window.removeCard('${card.id}')" class="p-1.5 hover:bg-white/20 rounded-full transition-colors text-white/70 hover:text-white" title="刪除卡片">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); toggleCardExpansion('${card.id}')" class="p-1.5 bg-white/20 hover:bg-white/30 rounded-full transition-all text-white border border-white/30" title="展開卡片權益">
+                                <i data-lucide="${isExpanded ? 'chevron-up' : 'settings-2'}" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="h-6 flex items-center justify-end">
+                            ${style.networkLogo}
+                        </div>
+                    </div>
+                </div>
+
+                ${isExpanded ? `
+                <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-in fade-in slide-in-from-top-2 text-left">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest px-1">權益與點數管理</h4>
+                    <div class="space-y-4">
+                        ${card.credits.map((cr, idx) => renderCreditItem(card, cr, idx, true)).join('')}
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+            `;
+        }
+
+        function renderCreditItem(card, cr, idx, isFromThumbnail = false) {
+            const isStatus = cr.period === '會籍狀態';
+            const isCount = cr.period.includes('張');
+            const isPoints = cr.period.includes('點');
+            const remain = cr.total - cr.used;
+            const pct = cr.total > 0 ? Math.min(100, (cr.used / cr.total) * 100) : (cr.used > 0 ? 100 : 0);
+            
+            let dRem = isCount ? `${remain} 張` : isPoints ? `${remain.toLocaleString()} 點` : `$${remain.toFixed(2)}`;
+            let dTot = isCount ? `${cr.total} 張` : isPoints ? `${cr.total.toLocaleString()} 點` : `$${cr.total.toFixed(2)}`;
+            
+            const showSource = currentTab !== 'all' && !isFromThumbnail;
+            const sourceInfo = showSource ? `
+                <div class="flex items-center justify-between mb-1 text-left text-nowrap overflow-hidden">
+                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-tighter opacity-80 text-left truncate">${card.cardName}</p>
+                    ${card.lastDigits ? `<span class="text-[8px] bg-slate-200 text-slate-500 px-1 rounded ml-2">#${card.lastDigits}</span>` : ''}
+                </div>
+            ` : '';
+
+            return `
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 md:p-5 hover:border-blue-200 transition-all flex flex-col text-left">
+                ${sourceInfo}
+                <div class="flex justify-between items-start mb-3 text-left">
+                    <h4 class="font-bold text-slate-800 text-sm leading-tight h-10 overflow-hidden text-left text-wrap">${cr.name}</h4>
+                    <span class="text-[9px] md:text-[10px] font-bold bg-white border border-slate-200 text-slate-500 px-2 py-1 rounded-md uppercase whitespace-nowrap ml-2 text-left">${cr.period}</span>
+                </div>
+                ${!isStatus ? `
+                    <div class="flex items-baseline justify-between mb-2 text-left"><span class="text-xl md:text-2xl font-black text-slate-800 text-left">${dRem}</span><span class="text-[10px] md:text-xs text-slate-400 font-medium text-left text-nowrap ml-2">剩餘 / ${dTot}</span></div>
+                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-4 text-left"><div class="bg-blue-600 h-full transition-all duration-1000 text-left" style="width: ${pct}%"></div></div>
+                ` : `<div class="mb-4 text-left"><span class="text-sm font-bold ${cr.used > 0 ? 'text-green-600' : 'text-slate-400'} text-left"> ✓ 已啟用權益</span></div>`}
+                <div class="mt-auto text-left">
+                    <div class="flex items-center justify-between text-[10px] md:text-[11px] text-slate-400 mb-4 text-left"><span class="flex items-center gap-1 text-left text-nowrap"><i data-lucide="clock" size="10"></i> 期限: ${cr.expiry}</span>${!isStatus ? `<span class="font-bold text-blue-600 text-left text-nowrap ml-2">${Math.round(pct)}%</span>` : ''}</div>
+                    <button onclick="openTxModal('${card.id}', ${idx}, '${cr.name}')" class="w-full py-2 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all text-center shadow-sm text-left">記錄使用</button>
+                </div>
+                ${cr.logs && cr.logs.length > 0 ? `
+                <div class="mt-4 pt-4 border-t border-slate-200 space-y-2 max-h-24 overflow-y-auto custom-scrollbar text-[10px] text-left text-wrap">
+                    ${cr.logs.slice().reverse().map(log => `
+                        <div class="flex justify-between text-left">
+                            <span class="text-slate-500 truncate mr-2 text-left">${log.date} ${log.note}</span>
+                            <span class="font-bold text-slate-700 whitespace-nowrap text-left">${isStatus ? '' : `-${log.amount}${isCount ? '張' : isPoints ? '點' : '$'}`}</span>
+                        </div>
+                    `).join('')}
+                </div>` : ''}
+            </div>
+            `;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

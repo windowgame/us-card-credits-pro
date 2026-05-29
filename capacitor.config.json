@@ -1,0 +1,13 @@
+{
+  "appId": "com.uscardcreditspro.app",
+  "appName": "US Card Credits Pro",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#0f1f4b",
+      "showSpinner": false
+    }
+  }
+}
