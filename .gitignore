@@ -5,3 +5,6 @@ android/.gradle/
 android/app/build/
 .DS_Store
 *.log
+www/App/
+"www/index copy.html"
+us-card-credits-pro/
