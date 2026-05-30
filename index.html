@@ -956,7 +956,7 @@
   <aside class="sidebar" id="desktopSidebar">
     <div>
       <div class="sidebar-section-title" data-i18n="sidebar_stats">統計</div>
-      <a href="#statsSection" class="sidebar-link">
+      <a onclick="openOverviewModal()" class="sidebar-link" style="cursor:pointer;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span data-i18n="sidebar_overview">權益總覽</span>
       </a>
@@ -1068,7 +1068,7 @@
     </button>
   </div>
   <div class="sidebar-section-title" data-i18n="sidebar_stats">統計</div>
-  <a href="#statsSection" class="sidebar-link" onclick="toggleSidebar(false)">
+  <a onclick="toggleSidebar(false);openOverviewModal()" class="sidebar-link" style="cursor:pointer;">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     <span data-i18n="sidebar_overview">權益總覽</span>
   </a>
@@ -1362,6 +1362,21 @@
       <button class="btn btn-primary" onclick="confirmManualReset()" style="background:var(--red);box-shadow:none;">
         確認重置
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERVIEW ANALYTICS MODAL -->
+<div class="overlay" id="overviewOverlay" style="align-items:flex-start;padding:16px;overflow-y:auto;">
+  <div class="modal" style="max-width:680px;width:100%;margin:auto;">
+    <div class="modal-header" style="position:sticky;top:0;z-index:10;background:var(--bg-2);border-radius:20px 20px 0 0;">
+      <span class="modal-title" id="overviewTitle">權益總覽分析</span>
+      <button class="modal-close" onclick="closeOverviewModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="overviewBody" style="padding:20px;display:flex;flex-direction:column;gap:20px;">
+      <!-- Dynamically rendered -->
     </div>
   </div>
 </div>
@@ -2516,6 +2531,28 @@ function save() {
   }
 })();
 
+// ── Backfill annualFee / network for cards missing or incorrect values
+(function() {
+  let changed = false;
+  myCards.forEach(card => {
+    const template = (cardDatabase[card.bank] || []).find(c => c.name === card.cardName);
+    if (!template) return;
+    const correctFee = template.annualFee ?? 0;
+    // Backfill if: field missing, OR card has fee=0 but template says it should be non-zero
+    // (This corrects cards added before the annualFee feature was built)
+    if (card.annualFee === undefined || card.annualFee === null ||
+        (card.annualFee === 0 && correctFee > 0 && !card._feeEdited)) {
+      card.annualFee = correctFee;
+      changed = true;
+    }
+    if (!card.network) {
+      card.network = template.network || '';
+      changed = true;
+    }
+  });
+  if (changed) save();
+})();
+
 // ──────────────────────────────────────────────────────────────
 //  ANNUAL RESET
 // ──────────────────────────────────────────────────────────────
@@ -3415,8 +3452,240 @@ function downloadHTMLFile() {
 }
 
 // ──────────────────────────────────────────────────────────────
-//  EDIT CARD INFO
+//  OVERVIEW ANALYTICS
 // ──────────────────────────────────────────────────────────────
+function openOverviewModal() {
+  document.getElementById('overviewTitle').textContent = currentLang === 'en' ? 'Benefits Analytics' : '權益總覽分析';
+  document.getElementById('overviewBody').innerHTML = buildOverviewHTML();
+  document.getElementById('overviewOverlay').classList.add('open');
+}
+function closeOverviewModal() {
+  document.getElementById('overviewOverlay').classList.remove('open');
+}
+
+function buildOverviewHTML() {
+  if (myCards.length === 0) {
+    return `<div style="text-align:center;padding:40px;color:var(--text-3);">${currentLang==='en'?'No cards added yet.':'尚未新增任何卡片。'}</div>`;
+  }
+
+  const zh = currentLang === 'zh';
+
+  // ── Aggregate data ────────────────────────────────────────
+  let totalFee = 0, totalValue = 0, totalUsed = 0;
+  const bankFee = {}, bankValue = {}, bankUsed = {};
+  const catValue = { uber:0, airline:0, dining:0, travel:0, lifestyle:0, status:0, other:0 };
+  const catUsed  = { uber:0, airline:0, dining:0, travel:0, lifestyle:0, status:0, other:0 };
+  const catLabels = zh
+    ? { uber:'Uber', airline:'航空', dining:'餐飲', travel:'旅遊', lifestyle:'生活', status:'會籍', other:'其他' }
+    : { uber:'Uber', airline:'Airlines', dining:'Dining', travel:'Travel', lifestyle:'Lifestyle', status:'Status', other:'Other' };
+  const catFilters = {
+    uber: ['uber'],
+    airline: ['航空','airline','機票','united','delta','southwest','british','iberia','aer lingus'],
+    dining: ['餐飲','餐廳','grubhub','dunkin','resy','doordash','dashpass','dining','restaurant'],
+    travel: ['飯店','旅遊','旅行','travel','hotel','hyatt','ihg','hilton','marriott','bonvoy','住宿'],
+    lifestyle: ['disney','equinox','peloton','walmart','saks','lululemon','entertainment','adobe','indeed','squarespace','apple','dell'],
+    status: ['會籍','clear','global entry','tsa','貴賓室','lounge','行李','club','priority pass'],
+  };
+
+  const cardStats = myCards.map(card => {
+    let cv = 0, cu = 0;
+    const fee = card.annualFee || 0;
+    totalFee += fee;
+    bankFee[card.bank] = (bankFee[card.bank] || 0) + fee;
+
+    card.credits.forEach(cr => {
+      const skip = cr.period === '會籍狀態' || cr.period === '永久' || cr.period === '一次性' || cr.period.includes('每 4') || cr.period.includes('張') || cr.period.includes('點');
+      if (!skip) {
+        cv += cr.total;
+        cu += cr.used;
+        // categorize
+        const name = cr.name.toLowerCase();
+        let matched = false;
+        for (const [cat, kws] of Object.entries(catFilters)) {
+          if (kws.some(k => name.includes(k))) {
+            catValue[cat] += cr.total;
+            catUsed[cat]  += cr.used;
+            matched = true; break;
+          }
+        }
+        if (!matched) { catValue.other += cr.total; catUsed.other += cr.used; }
+      }
+    });
+    totalValue += cv;
+    totalUsed  += cu;
+    bankValue[card.bank] = (bankValue[card.bank] || 0) + cv;
+    bankUsed[card.bank]  = (bankUsed[card.bank]  || 0) + cu;
+    return { id: card.id, name: card.cardName, bank: card.bank, fee, value: cv, used: cu, net: cv - fee };
+  });
+
+  const usageRate = totalValue > 0 ? Math.round(totalUsed / totalValue * 100) : 0;
+  const netTotal  = totalValue - totalFee;
+
+  // bank colors
+  const bColors = { Amex:'#1a6fcf', Chase:'#1e3a6e', Citi:'#064a94', BoA:'#c91933', CapitalOne:'#003d80', WellsFargo:'#c42028' };
+
+  // ── Section builder helpers ──────────────────────────────
+  function section(title, content) {
+    return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);">${title}</div>
+      <div style="padding:16px;">${content}</div>
+    </div>`;
+  }
+
+  function kpiGrid(items) {
+    return `<div style="display:grid;grid-template-columns:repeat(${items.length},1fr);gap:10px;">
+      ${items.map(({label,value,color,sub}) => `
+        <div style="background:var(--bg-3);border-radius:10px;padding:12px;text-align:center;">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-3);margin-bottom:6px;">${label}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:${color};">${value}</div>
+          ${sub ? `<div style="font-size:10px;color:var(--text-3);margin-top:4px;">${sub}</div>` : ''}
+        </div>`).join('')}
+    </div>`;
+  }
+
+  function donutChart(segments, size=120, stroke=18) {
+    const total = segments.reduce((s,x) => s + x.value, 0);
+    if (total === 0) return '';
+    const r = (size - stroke) / 2;
+    const circ = 2 * Math.PI * r;
+    let offset = 0;
+    const cx = size/2, cy = size/2;
+    const paths = segments.map(seg => {
+      const pct = seg.value / total;
+      const dash = pct * circ;
+      const gap  = circ - dash;
+      const path = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}" stroke-width="${stroke}"
+        stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+        stroke-dashoffset="${(-offset * circ).toFixed(2)}"
+        style="transform:rotate(-90deg);transform-origin:${cx}px ${cy}px;"
+        stroke-linecap="butt"/>`;
+      offset += pct;
+      return path;
+    }).join('');
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg>`;
+  }
+
+  function hBar(value, max, color, height=6) {
+    const pct = max > 0 ? Math.min(100, value/max*100) : 0;
+    return `<div style="background:var(--bg-3);border-radius:10px;height:${height}px;overflow:hidden;">
+      <div style="height:100%;width:${pct.toFixed(1)}%;background:${color};border-radius:10px;transition:width .5s ease;"></div>
+    </div>`;
+  }
+
+  // ── 1. KPI summary ───────────────────────────────────────
+  const kpi1 = kpiGrid([
+    { label: zh?'總年費':'Total Annual Fees',   value: '$'+totalFee.toLocaleString(),   color:'var(--red)' },
+    { label: zh?'總權益估算':'Total Value',      value: '$'+totalValue.toLocaleString(), color:'var(--green)' },
+    { label: zh?'淨回報':'Net Return',           value: (netTotal>=0?'+':'')+' $'+netTotal.toLocaleString(), color: netTotal>=0?'var(--accent)':'var(--red)' },
+    { label: zh?'已使用':'Redeemed',             value: '$'+totalUsed.toLocaleString(),  color:'var(--accent-2)', sub: usageRate+'%' },
+  ]);
+
+  // ── 2. Usage donut + rate ────────────────────────────────
+  const usageDonut = donutChart([
+    { value: totalUsed,          color: 'var(--accent)' },
+    { value: totalValue-totalUsed, color: 'rgba(128,128,128,0.2)' },
+  ], 100, 16);
+
+  const usageSection = `
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div style="flex-shrink:0;position:relative;">
+        ${usageDonut}
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--accent);">${usageRate}%</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">${zh?'今年退額使用進度':'This Year Redemption Progress'}</div>
+        ${hBar(totalUsed, totalValue, 'linear-gradient(90deg,var(--accent),var(--accent-2))', 8)}
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text-3);">
+          <span>${zh?'已使用':'Used'}: $${totalUsed.toLocaleString()}</span>
+          <span>${zh?'未使用':'Unused'}: $${(totalValue-totalUsed).toLocaleString()}</span>
+        </div>
+      </div>
+    </div>`;
+
+  // ── 3. Bank breakdown ────────────────────────────────────
+  const banks = Object.keys(bankValue).filter(b => bankValue[b] > 0);
+  const bankSegs = banks.map(b => ({ value: bankValue[b], color: bColors[b]||'#888', label: b }));
+  const bankDonut = donutChart(bankSegs, 120, 20);
+  const bankRows = banks.sort((a,b) => bankValue[b]-bankValue[a]).map(b => {
+    const pct = totalValue > 0 ? Math.round(bankValue[b]/totalValue*100) : 0;
+    const usedPct = bankValue[b] > 0 ? Math.round(bankUsed[b]/bankValue[b]*100) : 0;
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${bColors[b]||'#888'};flex-shrink:0;"></span>
+          <span style="font-size:12px;font-weight:600;color:var(--text);">${b}</span>
+          <span style="font-size:10px;color:var(--text-3);">${myCards.filter(c=>c.bank===b).length} ${zh?'張':'cards'}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);">$${bankValue[b].toLocaleString()} · ${pct}% · ${zh?'使用':'used'} ${usedPct}%</div>
+      </div>
+      ${hBar(bankValue[b], totalValue, bColors[b]||'#888', 5)}
+    </div>`;
+  }).join('');
+
+  const bankSection = `
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+      <div style="flex-shrink:0;">${bankDonut}</div>
+      <div style="flex:1;min-width:200px;">${bankRows}</div>
+    </div>`;
+
+  // ── 4. Category breakdown ────────────────────────────────
+  const catOrder = ['travel','dining','airline','uber','lifestyle','status','other'];
+  const catColors = { travel:'#3b82f6', dining:'#f59e0b', airline:'#8b5cf6', uber:'#22c55e', lifestyle:'#ec4899', status:'#06b6d4', other:'#6b7280' };
+  const catRows = catOrder.filter(k => catValue[k] > 0).map(k => {
+    const pct = totalValue > 0 ? Math.round(catValue[k]/totalValue*100) : 0;
+    const usedPct = catValue[k] > 0 ? Math.round(catUsed[k]/catValue[k]*100) : 0;
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${catColors[k]};"></span>
+          <span style="font-size:12px;font-weight:600;color:var(--text);">${catLabels[k]}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);">$${catValue[k].toLocaleString()} · ${pct}% · ${zh?'使用率':'usage'} ${usedPct}%</div>
+      </div>
+      <div style="background:var(--bg-3);border-radius:10px;height:6px;overflow:hidden;position:relative;">
+        <div style="height:100%;width:${pct}%;background:${catColors[k]};border-radius:10px;opacity:0.35;"></div>
+        <div style="position:absolute;top:0;left:0;height:100%;width:${(pct*usedPct/100).toFixed(1)}%;background:${catColors[k]};border-radius:10px;"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── 5. Per-card usage table ──────────────────────────────
+  const cardRows = cardStats
+    .sort((a,b) => b.value - a.value)
+    .map(c => {
+      const rate = c.value > 0 ? Math.round(c.used/c.value*100) : 0;
+      const rateColor = rate >= 80 ? 'var(--green)' : rate >= 40 ? 'var(--accent)' : 'var(--text-3)';
+      return `<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.name}</div>
+          <div style="font-size:10px;color:var(--text-3);">${c.bank}</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);text-align:right;white-space:nowrap;">$${c.value.toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--red);text-align:right;white-space:nowrap;">-$${c.fee.toLocaleString()}</div>
+        <div style="font-size:12px;font-weight:700;color:${rateColor};text-align:right;white-space:nowrap;">${rate}%</div>
+      </div>`;
+    }).join('');
+
+  const cardTableHeader = `<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding-bottom:6px;border-bottom:2px solid var(--border);">
+    <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;">${zh?'卡片':'Card'}</div>
+    <div style="font-size:10px;font-weight:700;color:var(--text-3);text-align:right;">${zh?'總值':'Value'}</div>
+    <div style="font-size:10px;font-weight:700;color:var(--text-3);text-align:right;">${zh?'年費':'Fee'}</div>
+    <div style="font-size:10px;font-weight:700;color:var(--text-3);text-align:right;">${zh?'使用率':'Rate'}</div>
+  </div>`;
+
+  // ── Assemble ─────────────────────────────────────────────
+  return [
+    section(zh?'總覽摘要':'Summary', kpi1),
+    section(zh?'退額使用進度':'Redemption Progress', usageSection),
+    section(zh?'各銀行佔比':'By Bank', bankSection),
+    section(zh?'各分類使用狀況':'By Category', catRows || `<div style="color:var(--text-3);font-size:12px;">${zh?'無資料':'No data'}</div>`),
+    section(zh?'各卡片使用率':'Per-Card Usage Rate', cardTableHeader + cardRows),
+  ].join('');
+}
+
+
 function openEditCardModal(id) {
   const card = myCards.find(c => c.id === id);
   if (!card) return;
@@ -3450,6 +3719,7 @@ function confirmEditCard() {
   card.creditLimit  = isNaN(limitVal) || limitVal === 0 ? null : limitVal;
   const feeVal      = parseFloat(document.getElementById('editCardFee').value);
   card.annualFee    = isNaN(feeVal) ? 0 : feeVal;
+  card._feeEdited   = true; // prevent auto-backfill from overwriting manual edit
   card.is524        = document.getElementById('editCard524').checked;
 
   save();
