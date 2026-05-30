@@ -898,6 +898,16 @@
       padding: 2px 7px; border-radius: 6px;
       flex-shrink: 0;
     }
+    /* ─── NOTIFICATION ───────────────────────────────────── */
+    .notif-item {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      transition: all 0.15s ease;
+    }
+    .notif-item.urgent { border-color: rgba(255,92,92,0.35); background: rgba(255,92,92,0.05); }
+    .notif-item.soon   { border-color: rgba(245,200,66,0.35); background: rgba(245,200,66,0.05); }
   </style>
 </head>
 <body>
@@ -917,6 +927,10 @@
     <div class="topbar-actions">
       <button class="theme-toggle" id="langToggleBtn" onclick="toggleLang()" title="切換語言 / Switch Language" style="font-size:11px;font-weight:800;letter-spacing:0.04em;font-family:'Inter',sans-serif;width:auto;padding:0 10px;">
         EN
+      </button>
+      <button class="theme-toggle" id="notifBtn" onclick="openNotifPanel()" title="到期提醒" style="position:relative;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="notifBadge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--bg);"></span>
       </button>
       <button class="theme-toggle" onclick="toggleTheme()" title="切換主題">
         <!-- 深色模式顯示：月亮（點了切換到淺色） -->
@@ -991,43 +1005,40 @@
 
     <div>
       <div class="sidebar-section-title" data-i18n="sidebar_changelog">更新日誌</div>
-      <div style="padding:0 4px;display:flex;flex-direction:column;gap:12px;">
+      <div style="padding:0 4px;display:flex;flex-direction:column;gap:6px;">
 
-        <div class="cl-item" style="padding:10px;">
-          <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
-            <span class="cl-badge cl-badge-new">v2.2.0</span>
+        <details class="cl-item" open>
+          <summary class="cl-summary">
+            <span class="cl-badge cl-badge-new">v2.2.1</span>
+            <span class="cl-date">2026-05-30</span>
+            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <ul class="cl-list">
+            <li><span class="cl-dot">·</span>記錄編輯 / 刪除功能（金額重新計算）</li>
+            <li><span class="cl-dot">·</span>卡片資訊編輯（5/24、年費、末碼、核卡日期、額度）</li>
+            <li><span class="cl-dot">·</span>權益總覽分析（KPI、圓環圖、銀行佔比、分類分析）</li>
+            <li><span class="cl-dot">·</span>年費自動補全修正（舊卡片年費歸零問題）</li>
+            <li><span class="cl-dot">·</span>到期提醒通知（7 天內鈴鐺提示、可逐一標記已讀）</li>
+            <li><span class="cl-dot">·</span>更新日誌改為 Accordion 開合模式</li>
+          </ul>
+        </details>
+
+        <details class="cl-item">
+          <summary class="cl-summary">
+            <span class="cl-badge cl-badge-old">v2.2.0</span>
             <span class="cl-date">2026-05-29</span>
-          </div>
-          <ul class="cl-list" style="margin:0;">
-            <li><span class="cl-dot">·</span>中 / 英文雙語切換（Topbar 一鍵切換，偏好記憶）</li>
-            <li><span class="cl-dot">·</span>144 個權益名稱完整英文翻譯</li>
-            <li><span class="cl-dot">·</span>側邊欄全區域英文翻譯（統計 / 資料管理 / 5/24）</li>
-            <li><span class="cl-dot">·</span>新增卡片 Modal 完整翻譯（批次 / 單張 / 表單）</li>
-            <li><span class="cl-dot">·</span>記錄使用 / 升降級 / 儲存 Modal 翻譯</li>
-            <li><span class="cl-dot">·</span>週期標籤英文翻譯</li>
-            <li><span class="cl-dot">·</span>手機版 Topbar 配置調整</li>
-            <li><span class="cl-dot">·</span>iPhone 狀態欄重疊修正</li>
-            <li><span class="cl-dot">·</span>隱私聲明連結導向專屬頁面</li>
+            <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <ul class="cl-list cl-list-old">
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>中 / 英文雙語切換（Topbar 一鍵切換，偏好記憶）</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>144 個權益名稱完整英文翻譯</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>側邊欄 / Modal 全面英文翻譯</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>週期標籤英文化</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>手機版 Topbar 配置調整</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>iPhone 狀態欄重疊修正</li>
+            <li><span class="cl-dot" style="color:var(--text-3)">·</span>隱私聲明連結導向專屬頁面</li>
           </ul>
-        </div>
-
-        <div class="cl-item" style="padding:10px;">
-          <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
-            <span class="cl-badge cl-badge-old">v2.1.0</span>
-            <span class="cl-date">2026-05-28</span>
-          </div>
-          <ul class="cl-list cl-list-old" style="margin:0;">
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片資料庫擴充至 107 張（6 家銀行）</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>批次快速新增、52 張獨立視覺設計</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>年費顯示 + 可使用額度欄位</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>年度重置系統（自動 + 手動）</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>Amex FHR / ChatGPT 權益補充</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片升級 / 降級功能</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>淺色 / 深色主題切換</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>5/24 側邊欄雙時間軸</li>
-            <li><span class="cl-dot" style="color:var(--text-3)">·</span>Visa / Mastercard / Amex 網路 Logo</li>
-          </ul>
-        </div>
+        </details>
 
       </div>
     </div>
@@ -1049,7 +1060,7 @@
     <footer>
       <div>
         <strong style="color:var(--text-2)">US Card Credits Pro</strong> · by Randy Tsai
-        · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.2.0</span>
+        · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.2.1</span>
         · <a href="mailto:creditsprofeedback@gmail.com" data-i18n="feedback">意見回饋</a>
       </div>
       <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私、聲明、回饋作者 →</a>
@@ -1093,43 +1104,67 @@
     <span data-i18n="sidebar_reset">年度重置</span>
   </button>
   <div style="margin-top:16px" class="sidebar-section-title" data-i18n="sidebar_changelog">更新日誌</div>
-  <div style="padding:0 4px;margin-top:4px;display:flex;flex-direction:column;gap:10px;">
+  <div style="padding:0 4px;margin-top:4px;display:flex;flex-direction:column;gap:6px;">
 
-    <div class="cl-item" style="padding:10px;">
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
-        <span class="cl-badge cl-badge-new">v2.2.0</span>
+    <details class="cl-item" open>
+      <summary class="cl-summary">
+        <span class="cl-badge cl-badge-new">v2.2.1</span>
+        <span class="cl-date">2026-05-30</span>
+        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <ul class="cl-list">
+        <li><span class="cl-dot">·</span>記錄編輯 / 刪除，金額重新計算</li>
+        <li><span class="cl-dot">·</span>卡片資訊編輯（5/24、年費、末碼等）</li>
+        <li><span class="cl-dot">·</span>權益總覽分析圖表</li>
+        <li><span class="cl-dot">·</span>年費自動補全修正</li>
+        <li><span class="cl-dot">·</span>到期提醒通知（7 天內）</li>
+        <li><span class="cl-dot">·</span>更新日誌 Accordion 開合</li>
+      </ul>
+    </details>
+
+    <details class="cl-item">
+      <summary class="cl-summary">
+        <span class="cl-badge cl-badge-old">v2.2.0</span>
         <span class="cl-date">2026-05-29</span>
-      </div>
-      <ul class="cl-list" style="margin:0;">
-        <li><span class="cl-dot">·</span>中 / 英文雙語切換，偏好記憶</li>
-        <li><span class="cl-dot">·</span>144 個權益名稱英文翻譯</li>
-        <li><span class="cl-dot">·</span>側邊欄 / Modal 全面翻譯</li>
-        <li><span class="cl-dot">·</span>週期標籤英文化</li>
-        <li><span class="cl-dot">·</span>手機版 Topbar 配置調整</li>
-        <li><span class="cl-dot">·</span>iPhone 狀態欄重疊修正</li>
-        <li><span class="cl-dot">·</span>隱私聲明連結導向專屬頁面</li>
+        <svg class="cl-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <ul class="cl-list cl-list-old">
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>中 / 英文雙語切換</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>144 個權益名稱英文翻譯</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>側邊欄 / Modal 全面翻譯</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>手機版 Topbar 調整</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>iPhone 狀態欄修正</li>
+        <li><span class="cl-dot" style="color:var(--text-3)">·</span>隱私聲明連結導向專屬頁面</li>
       </ul>
-    </div>
-
-    <div class="cl-item" style="padding:10px;">
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
-        <span class="cl-badge cl-badge-old">v2.1.0</span>
-        <span class="cl-date">2026-05-28</span>
-      </div>
-      <ul class="cl-list cl-list-old" style="margin:0;">
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片資料庫擴充至 107 張</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>批次快速新增、52 張獨立視覺</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>年費顯示 + 可使用額度欄位</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>年度重置系統</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>卡片升降級 / 主題切換</li>
-        <li><span class="cl-dot" style="color:var(--text-3)">·</span>Visa / MC / Amex 網路 Logo</li>
-      </ul>
-    </div>
+    </details>
 
   </div>
   <div style="flex:1"></div>
   <div class="sidebar-footer">by Randy Tsai</div>
 </aside>
+
+<!-- NOTIFICATION PANEL -->
+<div id="notifBackdrop" style="display:none;position:fixed;inset:0;z-index:190;" onclick="closeNotifPanel()"></div>
+<div id="notifPanel" style="
+  display:none;position:fixed;top:68px;right:16px;z-index:195;
+  width:340px;max-width:calc(100vw - 32px);max-height:70vh;
+  background:var(--bg-2);border:1px solid var(--border-bright);
+  border-radius:16px;box-shadow:0 16px 48px rgba(0,0,0,0.4);
+  overflow:hidden;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);
+">
+  <div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <span id="notifPanelTitle" style="font-size:13px;font-weight:700;color:var(--text);">到期提醒</span>
+    <div style="display:flex;gap:6px;">
+      <button onclick="dismissAllNotif()" id="notifDismissAll" style="font-size:11px;font-weight:600;color:var(--text-3);background:none;border:none;cursor:pointer;padding:2px 6px;">全部標記</button>
+      <button onclick="closeNotifPanel()" style="width:22px;height:22px;border-radius:6px;background:var(--bg-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-2);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="notifList" style="overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:6px;"></div>
+  <div id="notifEmpty" style="display:none;padding:24px;text-align:center;font-size:12px;color:var(--text-3);">近期無即將到期的權益</div>
+</div>
 
 <!-- STORAGE MODAL -->
 <div class="overlay" id="storageOverlay">
@@ -3452,8 +3487,160 @@ function downloadHTMLFile() {
 }
 
 // ──────────────────────────────────────────────────────────────
-//  OVERVIEW ANALYTICS
+//  NOTIFICATION SYSTEM
 // ──────────────────────────────────────────────────────────────
+function getExpiringCredits(days) {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const cutoff = new Date(now);
+  cutoff.setDate(cutoff.getDate() + days);
+  const results = [];
+
+  myCards.forEach(card => {
+    card.credits.forEach((cr, idx) => {
+      // Skip: fully used, status, permanent, count, points, multi-year
+      const skip = ['會籍狀態','永久','一次性','每 4 年','每 4年'].some(s => cr.period.includes(s))
+        || cr.period.includes('張') || cr.period.includes('點');
+      if (skip) return;
+      if (cr.used >= cr.total) return; // fully redeemed
+      // Parse expiry date
+      if (!cr.expiry || !/^\d{4}-\d{2}-\d{2}$/.test(cr.expiry)) return;
+      const exp = new Date(cr.expiry + 'T00:00:00');
+      if (exp < now || exp > cutoff) return;
+      const daysLeft = Math.round((exp - now) / 86400000);
+      const remaining = cr.total - cr.used;
+      results.push({ card, cr, idx, daysLeft, remaining, exp });
+    });
+  });
+  return results.sort((a,b) => a.daysLeft - b.daysLeft);
+}
+
+function getNotifKey(card, idx) {
+  return `notif_dismissed_${card.id}_${idx}_${card.credits[idx]?.expiry}`;
+}
+
+function isDismissed(card, idx) {
+  return localStorage.getItem(getNotifKey(card, idx)) === '1';
+}
+
+function dismissNotif(cardId, idx) {
+  const card = myCards.find(c => c.id === cardId);
+  if (!card) return;
+  localStorage.setItem(getNotifKey(card, idx), '1');
+  renderNotifPanel();
+  updateNotifBadge();
+}
+
+function dismissAllNotif() {
+  const items = getExpiringCredits(7);
+  items.forEach(({card, idx}) => {
+    localStorage.setItem(getNotifKey(card, idx), '1');
+  });
+  renderNotifPanel();
+  updateNotifBadge();
+}
+
+function getUndismissedItems() {
+  return getExpiringCredits(7).filter(({card, idx}) => !isDismissed(card, idx));
+}
+
+function updateNotifBadge() {
+  const count = getUndismissedItems().length;
+  const badge = document.getElementById('notifBadge');
+  if (badge) badge.style.display = count > 0 ? 'block' : 'none';
+}
+
+function openNotifPanel() {
+  renderNotifPanel();
+  document.getElementById('notifPanel').style.display = 'flex';
+  document.getElementById('notifBackdrop').style.display = 'block';
+}
+
+function closeNotifPanel() {
+  document.getElementById('notifPanel').style.display = 'none';
+  document.getElementById('notifBackdrop').style.display = 'none';
+}
+
+function renderNotifPanel() {
+  const zh = currentLang === 'zh';
+  document.getElementById('notifPanelTitle').textContent = zh ? '到期提醒' : 'Expiring Soon';
+  document.getElementById('notifDismissAll').textContent = zh ? '全部標記已讀' : 'Dismiss All';
+  document.getElementById('notifEmpty').textContent = zh ? '近期無即將到期的權益' : 'No credits expiring soon';
+
+  const all = getExpiringCredits(7);
+  const undismissed = all.filter(({card, idx}) => !isDismissed(card, idx));
+
+  const list = document.getElementById('notifList');
+  const empty = document.getElementById('notifEmpty');
+
+  if (undismissed.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  list.innerHTML = undismissed.map(({card, cr, idx, daysLeft, remaining}) => {
+    const urgency = daysLeft <= 2 ? 'urgent' : 'soon';
+    const urgColor = daysLeft <= 2 ? 'var(--red)' : 'var(--yellow)';
+    const dayLabel = daysLeft === 0 ? (zh?'今天到期':'Expires today')
+      : daysLeft === 1 ? (zh?'明天到期':'Expires tomorrow')
+      : zh ? `還有 ${daysLeft} 天到期` : `${daysLeft} days left`;
+    const remLabel = `$${remaining.toFixed(0)} ${zh?'未使用':'remaining'}`;
+    const bankColor = bankColors[card.bank] || '#888';
+
+    return `<div class="notif-item ${urgency}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:2px;background:${bankColor};flex-shrink:0;"></span>
+            <span style="font-size:10px;color:var(--text-3);font-weight:600;">${card.bank} · ${card.cardName}${card.lastDigits?' #'+card.lastDigits:''}</span>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${tCredit(cr.name)}</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:${urgColor};">${dayLabel}</span>
+            <span style="font-size:11px;color:var(--text-3);">${remLabel}</span>
+          </div>
+        </div>
+        <button onclick="dismissNotif('${card.id}',${idx})"
+          style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(128,128,128,0.12);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-3);"
+          title="${zh?'標記已讀':'Dismiss'}">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkOnLoadNotif() {
+  // Show one-time banner if there are undismissed expiring credits
+  const items = getUndismissedItems();
+  updateNotifBadge();
+  if (items.length === 0) return;
+
+  const zh = currentLang === 'zh';
+  // Auto-show panel once per session
+  const sessionKey = 'uccp_notif_shown_' + new Date().toDateString();
+  if (sessionStorage.getItem(sessionKey)) return;
+  sessionStorage.setItem(sessionKey, '1');
+
+  // Show a toast instead of immediately popping panel
+  setTimeout(() => {
+    const most = items[0];
+    const msg = zh
+      ? `${items.length} 項權益即將到期（最快 ${most.daysLeft === 0 ? '今天' : most.daysLeft + ' 天'}）`
+      : `${items.length} credit${items.length>1?'s':''} expiring soon`;
+    const toastEl = document.createElement('div');
+    toastEl.className = 'toast';
+    toastEl.style.cssText = 'cursor:pointer;border-color:rgba(255,92,92,0.4);';
+    toastEl.innerHTML = `<span class="toast-dot" style="background:var(--red);"></span>${msg}`;
+    toastEl.onclick = () => { toastEl.remove(); openNotifPanel(); };
+    document.getElementById('toastContainer').appendChild(toastEl);
+    setTimeout(() => { toastEl.style.opacity='0'; toastEl.style.transition='opacity .4s'; setTimeout(()=>toastEl.remove(), 400); }, 6000);
+  }, 1500);
+}
+
+
 function openOverviewModal() {
   document.getElementById('overviewTitle').textContent = currentLang === 'en' ? 'Benefits Analytics' : '權益總覽分析';
   document.getElementById('overviewBody').innerHTML = buildOverviewHTML();
@@ -4353,6 +4540,7 @@ updateCardTypeOptions();
 document.getElementById('manualResetYear').value = new Date().getFullYear() - 1;
 render();
 checkAutoReset();
+checkOnLoadNotif();
 </script>
 </body>
 </html>
