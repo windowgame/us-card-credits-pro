@@ -2619,26 +2619,139 @@ function save() {
   }
 })();
 
-// ── Backfill annualFee / network for cards missing or incorrect values
-(function() {
+// ──────────────────────────────────────────────────────────────
+//  CARD DATA SYNC — syncs saved cards with latest database on load
+//  Version key: bump this whenever cardDatabase changes
+// ──────────────────────────────────────────────────────────────
+const DB_VERSION = '2026-06-01-v2';
+
+// ── Name aliases: maps old saved card names → current DB names
+const cardNameAliases = {
+  // Amex personal
+  'The Platinum Card (個人白金)':        'The Platinum Card®',
+  'American Express Platinum Card':      'The Platinum Card®',
+  'Amex Platinum':                       'The Platinum Card®',
+  'American Express® Gold Card (個人金卡)': 'American Express® Gold Card',
+  'Amex Gold':                           'American Express® Gold Card',
+  'American Express® Green Card (綠卡)': 'American Express® Green Card',
+  'Hilton Honors Amex Aspire':           'Hilton Honors Aspire',
+  'Hilton Honors Amex Surpass':          'Hilton Honors Surpass®',
+  // Amex business
+  'Business Platinum Card (商務白金)':   'Business Platinum Card®',
+  'Business Platinum':                   'Business Platinum Card®',
+  'Amex Business Platinum':             'Business Platinum Card®',
+  'Business Gold Card (商務金卡)':       'Business Gold Card',
+  // Chase
+  'Chase Sapphire Reserve (CSR)':        'Chase Sapphire Reserve® (CSR)',
+  'Chase Sapphire Preferred (CSP)':      'Chase Sapphire Preferred® (CSP)',
+  'Chase Freedom Flex':                  'Chase Freedom Flex℠',
+  'Chase Freedom Unlimited':             'Chase Freedom Unlimited®',
+  'United Club Infinite':                'United Club℠ Infinite',
+  'United Explorer':                     'United Explorer℠',
+  'United Quest':                        'United Quest℠',
+  'IHG One Rewards Premier (Chase)':     'IHG One Rewards Premier',
+  // BoA
+  'Alaska Airlines Visa Summit':         'Alaska Airlines Visa® Summit (Atmos)',
+  'Alaska Airlines Visa Signature':      'Alaska Airlines Visa® Signature',
+  'Bank of America Premium Rewards Elite': 'Bank of America® Premium Rewards® Elite',
+  'Bank of America Premium Rewards':     'Bank of America® Premium Rewards®',
+  // Wells Fargo
+  'Wells Fargo Autograph Journey':       'Wells Fargo Autograph Journey℠',
+  'Wells Fargo Autograph':               'Wells Fargo Autograph℠',
+  'Wells Fargo Active Cash':             'Wells Fargo Active Cash®',
+  'Bilt Mastercard':                     'Bilt Mastercard®',
+  // Citi
+  'Citi Strata Premier':                 'Citi Strata Premier℠',
+  'Citi AAdvantage Executive':           'Citi® / AAdvantage® Executive World Elite',
+  'Citi AAdvantage Platinum Select':     'Citi® / AAdvantage® Platinum Select®',
+  'Costco Visa by Citi':                 'Costco Anywhere Visa® by Citi',
+  // Capital One
+  'Capital One Venture X':               'Capital One Venture X Rewards',
+  'Capital One Venture':                 'Capital One Venture Rewards',
+  'Capital One Savor':                   'Capital One Savor Rewards',
+  'Capital One SavorOne':                'Capital One SavorOne Rewards',
+  'Capital One Quicksilver':             'Capital One Quicksilver Rewards',
+};
+
+(function syncCardsWithDatabase() {
+  const lastSync = localStorage.getItem('uccp_db_version');
+  const needsSync = lastSync !== DB_VERSION;
+
   let changed = false;
+
   myCards.forEach(card => {
+    // ── Resolve old card name to current DB name ──────────
+    if (cardNameAliases[card.cardName]) {
+      card.cardName = cardNameAliases[card.cardName];
+      changed = true;
+    }
+
     const template = (cardDatabase[card.bank] || []).find(c => c.name === card.cardName);
-    if (!template) return;
-    const correctFee = template.annualFee ?? 0;
-    // Backfill if: field missing, OR card has fee=0 but template says it should be non-zero
-    // (This corrects cards added before the annualFee feature was built)
-    if (card.annualFee === undefined || card.annualFee === null ||
-        (card.annualFee === 0 && correctFee > 0 && !card._feeEdited)) {
+    if (!template) {
+      // Try fuzzy match: find template whose name contains the saved name or vice versa
+      const fuzzy = (cardDatabase[card.bank] || []).find(c =>
+        c.name.toLowerCase().includes(card.cardName.toLowerCase().slice(0,15)) ||
+        card.cardName.toLowerCase().includes(c.name.toLowerCase().slice(0,15))
+      );
+      if (fuzzy) {
+        card.cardName = fuzzy.name;
+        changed = true;
+      } else {
+        return; // truly unknown card, skip
+      }
+    }
+
+    const tpl = (cardDatabase[card.bank] || []).find(c => c.name === card.cardName);
+    if (!tpl) return;
+
+    // ① Sync annualFee — always run, not version-gated
+    const correctFee = tpl.annualFee ?? 0;
+    if (!card._feeEdited && (card.annualFee === undefined || card.annualFee === null || card.annualFee !== correctFee)) {
       card.annualFee = correctFee;
       changed = true;
     }
-    if (!card.network) {
-      card.network = template.network || '';
+
+    // ② Sync network — always run
+    if (!card.network || card.network !== tpl.network) {
+      card.network = tpl.network || '';
       changed = true;
     }
+
+    // ③ Sync credits — only when DB version changed
+    if (needsSync) {
+      const savedMap = {};
+      (card.credits || []).forEach((cr, i) => {
+        savedMap[cr.name] = cr; // key by name to find existing usage data
+      });
+
+      const newCredits = tpl.credits.map(tCr => {
+        const existing = savedMap[tCr.name];
+        if (existing) {
+          // Credit exists — update definition fields but KEEP usage data
+          return {
+            ...tCr,                          // latest total/period/expiry from DB
+            used:    existing.used    ?? 0,  // keep user's usage progress
+            logs:    existing.logs    ?? [], // keep usage log entries
+            history: existing.history ?? [], // keep year-over-year history
+          };
+        } else {
+          // New credit added to database — add it fresh
+          return { ...tCr, used: 0, logs: [] };
+        }
+      });
+
+      // Detect if credits actually changed to avoid unnecessary save
+      const oldStr = JSON.stringify(card.credits.map(c => ({n:c.name,t:c.total,p:c.period,e:c.expiry})));
+      const newStr = JSON.stringify(newCredits.map(c => ({n:c.name,t:c.total,p:c.period,e:c.expiry})));
+      if (oldStr !== newStr) {
+        card.credits = newCredits;
+        changed = true;
+      }
+    }
   });
+
   if (changed) save();
+  if (needsSync) localStorage.setItem('uccp_db_version', DB_VERSION);
 })();
 
 // ──────────────────────────────────────────────────────────────
@@ -3480,6 +3593,7 @@ function submitTransaction() {
 }
 
 
+function openStorageModal()  { document.getElementById('storageOverlay').classList.add('open'); }
 function closeStorageModal() { document.getElementById('storageOverlay').classList.remove('open'); }
 function showICloudGuide() {
   const g = document.getElementById('icloudGuide');
