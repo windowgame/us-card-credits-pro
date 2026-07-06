@@ -1171,7 +1171,10 @@
         · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">v2.3.0</span>
         · <a href="mailto:creditsprofeedback@gmail.com" data-i18n="feedback">意見回饋</a>
       </div>
-      <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私、聲明、回饋作者 →</a>
+      <div id="footerDisclaimer" style="font-size:10px;color:var(--text-3);line-height:1.6;max-width:600px;margin:6px 0 4px;">
+        本 App 提供之信用卡資料僅供參考，不構成任何財務建議。本 App 與 American Express、Chase、Bank of America、Wells Fargo、Citi、Capital One 及其他發卡銀行無任何合作、附屬或背書關係。所有商標、卡名均為各發卡機構財產。實際卡片權益以發卡銀行官方說明為準。
+      </div>
+      <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私聲明與免責聲明 →</a>
     </footer>
   </main>
 
@@ -5926,7 +5929,8 @@ const translations = {
     empty_sub: '點擊右上角「新增卡片」開始記錄您的美國信用卡權益',
     // Footer
     feedback: '意見回饋',
-    legal: '隱私、聲明、回饋作者 →',
+    legal: '隱私聲明與免責聲明 →',
+    disclaimer: '本 App 提供之信用卡資料僅供參考，不構成任何財務建議。本 App 與 American Express、Chase、Bank of America、Wells Fargo、Citi、Capital One 及其他發卡銀行無任何合作、附屬或背書關係。所有商標、卡名均為各發卡機構財產。實際卡片權益以發卡銀行官方說明為準。',
     // Cancel / Close
     cancel: '取消',
     close: '關閉',
@@ -6061,7 +6065,8 @@ const translations = {
     empty_sub: 'Tap "Add Card" in the top right to start tracking your US credit card benefits',
     // Footer
     feedback: 'Feedback',
-    legal: 'Privacy, Disclaimer & Support →',
+    legal: 'Privacy & Disclaimer →',
+    disclaimer: 'This app provides credit card information for reference only and does not constitute financial advice. This app has no affiliation, partnership, or endorsement with American Express, Chase, Bank of America, Wells Fargo, Citi, Capital One, or any other card issuer. All trademarks and card names are the property of their respective issuers. Actual benefits are subject to each issuer\'s official terms.',
     // Cancel / Close
     cancel: 'Cancel',
     close: 'Close',
@@ -6095,7 +6100,9 @@ function toggleLang() {
 }
 
 function applyLang() {
-  // Update lang toggle buttons (desktop + mobile sidebar)
+  // Footer disclaimer
+  const disclaimerEl = document.getElementById('footerDisclaimer');
+  if (disclaimerEl) disclaimerEl.textContent = t('disclaimer');
   const btn = document.getElementById('langToggleBtn');
   if (btn) btn.textContent = currentLang === 'zh' ? 'EN' : '中';
   const btnM = document.getElementById('langToggleBtnMobile');
