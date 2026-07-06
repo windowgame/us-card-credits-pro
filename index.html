@@ -1878,7 +1878,7 @@ const cardDatabase = {
     { name: 'Marriott Bonvoy Brilliant®', network: 'amex', annualFee: 650, credits: [
       { name: '餐飲折抵', total: 300, period: '每月 ($25)', expiry: '2026-12-31' },
       { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2026-12-31' },
-      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '免費住宿夜 (上限 85K pts，可加碼 +25K)', total: 1, period: '張', expiry: '每年續卡' },
       { name: '萬豪白金會籍', total: 0, period: '會籍狀態', expiry: '永久' },
       { name: 'Priority Pass 貴賓室', total: 0, period: '會籍狀態', expiry: '已啟用' }
     ]},
@@ -1997,8 +1997,9 @@ const cardDatabase = {
       { name: 'Apple TV+ & Music', total: 0, period: '會籍狀態', expiry: '已啟用' }
     ]},
     { name: 'Chase Sapphire Preferred® (CSP)', network: 'visa', annualFee: 95, credits: [
-      { name: 'Chase Travel 飯店折抵', total: 50, period: '每年', expiry: '2026-12-31' },
-      { name: '年度 10% 獎勵點數回饋', total: 0, period: '點數', expiry: '續卡時' },
+      { name: 'Chase Travel 飯店折抵', total: 100, period: '每年', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck / NEXUS', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Apple TV+ 訂閱 (首年免費)', total: 0, period: '一次性', expiry: '2026-12-31' },
       { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' }
     ]},
     { name: 'Chase Freedom Flex℠', network: 'mastercard', annualFee: 0, credits: [
@@ -2038,7 +2039,7 @@ const cardDatabase = {
       { name: 'Hyatt Discoverist 會籍', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
     { name: 'IHG One Rewards Premier', network: 'mastercard', annualFee: 99, credits: [
-      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '免費住宿夜 (上限 40K pts，可加碼)', total: 1, period: '張', expiry: '每年續卡' },
       { name: 'United TravelBank 折抵', total: 50, period: '每半年 ($25)', expiry: '2026-06-30' },
       { name: 'IHG 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
     ]},
@@ -2120,7 +2121,7 @@ const cardDatabase = {
       { name: 'Hyatt 品質折抵', total: 100, period: '每年', expiry: '2026-12-31' }
     ]},
     { name: 'IHG One Rewards Premier Business', network: 'mastercard', annualFee: 99, credits: [
-      { name: '不限等級免費住宿券', total: 1, period: '張', expiry: '每年續卡' },
+      { name: '免費住宿夜 (上限 40K pts，可加碼)', total: 1, period: '張', expiry: '每年續卡' },
       { name: 'IHG 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
     ]},
     { name: 'United℠ Business', network: 'visa', annualFee: 99, credits: [
@@ -2876,7 +2877,7 @@ function save() {
 //  CARD DATA SYNC — syncs saved cards with latest database on load
 //  Version key: bump this whenever cardDatabase changes
 // ──────────────────────────────────────────────────────────────
-const DB_VERSION = '2026-06-01-v7';
+const DB_VERSION = '2026-06-01-v9';
 
 // ── Name aliases: maps old saved card names → current DB names
 const cardNameAliases = {
@@ -4249,6 +4250,8 @@ const cardBonusRates = {
     {cat:'Chase Travel 訂購旅遊', rate:'5x', unit:'UR'},
     {cat:'全球餐廳 / 外送', rate:'3x', unit:'UR'},
     {cat:'線上超市 / 精選串流', rate:'3x', unit:'UR'},
+    {cat:'加油 / EV 充電', rate:'3x', unit:'UR'},
+    {cat:'飯店 / Expedia / VRBO（via One Key）', rate:'3x', unit:'UR'},
     {cat:'其他旅遊', rate:'2x', unit:'UR'},
     {cat:'其他消費', rate:'1x', unit:'UR'},
   ],
@@ -6220,7 +6223,11 @@ const creditNameTranslations = {
   'Walmart+ 會員折抵': 'Walmart+ Membership Credit',
   '不限等級免費住宿券': 'Free Night Award (any category)',
   '免費住宿夜 (35K pts)': 'Free Night Award (up to 35K points)',
-  '免費住宿夜 (85K pts)': 'Free Night Award (up to 85K points)',
+  'Chase Travel 飯店折抵': 'Chase Travel Hotel Credit',
+  'Apple TV+ 訂閱 (首年免費)': 'Apple TV+ Subscription (1-year complimentary)',
+  'Global Entry / TSA Precheck / NEXUS': 'Global Entry / TSA PreCheck / NEXUS Credit',
+  '免費住宿夜 (上限 85K pts，可加碼 +25K)': 'Free Night Award (up to 85K pts, +25K top-up)',
+  '免費住宿夜 (上限 40K pts，可加碼)': 'Free Night Award (up to 40K pts, top-up allowed)',
   'Ritz-Carlton Club Level 升等憑證 (3張)': 'Ritz-Carlton Club Level Upgrade Certs (3x)',
   '年度 15 精英夜資格': 'Annual 15 Elite Night Credits',
   '免費住宿夜 (50K pts)': 'Free Night Award (up to 50K points)',
