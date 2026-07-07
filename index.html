@@ -1837,7 +1837,8 @@ const cardDatabase = {
       { name: 'FHR / THC 飯店折抵 (Fine Hotels + Resorts)', total: 600, period: '每年 (上下半年各 $300)', expiry: '2026-12-31' },
       { name: '航空公司附加費折抵 (Airline Fee Credit)', total: 200, period: '每年（指定一家航空）', expiry: '2026-12-31' },
       { name: 'Uber Cash 折抵', total: 200, period: '每年 ($15/月+$20/12月)', expiry: '2026-12-31' },
-      { name: 'Saks Fifth Avenue 購物折抵', total: 100, period: '每半年 ($50)', expiry: '2026-06-30' },
+      { name: 'Saks Fifth Avenue 購物折抵', total: 100, period: '每半年 ($50)', expiry: '2026-12-31' },
+      { name: 'Resy 餐廳折抵', total: 400, period: '每季 ($100)', expiry: '2026-12-31' },
       { name: 'Equinox 健身折抵', total: 300, period: '每年', expiry: '2026-12-31' },
       { name: 'CLEAR Plus 折抵', total: 199, period: '每年', expiry: '2026-12-31' },
       { name: 'Disney Bundle 折抵', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
@@ -1851,7 +1852,7 @@ const cardDatabase = {
       { name: '指定餐飲消費折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
       { name: 'Uber Cash 折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
       { name: "Dunkin' 餐廳折抵", total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
-      { name: 'Resy 餐廳折抵', total: 100, period: '每半年 ($50)', expiry: '2026-06-30' }
+      { name: 'Resy 餐廳折抵', total: 100, period: '每半年 ($50)', expiry: '2026-12-31' }
     ]},
     { name: 'American Express Green Card', network: 'amex', annualFee: 150, credits: [
       { name: 'LoungeBuddy 貴賓室折抵', total: 100, period: '每年', expiry: '2026-12-31' },
@@ -1918,6 +1919,7 @@ const cardDatabase = {
     { name: 'Delta SkyMiles Platinum', network: 'amex', annualFee: 350, credits: [
       { name: 'Delta 國內頭等艙升等憑證', total: 1, period: '張', expiry: '每年續卡' },
       { name: '同行者機票 (買1送1)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Resy 餐廳折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
       { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
       { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
@@ -1971,11 +1973,13 @@ const cardDatabase = {
     { name: 'Delta SkyMiles Reserve Business', network: 'amex', annualFee: 650, credits: [
       { name: 'Delta Sky Club 無限使用', total: 0, period: '會籍狀態', expiry: '已啟用' },
       { name: 'Delta 國內頭等艙升等憑證', total: 2, period: '張', expiry: '每年續卡' },
+      { name: 'Resy 餐廳折抵', total: 240, period: '每月 ($20)', expiry: '2026-12-31' },
       { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
       { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
     { name: 'Delta SkyMiles Platinum Business', network: 'amex', annualFee: 350, credits: [
       { name: '同行者機票 (買1送1)', total: 1, period: '張', expiry: '每年續卡' },
+      { name: 'Resy 餐廳折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
       { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
       { name: '行李免費托運 (首件)', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
@@ -2880,7 +2884,7 @@ function save() {
 //  CARD DATA SYNC — syncs saved cards with latest database on load
 //  Version key: bump this whenever cardDatabase changes
 // ──────────────────────────────────────────────────────────────
-const DB_VERSION = '2026-06-01-v9';
+const DB_VERSION = '2026-06-01-v10';
 
 // ── Name aliases: maps old saved card names → current DB names
 const cardNameAliases = {
