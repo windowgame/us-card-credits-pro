@@ -1433,6 +1433,7 @@
           <option value="BoA">Bank of America</option>
           <option value="CapitalOne">Capital One</option>
           <option value="WellsFargo">Wells Fargo</option>
+          <option value="Bilt">Bilt</option>
         </select>
       </div>
       <div class="form-group">
@@ -1625,6 +1626,7 @@
             <option value="WellsFargo">Wells Fargo</option>
             <option value="Citi">Citi</option>
             <option value="CapitalOne">Capital One</option>
+            <option value="Bilt">Bilt</option>
           </select>
         </div>
 
@@ -2228,12 +2230,23 @@ const cardDatabase = {
     { name: 'Wells Fargo One Key', network: 'visa', annualFee: 0, credits: [
       { name: 'One Key Cash 2% 回饋', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
-    { name: 'Bilt Mastercard (舊版・已停用)', network: 'mastercard', annualFee: 0, credits: [
-      { name: '租金 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
-      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
-      { name: 'Lyft 銀卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
-      { name: 'Rent Day 雙倍點數 (每月1日)', total: 0, period: '會籍狀態', expiry: '永久' }
+    { name: 'Choice Privileges Mastercard', network: 'mastercard', annualFee: 0, credits: [
+      { name: 'Choice Hotels 金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '年度 10 精英夜資格', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
+    { name: 'Choice Privileges Select Mastercard', network: 'mastercard', annualFee: 95, credits: [
+      { name: '年度 Choice Points 獎勵 (30,000 pts)', total: 30000, period: '每年 (點)', expiry: '2026-12-31' },
+      { name: 'Choice Hotels 白金會籍', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Cell phone 手機保險', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Wells Fargo Signify Business Cash', network: 'visa', annualFee: 0, credits: [
+      { name: '無限 2% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]}
+  ],
+
+
+  // ── BILT ──────────────────────────────────────────────────────
+  'Bilt': [
     { name: 'Bilt Blue Card', network: 'mastercard', annualFee: 0, credits: [
       { name: '租金 / 房貸 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
       { name: 'Bilt Cash 4% 日常消費', total: 0, period: '會籍狀態', expiry: '永久' },
@@ -2251,18 +2264,12 @@ const cardDatabase = {
       { name: '租金 / 房貸 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
       { name: 'Bilt Cash 4% 日常消費', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
-    { name: 'Choice Privileges Mastercard', network: 'mastercard', annualFee: 0, credits: [
-      { name: 'Choice Hotels 金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' },
-      { name: '年度 10 精英夜資格', total: 0, period: '會籍狀態', expiry: '永久' }
+    { name: 'Bilt Mastercard (舊版・已停用)', network: 'mastercard', annualFee: 0, credits: [
+      { name: '租金 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Lyft 銀卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: 'Rent Day 雙倍點數 (每月1日)', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
-    { name: 'Choice Privileges Select Mastercard', network: 'mastercard', annualFee: 95, credits: [
-      { name: '年度 Choice Points 獎勵 (30,000 pts)', total: 30000, period: '每年 (點)', expiry: '2026-12-31' },
-      { name: 'Choice Hotels 白金會籍', total: 0, period: '會籍狀態', expiry: '永久' },
-      { name: 'Cell phone 手機保險', total: 0, period: '會籍狀態', expiry: '永久' }
-    ]},
-    { name: 'Wells Fargo Signify Business Cash', network: 'visa', annualFee: 0, credits: [
-      { name: '無限 2% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
-    ]}
   ],
 
   // ── CITI ──────────────────────────────────────────────────────
@@ -2894,7 +2901,8 @@ const bankGradients = {
 };
 const bankColors = {
   Amex: '#1a6fcf', Chase: '#1e3a6e', Citi: '#064a94',
-  BoA: '#c91933', CapitalOne: '#003d80', WellsFargo: '#c42028'
+  BoA: '#c91933', CapitalOne: '#003d80', WellsFargo: '#c42028',
+  Bilt: '#1a1a2e'
 };
 
 // ──────────────────────────────────────────────────────────────
@@ -2921,7 +2929,7 @@ function save() {
 //  CARD DATA SYNC — syncs saved cards with latest database on load
 //  Version key: bump this whenever cardDatabase changes
 // ──────────────────────────────────────────────────────────────
-const DB_VERSION = '2026-06-01-v11';
+const DB_VERSION = '2026-06-01-v12';
 
 // ── Name aliases: maps old saved card names → current DB names
 const cardNameAliases = {
@@ -3011,9 +3019,8 @@ const cardNameAliases = {
     'Air France': 'BoA',
     'Hilton': 'Amex',
     'Delta': 'Amex',
-    'Bilt': 'WellsFargo',
-    'Choice': 'WellsFargo',
-    'AAdvantage': 'Citi',
+    'Bilt': 'Bilt',
+    'Choice': 'WellsFargo',    'AAdvantage': 'Citi',
     'Costco': 'Citi',
     'Spark': 'CapitalOne',
     'Venture': 'CapitalOne',
@@ -3203,7 +3210,7 @@ function confirmManualReset() {
 
 
 // ── Card sort: group by bank, then by card name, then by approval date ──
-const bankOrder = ['Amex', 'Chase', 'Citi', 'CapitalOne', 'BoA', 'WellsFargo'];
+const bankOrder = ['Amex', 'Chase', 'Citi', 'CapitalOne', 'BoA', 'WellsFargo', 'Bilt'];
 
 function sortedCards() {
   return [...myCards].sort((a, b) => {
@@ -3811,7 +3818,7 @@ function switchAddMode(mode) {
 
 function renderBatchUI() {
   const banks = ['all', ...Object.keys(cardDatabase)];
-  const bankLabels = { all: currentLang==='en'?'All':'全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo' };
+  const bankLabels = { all: currentLang==='en'?'All':'全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo', Bilt: 'Bilt' };
 
   // Bank pills
   document.getElementById('bankPills').innerHTML = banks.map(b => `
