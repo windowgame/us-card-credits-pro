@@ -2228,11 +2228,28 @@ const cardDatabase = {
     { name: 'Wells Fargo One Key', network: 'visa', annualFee: 0, credits: [
       { name: 'One Key Cash 2% 回饋', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
-    { name: 'Bilt Mastercard', network: 'mastercard', annualFee: 0, credits: [
+    { name: 'Bilt Mastercard (舊版・已停用)', network: 'mastercard', annualFee: 0, credits: [
       { name: '租金 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
       { name: 'DoorDash DashPass 會員', total: 0, period: '會籍狀態', expiry: '已啟用' },
       { name: 'Lyft 銀卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
       { name: 'Rent Day 雙倍點數 (每月1日)', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bilt Blue Card', network: 'mastercard', annualFee: 0, credits: [
+      { name: '租金 / 房貸 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Bilt Cash 4% 日常消費', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: '手機保險', total: 0, period: '會籍狀態', expiry: '已啟用' }
+    ]},
+    { name: 'Bilt Obsidian Card', network: 'mastercard', annualFee: 95, credits: [
+      { name: 'Bilt Travel 飯店折抵', total: 100, period: '每半年 ($50)', expiry: '2026-12-31' },
+      { name: '租金 / 房貸 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Bilt Cash 4% 日常消費', total: 0, period: '會籍狀態', expiry: '永久' }
+    ]},
+    { name: 'Bilt Palladium Card', network: 'mastercard', annualFee: 495, credits: [
+      { name: 'Bilt Travel 飯店折抵', total: 400, period: '每半年 ($200)', expiry: '2026-12-31' },
+      { name: 'Bilt Cash 年度獎勵', total: 200, period: '每年 (1/1 發放)', expiry: '2026-12-31' },
+      { name: 'Priority Pass 貴賓室 (1,300+ 機場)', total: 0, period: '會籍狀態', expiry: '已啟用' },
+      { name: '租金 / 房貸 1x 點數 (無手續費)', total: 0, period: '會籍狀態', expiry: '永久' },
+      { name: 'Bilt Cash 4% 日常消費', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
     { name: 'Choice Privileges Mastercard', network: 'mastercard', annualFee: 0, credits: [
       { name: 'Choice Hotels 金卡會籍', total: 0, period: '會籍狀態', expiry: '永久' },
@@ -2687,6 +2704,26 @@ const cardDesigns = {
     texture: '',
     textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'AUTOGRAPH', labelColor:'rgba(255,202,182,0.78)', decor:'circles',
   },
+  'Bilt Mastercard (舊版・已停用)': {
+    bg: 'linear-gradient(135deg,#1a1a2e 0%,#2d2d50 50%,#1a1a2e 100%)',
+    shine: 'linear-gradient(115deg,transparent 30%,rgba(150,150,200,0.2) 50%,transparent 70%)',
+    texture: '', textColor:'#fff', subColor:'rgba(255,255,255,0.55)', label:'BILT (DISCONTINUED)', labelColor:'rgba(200,200,220,0.6)', decor:'circles',
+  },
+  'Bilt Blue Card': {
+    bg: 'linear-gradient(135deg,#0a1628 0%,#0d2444 40%,#1a3a6e 70%,#0a1628 100%)',
+    shine: 'linear-gradient(115deg,transparent 25%,rgba(100,160,255,0.28) 50%,transparent 75%)',
+    texture: '', textColor:'#fff', subColor:'rgba(180,210,255,0.75)', label:'BILT BLUE', labelColor:'rgba(140,190,255,0.85)', decor:'wave',
+  },
+  'Bilt Obsidian Card': {
+    bg: 'linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 30%,#2a2a2a 55%,#111111 100%)',
+    shine: 'linear-gradient(115deg,transparent 25%,rgba(200,200,200,0.3) 45%,rgba(255,255,255,0.15) 55%,transparent 75%)',
+    texture: '', textColor:'#fff', subColor:'rgba(200,200,200,0.7)', label:'BILT OBSIDIAN', labelColor:'rgba(220,220,220,0.9)', decor:'geo',
+  },
+  'Bilt Palladium Card': {
+    bg: 'linear-gradient(135deg,#2a2218 0%,#4a3c28 30%,#c0a060 55%,#8a6c3a 70%,#2a2218 100%)',
+    shine: 'linear-gradient(115deg,transparent 20%,rgba(255,240,180,0.4) 40%,rgba(255,255,220,0.25) 55%,transparent 75%)',
+    texture: '', textColor:'#fff', subColor:'rgba(255,235,180,0.75)', label:'BILT PALLADIUM', labelColor:'rgba(255,230,150,0.95)', decor:'geo',
+  },
   'Bilt Mastercard': {
     bg: 'linear-gradient(145deg,#080808 0%,#141414 26%,#222222 44%,#141414 68%,#060606 100%)',
     shine: 'linear-gradient(115deg,transparent 24%,rgba(255,255,255,0.17) 46%,transparent 68%)',
@@ -2884,7 +2921,7 @@ function save() {
 //  CARD DATA SYNC — syncs saved cards with latest database on load
 //  Version key: bump this whenever cardDatabase changes
 // ──────────────────────────────────────────────────────────────
-const DB_VERSION = '2026-06-01-v10';
+const DB_VERSION = '2026-06-01-v11';
 
 // ── Name aliases: maps old saved card names → current DB names
 const cardNameAliases = {
@@ -2922,7 +2959,8 @@ const cardNameAliases = {
   'Wells Fargo Autograph Journey':       'Wells Fargo Autograph Journey',
   'Wells Fargo Autograph':               'Wells Fargo Autograph',
   'Wells Fargo Active Cash':             'Wells Fargo Active Cash',
-  'Bilt Mastercard':                     'Bilt Mastercard',
+  'Bilt Mastercard':                     'Bilt Mastercard (舊版・已停用)',
+  'Bilt World Elite Mastercard':         'Bilt Mastercard (舊版・已停用)',
   // Citi
   'Citi Strata Premier':                          'Citi Strata Premier',
   'Citi Strata Premier℠':                         'Citi Strata Premier',
@@ -3164,6 +3202,26 @@ function confirmManualReset() {
 }
 
 
+// ── Card sort: group by bank, then by card name, then by approval date ──
+const bankOrder = ['Amex', 'Chase', 'Citi', 'CapitalOne', 'BoA', 'WellsFargo'];
+
+function sortedCards() {
+  return [...myCards].sort((a, b) => {
+    // 1. Bank order
+    const bankA = bankOrder.indexOf(a.bank);
+    const bankB = bankOrder.indexOf(b.bank);
+    const bankCmp = (bankA === -1 ? 99 : bankA) - (bankB === -1 ? 99 : bankB);
+    if (bankCmp !== 0) return bankCmp;
+    // 2. Card name (same cards together)
+    const nameCmp = a.cardName.localeCompare(b.cardName);
+    if (nameCmp !== 0) return nameCmp;
+    // 3. Approval date (earlier first)
+    const dateA = a.approvalDate || a.addedAt || '';
+    const dateB = b.approvalDate || b.addedAt || '';
+    return dateA.localeCompare(dateB);
+  });
+}
+
 function render() {
   const list = document.getElementById('cardList');
   const statsEl = document.getElementById('statsSection');
@@ -3192,7 +3250,7 @@ function render() {
 
   if (currentTab === 'all') {
     heading.style.display = 'none';
-    list.innerHTML = `<div class="card-grid">${myCards.map(c => renderCard(c)).join('')}</div>`;
+    list.innerHTML = `<div class="card-grid">${sortedCards().map(c => renderCard(c)).join('')}</div>`;
   } else {
     const items = getCategoryItems(currentTab);
     const tabNames = { uber:t('tab_uber'), airline:t('tab_airline'), dining:t('tab_dining'), travel:t('tab_travel'), lifestyle:t('tab_lifestyle'), status:t('tab_status') };
@@ -4569,6 +4627,28 @@ const cardBonusRates = {
   ],
   'Wells Fargo One Key': [
     {cat:'所有消費', rate:'1.5%', unit:'One Key Cash'},
+  ],
+  'Bilt Blue Card': [
+    {cat:'租金 / 房貸（無手續費）', rate:'1x', unit:'Bilt'},
+    {cat:'其他所有消費', rate:'1x', unit:'Bilt'},
+    {cat:'日常消費 Bilt Cash 回饋', rate:'4%', unit:'Bilt Cash'},
+  ],
+  'Bilt Obsidian Card': [
+    {cat:'餐廳 或 超市（擇一，超市年上限 $25K）', rate:'3x', unit:'Bilt'},
+    {cat:'旅遊消費', rate:'2x', unit:'Bilt'},
+    {cat:'其他所有消費', rate:'1x', unit:'Bilt'},
+    {cat:'租金 / 房貸（無手續費）', rate:'1x', unit:'Bilt'},
+    {cat:'日常消費 Bilt Cash 回饋', rate:'4%', unit:'Bilt Cash'},
+  ],
+  'Bilt Palladium Card': [
+    {cat:'所有日常消費（租金 / 房貸除外）', rate:'2x', unit:'Bilt'},
+    {cat:'租金 / 房貸（無手續費）', rate:'1x', unit:'Bilt'},
+    {cat:'日常消費 Bilt Cash 回饋', rate:'4%', unit:'Bilt Cash'},
+  ],
+  'Bilt Mastercard (舊版・已停用)': [
+    {cat:'全球餐廳', rate:'3x', unit:'Bilt'},
+    {cat:'旅遊消費', rate:'2x', unit:'Bilt'},
+    {cat:'租金（無手續費）', rate:'1x', unit:'Bilt'},
   ],
   'Bilt Mastercard': [
     {cat:'全球餐廳', rate:'3x', unit:'Bilt'},
@@ -6268,6 +6348,12 @@ const creditNameTranslations = {
   'Lyft 5% 回饋': 'Lyft 5% Cash Back',
   'Lyft 共乘折抵': 'Lyft Rideshare Credit',
   'Lyft 銀卡會籍': 'Lyft Silver Status',
+  'Bilt Travel 飯店折抵': 'Bilt Travel Hotel Credit',
+  'Bilt Cash 年度獎勵': 'Annual Bilt Cash Benefit',
+  'Bilt Cash 4% 日常消費': 'Bilt Cash 4% on Everyday Spend',
+  '租金 / 房貸 1x 點數 (無手續費)': 'Rent / Mortgage 1x Points (no fee)',
+  '手機保險': 'Cell Phone Protection',
+  '餐廳 或 超市（擇一，超市年上限 $25K）': 'Dining or Grocery 3x (Grocery up to $25K/yr)',
   'Marriott Bonvoy 金卡會籍': 'Marriott Bonvoy Gold Elite Status',
   'Marriott 金卡會籍': 'Marriott Bonvoy Gold Elite Status',
   'National 租車高階會籍': 'National Car Rental Emerald Club Executive',
