@@ -2908,6 +2908,8 @@ const cardNameAliases = {
   'Chase Freedom Flex':                  'Chase Freedom Flex',
   'Chase Freedom Unlimited':             'Chase Freedom Unlimited',
   'United Club Infinite':                'United Club Infinite',
+  'United Club℠ Infinite':              'United Club Infinite',
+  'United Club℠ Business':              'United Club Business',
   'United Explorer':                     'United Explorer',
   'United Quest':                        'United Quest',
   'IHG One Rewards Premier (Chase)':     'IHG One Rewards Premier',
@@ -2922,10 +2924,26 @@ const cardNameAliases = {
   'Wells Fargo Active Cash':             'Wells Fargo Active Cash',
   'Bilt Mastercard':                     'Bilt Mastercard',
   // Citi
-  'Citi Strata Premier':                 'Citi Strata Premier',
-  'Citi AAdvantage Executive':           'Citi / AAdvantage Executive World Elite',
-  'Citi AAdvantage Platinum Select':     'Citi / AAdvantage Platinum Select',
-  'Costco Visa by Citi':                 'Costco Anywhere Visa by Citi',
+  'Citi Strata Premier':                          'Citi Strata Premier',
+  'Citi Strata Premier℠':                         'Citi Strata Premier',
+  'Citi AAdvantage Executive':                    'Citi / AAdvantage Executive World Elite',
+  'Citi® / AAdvantage® Executive World Elite':    'Citi / AAdvantage Executive World Elite',
+  'Citi / AAdvantage® Executive World Elite':     'Citi / AAdvantage Executive World Elite',
+  'Citi AAdvantage Platinum Select':              'Citi / AAdvantage Platinum Select',
+  'Citi® / AAdvantage® Platinum Select®':         'Citi / AAdvantage Platinum Select',
+  'Citi / AAdvantage® Platinum Select®':          'Citi / AAdvantage Platinum Select',
+  'Citi / AAdvantage Platinum Select®':           'Citi / AAdvantage Platinum Select',
+  'Citi® / AAdvantage® MileUp®':                  'Citi / AAdvantage MileUp',
+  'Citi / AAdvantage® MileUp®':                   'Citi / AAdvantage MileUp',
+  'Citi / AAdvantage MileUp®':                    'Citi / AAdvantage MileUp',
+  'Citi® / AAdvantage® Business™ World Elite':    'Citi / AAdvantage Business World Elite',
+  'Citi / AAdvantage® Business™ World Elite':     'Citi / AAdvantage Business World Elite',
+  'Costco Visa by Citi':                          'Costco Anywhere Visa by Citi',
+  'Costco Anywhere Visa® by Citi':                'Costco Anywhere Visa by Citi',
+  'Costco Anywhere Visa® Business by Citi':       'Costco Anywhere Visa Business by Citi',
+  'Citi Custom Cash®':                            'Citi Custom Cash',
+  'Citi Double Cash®':                            'Citi Double Cash',
+  'Citi Rewards+®':                               'Citi Rewards+',
   // Capital One
   'Capital One Venture X':               'Capital One Venture X Rewards',
   'Capital One Venture':                 'Capital One Venture Rewards',
@@ -2938,9 +2956,51 @@ const cardNameAliases = {
   const lastSync = localStorage.getItem('uccp_db_version');
   const needsSync = lastSync !== DB_VERSION;
 
+  // Bank name corrections for cards saved under wrong bank
+  const bankAliases = {
+    'United': 'Chase',
+    'Southwest': 'Chase',
+    'Marriott': 'Chase',
+    'Hyatt': 'Chase',
+    'IHG': 'Chase',
+    'British Airways': 'Chase',
+    'Iberia': 'Chase',
+    'Aer Lingus': 'Chase',
+    'Disney': 'Chase',
+    'Amazon': 'Chase',
+    'Alaska': 'BoA',
+    'Virgin Atlantic': 'BoA',
+    'Air France': 'BoA',
+    'Hilton': 'Amex',
+    'Delta': 'Amex',
+    'Bilt': 'WellsFargo',
+    'Choice': 'WellsFargo',
+    'AAdvantage': 'Citi',
+    'Costco': 'Citi',
+    'Spark': 'CapitalOne',
+    'Venture': 'CapitalOne',
+  };
+
   let changed = false;
 
   myCards.forEach(card => {
+    // ── Fix wrong bank name ───────────────────────────────
+    if (bankAliases[card.bank]) {
+      card.bank = bankAliases[card.bank];
+      changed = true;
+    }
+
+    // If card not found in stated bank, search all banks
+    if (!(cardDatabase[card.bank] || []).find(c => c.name === card.cardName)) {
+      for (const [bank, cards] of Object.entries(cardDatabase)) {
+        if (cards.find(c => c.name === card.cardName)) {
+          card.bank = bank;
+          changed = true;
+          break;
+        }
+      }
+    }
+
     // ── Resolve old card name to current DB name ──────────
     if (cardNameAliases[card.cardName]) {
       card.cardName = cardNameAliases[card.cardName];
