@@ -1172,7 +1172,7 @@
         · <a href="mailto:creditsprofeedback@gmail.com" data-i18n="feedback">意見回饋</a>
       </div>
       <div id="footerDisclaimer" style="font-size:10px;color:var(--text-3);line-height:1.6;max-width:600px;margin:6px 0 4px;">
-        本 App 提供之信用卡資料僅供參考，不構成任何財務建議。本 App 與 American Express、Chase、Bank of America、Wells Fargo、Citi、Capital One 及其他發卡銀行無任何合作、附屬或背書關係。所有商標、卡名均為各發卡機構財產。實際卡片權益以發卡銀行官方說明為準。
+        本 App 提供之信用卡資料僅供參考，不構成任何財務建議。本 App 與 AMEX、Chase、Bank of America、Wells Fargo、Citi、Capital One 及其他發卡銀行無任何合作、附屬或背書關係。所有商標、卡名均為各發卡機構財產。實際卡片權益以發卡銀行官方說明為準。
       </div>
       <a href="https://uscardcreditspro.netlify.app" target="_blank" style="font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:4px 0;transition:color 0.15s ease;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'" data-i18n="legal">隱私聲明與免責聲明 →</a>
     </footer>
@@ -1427,7 +1427,7 @@
       <div class="form-group">
         <label class="form-label" data-i18n="bank_label">發卡銀行</label>
         <select id="bankSelect" class="form-input" onchange="updateCardTypeOptions()">
-          <option value="Amex">American Express</option>
+          <option value="Amex">AMEX</option>
           <option value="Chase">Chase</option>
           <option value="Citi">Citi</option>
           <option value="BoA">Bank of America</option>
@@ -1850,13 +1850,13 @@ const cardDatabase = {
       { name: 'Hilton Honors 金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
       { name: 'Marriott Bonvoy 金卡會籍', total: 0, period: '會籍狀態', expiry: '已啟用' }
     ]},
-    { name: 'American Express Gold Card', network: 'amex', annualFee: 325, credits: [
+    { name: 'AMEX Gold Card', network: 'amex', annualFee: 325, credits: [
       { name: '指定餐飲消費折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
       { name: 'Uber Cash 折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
       { name: "Dunkin' 餐廳折抵", total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
       { name: 'Resy 餐廳折抵', total: 100, period: '每半年 ($50)', expiry: '2026-12-31' }
     ]},
-    { name: 'American Express Green Card', network: 'amex', annualFee: 150, credits: [
+    { name: 'AMEX Green Card', network: 'amex', annualFee: 150, credits: [
       { name: 'LoungeBuddy 貴賓室折抵', total: 100, period: '每年', expiry: '2026-12-31' },
       { name: 'CLEAR Plus 折抵', total: 189, period: '每年', expiry: '2026-12-31' }
     ]},
@@ -1874,10 +1874,10 @@ const cardDatabase = {
       { name: 'Disney Bundle 折抵', total: 84, period: '每月 ($7)', expiry: '2026-12-31' },
       { name: 'Equinox+ 折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' }
     ]},
-    { name: 'American Express Cash Magnet Card', network: 'amex', annualFee: 0, credits: [
+    { name: 'AMEX Cash Magnet Card', network: 'amex', annualFee: 0, credits: [
       { name: '無限 1.5% 現金回饋', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
-    { name: 'Marriott Bonvoy American Express Card', network: 'amex', annualFee: 0, credits: [
+    { name: 'Marriott Bonvoy AMEX Card', network: 'amex', annualFee: 0, credits: [
       { name: '免費住宿夜 (35K pts)', total: 1, period: '張', expiry: '每年續卡' },
       { name: '萬豪銀卡會籍', total: 0, period: '會籍狀態', expiry: '永久' }
     ]},
@@ -2389,13 +2389,13 @@ const cardDesigns = {
     texture: 'repeating-linear-gradient(90deg,rgba(160,160,160,0.12) 0px,rgba(160,160,160,0.12) 1px,transparent 1px,transparent 4px)',
     textColor:'#1a1a1a', subColor:'rgba(0,0,0,0.48)', label:'PLATINUM', labelColor:'#888', decor:'lines',
   },
-  'American Express Gold Card': {
+  'AMEX Gold Card': {
     bg: 'linear-gradient(145deg,#b8780a 0%,#d99820 25%,#f5c84a 45%,#c88020 65%,#a06010 100%)',
     shine: 'linear-gradient(115deg,transparent 25%,rgba(255,235,150,0.5) 47%,transparent 68%)',
     texture: 'repeating-linear-gradient(135deg,rgba(255,200,60,0.1) 0px,rgba(255,200,60,0.1) 1px,transparent 1px,transparent 6px)',
     textColor:'#2a1400', subColor:'rgba(60,25,0,0.55)', label:'GOLD', labelColor:'#6a3800', decor:'dots',
   },
-  'American Express Green Card': {
+  'AMEX Green Card': {
     bg: 'linear-gradient(145deg,#1b5e3b 0%,#2e8057 30%,#3ea870 50%,#2e8057 72%,#123d26 100%)',
     shine: 'linear-gradient(115deg,transparent 30%,rgba(160,255,190,0.28) 50%,transparent 70%)',
     texture: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.05) 0px,rgba(255,255,255,0.05) 1px,transparent 1px,transparent 8px)',
@@ -2407,13 +2407,13 @@ const cardDesigns = {
     texture: '',
     textColor:'#fff', subColor:'rgba(255,255,255,0.62)', label:'BLUE CASH PREFERRED', labelColor:'rgba(170,220,255,0.8)', decor:'wave',
   },
-  'American Express Cash Magnet Card': {
+  'AMEX Cash Magnet Card': {
     bg: 'linear-gradient(135deg,#1a1a2e 0%,#2d2d50 40%,#1a3a60 70%,#0d1f3a 100%)',
     shine: 'linear-gradient(115deg,transparent 30%,rgba(100,200,255,0.2) 50%,transparent 70%)',
     texture: '',
     textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'CASH MAGNET', labelColor:'rgba(160,220,255,0.75)', decor:'wave',
   },
-  'Marriott Bonvoy American Express Card': {
+  'Marriott Bonvoy AMEX Card': {
     bg: 'linear-gradient(135deg,#1a0a40 0%,#2d1060 40%,#4a1880 70%,#1a0840 100%)',
     shine: 'linear-gradient(115deg,transparent 30%,rgba(200,150,255,0.2) 50%,transparent 70%)',
     texture: '',
@@ -2935,11 +2935,11 @@ const DB_VERSION = '2026-06-01-v12';
 const cardNameAliases = {
   // Amex personal
   'The Platinum Card (個人白金)':        'The Platinum Card',
-  'American Express Platinum Card':      'The Platinum Card',
+  'AMEX Platinum Card':      'The Platinum Card',
   'Amex Platinum':                       'The Platinum Card',
-  'American Express Gold Card (個人金卡)': 'American Express Gold Card',
-  'Amex Gold':                           'American Express Gold Card',
-  'American Express Green Card (綠卡)': 'American Express Green Card',
+  'AMEX Gold Card (個人金卡)': 'AMEX Gold Card',
+  'Amex Gold':                           'AMEX Gold Card',
+  'AMEX Green Card (綠卡)': 'AMEX Green Card',
   'Hilton Honors Amex Aspire':           'Hilton Honors Aspire',
   'Hilton Honors Amex Surpass':          'Hilton Honors Surpass',
   // Amex business
@@ -4219,7 +4219,7 @@ const cardBonusRates = {
     {cat:'其他旅遊消費', rate:'2x', unit:'MR'},
     {cat:'其他消費', rate:'1x', unit:'MR'},
   ],
-  'American Express Gold Card': [
+  'AMEX Gold Card': [
     {cat:'美國超市（年上限 $25K）', rate:'4x', unit:'MR'},
     {cat:'全球餐廳', rate:'4x', unit:'MR'},
     {cat:'美國外送服務', rate:'4x', unit:'MR'},
@@ -4227,7 +4227,7 @@ const cardBonusRates = {
     {cat:'其他旅遊消費', rate:'2x', unit:'MR'},
     {cat:'其他消費', rate:'1x', unit:'MR'},
   ],
-  'American Express Green Card': [
+  'AMEX Green Card': [
     {cat:'旅遊（含機票、飯店、租車）', rate:'3x', unit:'MR'},
     {cat:'全球餐廳', rate:'3x', unit:'MR'},
     {cat:'大眾交通 / 地鐵 / Uber', rate:'3x', unit:'MR'},
@@ -4256,7 +4256,7 @@ const cardBonusRates = {
     {cat:'美國加油站（年上限 $6K）', rate:'3%', unit:'cash'},
     {cat:'其他消費', rate:'1%', unit:'cash'},
   ],
-  'American Express Cash Magnet Card': [
+  'AMEX Cash Magnet Card': [
     {cat:'所有消費無上限', rate:'1.5%', unit:'cash'},
   ],
   'Marriott Bonvoy Brilliant': [
@@ -4271,7 +4271,7 @@ const cardBonusRates = {
     {cat:'全球餐廳（年上限 $15K）', rate:'4x', unit:'Bonvoy'},
     {cat:'其他消費', rate:'2x', unit:'Bonvoy'},
   ],
-  'Marriott Bonvoy American Express Card': [
+  'Marriott Bonvoy AMEX Card': [
     {cat:'Marriott 旗下飯店', rate:'6x', unit:'Bonvoy'},
     {cat:'全球餐廳', rate:'3x', unit:'Bonvoy'},
     {cat:'美國加油站', rate:'3x', unit:'Bonvoy'},
@@ -6081,7 +6081,7 @@ const translations = {
     // Footer
     feedback: '意見回饋',
     legal: '隱私聲明與免責聲明 →',
-    disclaimer: '本 App 提供之信用卡資料僅供參考，不構成任何財務建議。本 App 與 American Express、Chase、Bank of America、Wells Fargo、Citi、Capital One 及其他發卡銀行無任何合作、附屬或背書關係。所有商標、卡名均為各發卡機構財產。實際卡片權益以發卡銀行官方說明為準。',
+    disclaimer: '本 App 提供之信用卡資料僅供參考，不構成任何財務建議。本 App 與 AMEX、Chase、Bank of America、Wells Fargo、Citi、Capital One 及其他發卡銀行無任何合作、附屬或背書關係。所有商標、卡名均為各發卡機構財產。實際卡片權益以發卡銀行官方說明為準。',
     // Cancel / Close
     cancel: '取消',
     close: '關閉',
@@ -6217,7 +6217,7 @@ const translations = {
     // Footer
     feedback: 'Feedback',
     legal: 'Privacy & Disclaimer →',
-    disclaimer: 'This app provides credit card information for reference only and does not constitute financial advice. This app has no affiliation, partnership, or endorsement with American Express, Chase, Bank of America, Wells Fargo, Citi, Capital One, or any other card issuer. All trademarks and card names are the property of their respective issuers. Actual benefits are subject to each issuer\'s official terms.',
+    disclaimer: 'This app provides credit card information for reference only and does not constitute financial advice. This app has no affiliation, partnership, or endorsement with AMEX, Chase, Bank of America, Wells Fargo, Citi, Capital One, or any other card issuer. All trademarks and card names are the property of their respective issuers. Actual benefits are subject to each issuer\'s official terms.',
     // Cancel / Close
     cancel: 'Cancel',
     close: 'Close',
