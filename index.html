@@ -1434,6 +1434,7 @@
           <option value="CapitalOne">Capital One</option>
           <option value="WellsFargo">Wells Fargo</option>
           <option value="Bilt">Bilt</option>
+          <option value="HSBC">HSBC</option>
         </select>
       </div>
       <div class="form-group">
@@ -1627,6 +1628,7 @@
             <option value="Citi">Citi</option>
             <option value="CapitalOne">Capital One</option>
             <option value="Bilt">Bilt</option>
+            <option value="HSBC">HSBC</option>
           </select>
         </div>
 
@@ -1994,13 +1996,14 @@ const cardDatabase = {
   'Chase': [
     { name: 'Chase Sapphire Reserve (CSR)', network: 'visa', annualFee: 795, credits: [
       { name: '年度旅行消費折抵', total: 300, period: '每持卡年', expiry: '每年' },
-      { name: 'DashPass + DoorDash 折抵', total: 300, period: '每年', expiry: '2026-12-31' },
-      { name: 'Lyft 共乘折抵', total: 120, period: '每年', expiry: '2026-12-31' },
-      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
+      { name: 'Chase Travel 指定飯店折抵 (IHG/Omni/Montage等)', total: 250, period: '2026年限定', expiry: '2026-12-31' },
       { name: 'The Edit 奢華酒店折抵', total: 500, period: '每年', expiry: '2026-12-31' },
       { name: 'Exclusive Tables 餐廳折抵', total: 300, period: '每年', expiry: '2026-12-31' },
       { name: 'Stubhub / viagogo 票券折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: 'DashPass + DoorDash 折抵', total: 300, period: '每年', expiry: '2026-12-31' },
+      { name: 'Lyft 共乘折抵', total: 120, period: '每年', expiry: '2026-12-31' },
       { name: 'Peloton 健身折抵', total: 120, period: '每年', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck', total: 120, period: '每 4 年', expiry: '2030-12-31' },
       { name: 'Priority Pass / Sapphire Lounge', total: 0, period: '會籍狀態', expiry: '已啟用' },
       { name: 'IHG 白金會籍', total: 0, period: '會籍狀態', expiry: '已啟用' },
       { name: 'Apple TV+ & Music', total: 0, period: '會籍狀態', expiry: '已啟用' }
@@ -2244,6 +2247,16 @@ const cardDatabase = {
     ]}
   ],
 
+
+  // ── HSBC ──────────────────────────────────────────────────────
+  'HSBC': [
+    { name: 'HSBC Elite Card', network: 'mastercard', annualFee: 495, credits: [
+      { name: 'HSBC Travel 旅遊折抵 (機票/飯店/租車)', total: 400, period: '每年', expiry: '2026-12-31' },
+      { name: '共乘 / 計程車折抵', total: 120, period: '每月 ($10)', expiry: '2026-12-31' },
+      { name: 'Global Entry / TSA Precheck / CLEAR / NEXUS', total: 120, period: '每 54 個月', expiry: '2030-12-31' },
+      { name: 'Priority Pass 貴賓室 (持卡人 + 2 賓客)', total: 0, period: '會籍狀態', expiry: '永久' },
+    ]},
+  ],
 
   // ── BILT ──────────────────────────────────────────────────────
   'Bilt': [
@@ -2711,6 +2724,11 @@ const cardDesigns = {
     texture: '',
     textColor:'#fff', subColor:'rgba(255,255,255,0.6)', label:'AUTOGRAPH', labelColor:'rgba(255,202,182,0.78)', decor:'circles',
   },
+  'HSBC Elite Card': {
+    bg: 'linear-gradient(135deg,#8b0000 0%,#c00000 30%,#e01010 55%,#8b0000 100%)',
+    shine: 'linear-gradient(115deg,transparent 25%,rgba(255,180,180,0.25) 45%,rgba(255,220,220,0.15) 55%,transparent 75%)',
+    texture: '', textColor:'#fff', subColor:'rgba(255,210,210,0.75)', label:'HSBC ELITE', labelColor:'rgba(255,200,200,0.9)', decor:'geo',
+  },
   'Bilt Mastercard (舊版・已停用)': {
     bg: 'linear-gradient(135deg,#1a1a2e 0%,#2d2d50 50%,#1a1a2e 100%)',
     shine: 'linear-gradient(115deg,transparent 30%,rgba(150,150,200,0.2) 50%,transparent 70%)',
@@ -2902,7 +2920,7 @@ const bankGradients = {
 const bankColors = {
   Amex: '#1a6fcf', Chase: '#1e3a6e', Citi: '#064a94',
   BoA: '#c91933', CapitalOne: '#003d80', WellsFargo: '#c42028',
-  Bilt: '#1a1a2e'
+  Bilt: '#1a1a2e', HSBC: '#db0011'
 };
 
 // ──────────────────────────────────────────────────────────────
@@ -2929,7 +2947,7 @@ function save() {
 //  CARD DATA SYNC — syncs saved cards with latest database on load
 //  Version key: bump this whenever cardDatabase changes
 // ──────────────────────────────────────────────────────────────
-const DB_VERSION = '2026-06-01-v12';
+const DB_VERSION = '2026-06-01-v14';
 
 // ── Name aliases: maps old saved card names → current DB names
 const cardNameAliases = {
@@ -3210,7 +3228,7 @@ function confirmManualReset() {
 
 
 // ── Card sort: group by bank, then by card name, then by approval date ──
-const bankOrder = ['Amex', 'Chase', 'Citi', 'CapitalOne', 'BoA', 'WellsFargo', 'Bilt'];
+const bankOrder = ['Amex', 'Chase', 'Citi', 'CapitalOne', 'BoA', 'WellsFargo', 'Bilt', 'HSBC'];
 
 function sortedCards() {
   return [...myCards].sort((a, b) => {
@@ -3818,7 +3836,7 @@ function switchAddMode(mode) {
 
 function renderBatchUI() {
   const banks = ['all', ...Object.keys(cardDatabase)];
-  const bankLabels = { all: currentLang==='en'?'All':'全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo', Bilt: 'Bilt' };
+  const bankLabels = { all: currentLang==='en'?'All':'全部', Amex: 'Amex', Chase: 'Chase', Citi: 'Citi', BoA: 'BoA', CapitalOne: 'Capital One', WellsFargo: 'Wells Fargo', Bilt: 'Bilt', HSBC: 'HSBC' };
 
   // Bank pills
   document.getElementById('bankPills').innerHTML = banks.map(b => `
@@ -4651,6 +4669,11 @@ const cardBonusRates = {
     {cat:'所有日常消費（租金 / 房貸除外）', rate:'2x', unit:'Bilt'},
     {cat:'租金 / 房貸（無手續費）', rate:'1x', unit:'Bilt'},
     {cat:'日常消費 Bilt Cash 回饋', rate:'4%', unit:'Bilt Cash'},
+  ],
+  'HSBC Elite Card': [
+    {cat:'旅遊消費 (機票 / 飯店 / 租車)', rate:'5x', unit:'pts'},
+    {cat:'全球餐廳 / 其他旅遊', rate:'2x', unit:'pts'},
+    {cat:'其他消費', rate:'1x', unit:'pts'},
   ],
   'Bilt Mastercard (舊版・已停用)': [
     {cat:'全球餐廳', rate:'3x', unit:'Bilt'},
@@ -6355,6 +6378,10 @@ const creditNameTranslations = {
   'Lyft 5% 回饋': 'Lyft 5% Cash Back',
   'Lyft 共乘折抵': 'Lyft Rideshare Credit',
   'Lyft 銀卡會籍': 'Lyft Silver Status',
+  'HSBC Travel 旅遊折抵 (機票/飯店/租車)': 'HSBC Travel Credit (Flights/Hotels/Cars)',
+  '共乘 / 計程車折抵': 'Rideshare / Taxi Credit',
+  'Global Entry / TSA Precheck / CLEAR / NEXUS': 'Global Entry / TSA PreCheck / CLEAR / NEXUS',
+  'Priority Pass 貴賓室 (持卡人 + 2 賓客)': 'Priority Pass Lounge (cardholder + 2 guests)',
   'Bilt Travel 飯店折抵': 'Bilt Travel Hotel Credit',
   'Bilt Cash 年度獎勵': 'Annual Bilt Cash Benefit',
   'Bilt Cash 4% 日常消費': 'Bilt Cash 4% on Everyday Spend',
